@@ -52,7 +52,7 @@ docs/                identidade visual e mockup (fora do build Docker)
 
 - **Tokens** ficam em `styles/tokens.css` e o `tailwind.config.ts` apenas os mapeia para utilitários:
   - cores: `bg-brand-pink`, `text-brand-wine`, `bg-brand-cream`, etc.;
-  - fontes: `font-serif` (Noto Serif, texto), `font-sans` (Montserrat, títulos/UI) e `font-script` (Handelson One, destaques);
+  - fontes: `font-serif` (Noto Serif, texto), `font-sans` (Satoshi, títulos/UI) e `font-script` (Handelson One, destaques);
   - medidas: `max-w-container`, `px-gutter`, `py-section`, `shadow-cta`, `rounded-{sm,md,lg}`.
 - Os componentes já têm markup semântico e classes mínimas de layout. A estilização visual é a próxima etapa.
 - Classes condicionais precisam ser **strings completas** (ex.: mapa `cardColors` em `Services.tsx`). Não use interpolação do tipo `` `bg-brand-${cor}` ``, porque o Tailwind não detecta essas classes.

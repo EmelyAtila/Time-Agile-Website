@@ -29,8 +29,8 @@
 
   /* Tipografia (variáveis injetadas por next/font em app/layout.tsx) */
   --font-serif: var(--font-noto-serif), Georgia, serif;
-  --font-sans: var(--font-montserrat), system-ui, sans-serif;
-  --font-script: 'Handelson One', cursive; /* @font-face em styles/base.css */
+  --font-sans: var(--font-satoshi), system-ui, sans-serif;
+  --font-script: var(--font-handelson), cursive;
 
   /* Layout */
   --container-max-width: 1280px;

@@ -38,7 +38,7 @@ A marca quer ser *"criativa e fora do padrão tradicional corporativo"*. É o op
 | Uso                                   | Fonte                     | Tailwind      |
 | ------------------------------------- | ------------------------- | ------------- |
 | Principal: corpo, parágrafos, nav      | **Noto Serif**            | `font-serif`  |
-| Secundária: títulos, cards, UI         | **Montserrat**            | `font-sans`   |
+| Secundária: títulos, cards, UI         | **Satoshi**               | `font-sans`   |
 | Apoio criativo: "Crescer!", nomes, títulos de projetos | **Handelson One** (script) | `font-script` |
 
 ## Elementos gráficos (mockup)
