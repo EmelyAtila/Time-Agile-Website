@@ -1,0 +1,80 @@
+# Time Agile — Landing Page
+
+Landing page da **Time Agile · Marketing e Gestão**.
+Identidade visual em [`docs/Identidade visual - Time Agile.pdf`](docs/Identidade%20visual%20-%20Time%20Agile.pdf), mockup em [`docs/Desktop - 1.svg`](docs/Desktop%20-%201.svg) e resumo da marca em [`docs/BRAND.md`](docs/BRAND.md).
+
+## Stack
+
+- **Next.js 15** (App Router) + **React 19** + **TypeScript**
+- **Tailwind CSS 3**, com tokens da marca em CSS vars
+- **GSAP** (`@gsap/react`) + **Lenis** para animações e rolagem suave
+- **Embla Carousel** para os depoimentos
+- **react-hook-form** + **zod** + **Resend** para o formulário de contato (Server Action)
+- **lucide-react** para os ícones
+
+## Scripts
+
+| Comando              | O que faz                          |
+| -------------------- | ---------------------------------- |
+| `npm run dev`        | Servidor de desenvolvimento        |
+| `npm run build`      | Build de produção (`standalone`)   |
+| `npm run start`      | Sobe o build de produção           |
+| `npm run lint`       | ESLint                             |
+| `npm run type-check` | Checagem de tipos                  |
+| `npm run format`     | Prettier (ordena classes Tailwind) |
+
+Copie `.env.example` para `.env.local` e preencha as variáveis.
+
+## Estrutura
+
+```
+app/                 layout, page (compõe as seções), robots, sitemap
+  actions/           server actions (contact.ts)
+components/
+  layout/            Header, Footer, Logo, WhatsAppButton
+  sections/          Hero, About, Services, TagMarquee, Projects, Testimonials, Contact
+  forms/             ContactForm
+  ui/                Button, Container, SectionHeading, Carousel  (barrel em index.ts)
+  decor/             Ribbon (fitas), Smiley, WhatsAppIcon — elementos puramente visuais
+  providers/         SmoothScrollProvider (Lenis + GSAP)
+content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
+animations/          gsap.config.ts, useScrollReveal
+hooks/               useMediaQuery, useScrollPosition, useSmoothScroll
+lib/                 metadata, validations (zod), escape-html, utils (cn)
+styles/              tokens.css (fonte da verdade do design), base.css
+types/               tipos compartilhados
+public/images/       about/, services/, projects/, testimonials/
+public/fonts/        fontes locais (Handelson One)
+docs/                identidade visual e mockup (fora do build Docker)
+```
+
+## Estilização
+
+- **Tokens** ficam em `styles/tokens.css` e o `tailwind.config.ts` apenas os mapeia para utilitários:
+  - cores: `bg-brand-pink`, `text-brand-wine`, `bg-brand-cream`, etc.;
+  - fontes: `font-serif` (Noto Serif, texto), `font-sans` (Montserrat, títulos/UI) e `font-script` (Handelson One, destaques);
+  - medidas: `max-w-container`, `px-gutter`, `py-section`, `shadow-cta`, `rounded-{sm,md,lg}`.
+- Os componentes já têm markup semântico e classes mínimas de layout. A estilização visual é a próxima etapa.
+- Classes condicionais precisam ser **strings completas** (ex.: mapa `cardColors` em `Services.tsx`). Não use interpolação do tipo `` `bg-brand-${cor}` ``, porque o Tailwind não detecta essas classes.
+- Para animar, marque os elementos com `data-reveal` e use `const ref = useScrollReveal()` no container.
+
+### Fonte Handelson One
+
+A Handelson One é comercial e não está no Google Fonts. Coloque o arquivo em `public/fonts/HandelsonOne.woff2`; o `@font-face` já está em `styles/base.css`. Sem o arquivo, o site usa o fallback `cursive`.
+
+## Pendências de conteúdo
+
+Procure por `TODO` no código:
+
+- Logo oficial em SVG.
+- Links reais de Instagram e LinkedIn.
+- Depoimentos reais.
+- `og-image.jpg`.
+- Páginas `/privacidade` e `/termos`.
+- As imagens de `public/images/services` são PNGs de 2 MB. O `next/image` otimiza na entrega, mas vale comprimir os originais.
+
+## Docker
+
+```bash
+docker compose up --build
+```

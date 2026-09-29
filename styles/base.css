@@ -1,0 +1,55 @@
+/* Estilos globais que não fazem sentido como utilitário Tailwind.
+   Obs.: não usar `scroll-behavior: smooth` — a rolagem suave é feita pelo Lenis. */
+
+/* Fonte criativa (comercial, não está no Google Fonts).
+   Coloque o arquivo em public/fonts/HandelsonOne.woff2 — sem ele, cai no fallback `cursive`. */
+@font-face {
+  font-family: 'Handelson One';
+  src: url('/fonts/HandelsonOne.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: var(--font-serif);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Âncoras não ficam escondidas atrás do header fixo quando o Lenis está desligado */
+section[id] {
+  scroll-margin-top: var(--header-height);
+}
+
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  background-color: var(--color-wine);
+  color: var(--color-white);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top var(--transition-fast);
+}
+
+.skip-to-content:focus {
+  top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

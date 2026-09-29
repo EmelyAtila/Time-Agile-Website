@@ -1,0 +1,15 @@
+@import '../styles/tokens.css';
+@import '../styles/base.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tailwind preflight sets `height: auto` on img/video without `width: auto`,
+   which makes next/image warn that only one dimension is overridden. */
+@layer base {
+  img,
+  video {
+    width: auto;
+  }
+}
