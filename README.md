@@ -33,12 +33,13 @@ app/                 layout, page (compõe as seções), robots, sitemap
 components/
   layout/            Header, Footer, Logo, WhatsAppButton
   sections/          Hero, About, Services, TagMarquee, Projects, Testimonials, Contact
+    hero/            HeroIntro (wrapper client), HeroRibbons, heroPaths (curvas das fitas), useFluidArt
   forms/             ContactForm
   ui/                Button, Container, SectionHeading, Carousel  (barrel em index.ts)
-  decor/             Ribbon (fitas), Smiley, WhatsAppIcon — elementos puramente visuais
+  decor/             Ribbon (fitas), Smiley, InstagramIcon, WhatsAppIcon — elementos puramente visuais
   providers/         SmoothScrollProvider (Lenis + GSAP)
 content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
-animations/          gsap.config.ts, useScrollReveal
+animations/          gsap.config.ts, useScrollReveal, useHeroIntro, useNavScrollSpy (barra do menu)
 hooks/               useMediaQuery, useScrollPosition, useSmoothScroll
 lib/                 metadata, validations (zod), escape-html, utils (cn)
 styles/              tokens.css (fonte da verdade do design), base.css
@@ -57,6 +58,7 @@ docs/                identidade visual e mockup (fora do build Docker)
 - Os componentes já têm markup semântico e classes mínimas de layout. A estilização visual é a próxima etapa.
 - Classes condicionais precisam ser **strings completas** (ex.: mapa `cardColors` em `Services.tsx`). Não use interpolação do tipo `` `bg-brand-${cor}` ``, porque o Tailwind não detecta essas classes.
 - Para animar, marque os elementos com `data-reveal` e use `const ref = useScrollReveal()` no container.
+- A entrada do Hero usa `data-intro` e a timeline de `animations/useHeroIntro.ts`. Tempos, funcionamento e ideias adiadas estão em `docs/HERO-ANIMATIONS.md`.
 
 ### Fonte Handelson One
 
