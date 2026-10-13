@@ -7,7 +7,8 @@ Como a entrada do Hero funciona, onde ajustar e o que ficou para depois.
 | Arquivo | Papel |
 | --- | --- |
 | `animations/useHeroIntro.ts` | A timeline do GSAP. Tempos, eases e ordem ficam todos aqui. |
-| `animations/heroLoops.ts` | Loops que começam quando a entrada termina: o "!" do título e o botão do header. |
+| `animations/heroLoops.ts` | O que começa quando a entrada termina: o loop do "!" do título e o botão do header. |
+| `animations/headerCta.ts` | Botão do header: pulinho em loop, hover e clique. |
 | `components/sections/hero/heroPaths.ts` | Curvas das fitas, tamanho e posição do título (desktop e mobile). |
 | `components/sections/hero/HeroRibbons.tsx` | SVG inline das fitas com o título em `<textPath>`. |
 | `components/sections/hero/HeroIntro.tsx` | `<section>` client que liga os dois hooks. O resto do Hero é server. |
@@ -55,14 +56,33 @@ Para marcar algo novo para a entrada: `data-intro="nome"` no elemento e um tween
 
 ## Loops
 
-Começam quando a entrada termina (`onComplete` da timeline) e ficam em `animations/heroLoops.ts`.
+Começam quando a entrada termina (`onComplete` da timeline), em `animations/heroLoops.ts`.
 
 - **"!" do título:** balança apoiado na base, três idas e voltas que vão diminuindo, e descansa `MARK_EVERY` (2.6s) até o próximo. Só roda com o Hero na tela; rolou para fora, pausa.
-- **Botão do header:** a cada `CTA_EVERY` (4.5s) dá um pulinho de gelatina (achata e volta com elástico) enquanto a seta dá um bote para a frente. Roda na página inteira, porque o header acompanha a rolagem.
 - O "!" é um `<tspan data-hero-mark>` dentro do título (prop `mark` de `HeroRibbons`). Quem balança é o atributo `rotate` do `<tspan>`, que gira o glifo: `transform` de CSS não funciona em `<tspan>`.
-- No botão quem anima é o wrapper `data-intro="cta"` e o ícone da seta, nunca o `Button`, que tem `transition-all`.
+- Cada balanço redesenha o título inteiro com a sombra, por cerca de 1,2s. Se pesar em celular fraco, aumente `MARK_EVERY` antes de mexer na sombra.
 - Com "reduzir movimento" não há loop. Trocar de arte (cruzar `lg`) desfaz os loops de uma e religa na outra.
-- Cada balanço do "!" redesenha o título inteiro com a sombra, por cerca de 1,2s. Se pesar em celular fraco, aumente `MARK_EVERY` antes de mexer na sombra.
+
+## Botão do header
+
+Tudo em `animations/headerCta.ts`, ligado junto com os loops.
+
+- **Parado:** a cada `CTA_EVERY` (4.5s) dá um pulinho de gelatina (achata e volta com elástico) enquanto a seta dá um bote para a frente. Roda na página inteira, porque o header acompanha a rolagem.
+- **Mouse entra:** acontece tudo de uma vez, em cerca de 1s.
+  - O botão dá um tranco (achata e inclina `CTA_KICK`, 4°, para o lado de onde o mouse veio) e assenta maior (`CTA_HOVERED`, 1.06).
+  - Três cores se espalham em círculo a partir do ponto de entrada: amarelo, rosa-claro e por fim o laranja, que fica.
+  - As letras pulam em onda, começando pela mais próxima do ponteiro.
+  - Estoura confete nas cores da marca em volta do botão (`CONFETTI_PIECES`, 14; 0 desliga). `CONFETTI_COOLDOWN` (1s) impede chuva de confete ao entrar e sair rápido.
+  - A seta fica indo e voltando, apontando, enquanto o mouse estiver em cima.
+- **Mouse sai:** as cores se recolhem para o ponto de saída (o laranja primeiro) e botão e seta voltam ao lugar com elástico.
+- **Clique:** ao pressionar ele afunda (`CTA_PRESSED`, 0.92); ao soltar volta com elástico, e a seta dispara para a direita, some e reentra pela esquerda. Pressionar e arrastar para fora só desfaz o afundado. Pelo teclado (Enter) acontece o mesmo, sem a fase de segurar.
+- Com o mouse em cima ou durante o clique o pulinho pausa, e só volta depois de um descanso inteiro.
+- As cores são três `<span>` dentro do botão (`data-cta-ripple` e `data-cta-fill`, em `Header.tsx`), recortados com `clip-path: circle()`. Sem o GSAP as ondas não aparecem e o laranja é só um fade por CSS (`group-hover`): é o que vale antes de a entrada terminar e com "reduzir movimento".
+- As letras são `<span data-cta-letter>`; o nome que o leitor de tela lê vem do `aria-label` do botão.
+- O confete é criado na hora, direto no `body` com `position: fixed`, e removido quando termina: assim não herda o tranco do botão.
+- Quem anima é o wrapper `data-intro="cta"`, a seta, as letras e os `<span>` das cores, nunca o `Button`, que tem `transition-all`.
+- O disparo da seta não é interrompido quando o mouse sai. No topo da página o header sobe ao rolar e tira o botão de baixo do mouse logo depois do clique; se a saída cortasse o disparo, ele quase nunca apareceria.
+- Toque não tem hover: no tablet valem o pulinho e o clique.
 
 ## Barra da navegação
 
@@ -124,7 +144,7 @@ Nada aqui foi descartado; ficou fora do escopo da entrada.
 
 ### Efeitos contínuos
 
-- [x] **Loops sutis, primeira parte:** "!" do título balançando e botão do header com pulinho (ver "Loops").
+- [x] **Loops sutis, primeira parte:** "!" do título balançando e botão do header com pulinho (ver "Loops" e "Botão do header").
 - [ ] **Loops sutis, o que falta:** ponto da logo quicando de vez em quando e pill das redes flutuando. Entram em `animations/heroLoops.ts`.
 - [ ] **Parallax com o mouse:** fitas em camadas seguindo o cursor (`gsap.quickTo`), só desktop.
 - [ ] **Saída no scroll:** fitas se recolhendo ou em parallax ao rolar para "Sobre" (`ScrollTrigger` com scrub, já integrado ao Lenis).
