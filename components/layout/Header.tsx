@@ -70,9 +70,34 @@ export function Header() {
           <Button
             href={PRIMARY_CTA.href}
             size="sm"
-            className="border-white/85 px-[1em] py-[0.4em] text-[0.95em]"
+            aria-label={PRIMARY_CTA.label}
+            className="group relative isolate border-white/85 px-[1em] py-[0.4em] text-[0.95em] hover:bg-brand-pink"
           >
-            {PRIMARY_CTA.label}
+            {/* Cores do hover, animadas por animations/headerCta.ts: duas ondas (amarela e rosa)
+                e o laranja que fica. Sem o GSAP as ondas não aparecem e o laranja é só um fade. */}
+            <span
+              data-cta-ripple
+              aria-hidden
+              className="absolute inset-0 -z-10 rounded-full bg-brand-yellow [clip-path:circle(0)]"
+            />
+            <span
+              data-cta-ripple
+              aria-hidden
+              className="absolute inset-0 -z-10 rounded-full bg-brand-pink-light [clip-path:circle(0)]"
+            />
+            <span
+              data-cta-fill
+              aria-hidden
+              className="absolute inset-0 -z-10 rounded-full bg-brand-orange opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            />
+            {/* Letra por letra para a onda do hover; o nome do botão vem do aria-label */}
+            <span aria-hidden>
+              {Array.from(PRIMARY_CTA.label, (letter, index) => (
+                <span key={index} data-cta-letter className="inline-block whitespace-pre">
+                  {letter}
+                </span>
+              ))}
+            </span>
             <ArrowRight aria-hidden className="size-4" />
           </Button>
         </div>
