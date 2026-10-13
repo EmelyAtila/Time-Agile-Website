@@ -82,7 +82,12 @@ Uma barra laranja só, que anda pelo menu conforme a seção em que a página es
 - Redimensionar a janela muda a barra de lugar sem ela ter passado por nenhum link, então não conta (`relayout`).
 - Com "reduzir movimento" não há pulo.
 
-Para isso o Header passou a ser **fixo**. No topo ele fica solto sobre o Hero, na posição do mockup; depois de `SCROLLED_AFTER` (24px) de rolagem vira uma faixa creme translúcida, para o menu continuar legível sobre as outras seções.
+Para isso o Header acompanha a página inteira. No topo ele fica solto sobre o Hero, na posição do mockup; rolando, sobe junto com a página até encostar no topo da janela e ganha uma faixa creme translúcida, para o menu continuar legível sobre as outras seções.
+
+- **Encaixe:** é `position: sticky`, sem JavaScript. O `padding-top` do header guarda a folga do mockup (`--header-offset`, até 30px, só a partir de `lg`) e o `top` negativo deixa essa folga rolar para fora antes de grudar. Assim o header anda colado na página, na ida e na volta, em qualquer aparelho. A margem inferior negativa faz o conteúdo começar por baixo dele.
+- **Faixa de fundo:** a opacidade vem de `--header-solid` (0 no topo, 1 depois de `SOLID_AFTER`, 96px), escrita por `animations/useHeaderDock.ts` no ritmo do scroll. O desfoque fica no mesmo elemento e aparece junto.
+- **Sem animação por tempo.** A versão anterior trocava de estado aos 24px com uma transição de 300ms: na volta ao topo o header descia 30px sozinho enquanto a página ainda rolava, e o desfoque sumia de uma vez. Não volte a usar `transition` nesse encaixe.
+- O `sticky` depende de nenhum ancestral do header ter `overflow` diferente de `visible`. Se o menu parar de acompanhar a página, procure um `overflow-hidden` novo em `body` ou num wrapper.
 
 A posição da barra (`x`, `scaleX`) é do scroll-spy; a entrada do Hero só anima `scaleY` e opacidade dela. Não inclua a barra no `clearProps` do fim da timeline.
 
