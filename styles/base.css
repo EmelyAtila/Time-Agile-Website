@@ -34,6 +34,26 @@ section[id] {
   top: 1rem;
 }
 
+/*
+ * Entrada do Hero (animations/useHeroIntro.ts): o HTML do servidor já vem no estado
+ * final, então os elementos [data-intro] ficam escondidos até o GSAP assumir — sem isso
+ * eles piscariam prontos antes de animar. Só vale com JS ligado e sem "reduzir
+ * movimento"; o hook marca <html data-intro-ready> ao assumir.
+ * Se o JS não chegar em 4s, o failsafe mostra tudo.
+ */
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  html:not([data-intro-ready]) [data-intro] {
+    visibility: hidden;
+    animation: intro-failsafe 0s linear 4s forwards;
+  }
+}
+
+@keyframes intro-failsafe {
+  to {
+    visibility: visible;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
