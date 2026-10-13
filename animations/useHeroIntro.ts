@@ -191,7 +191,9 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
 
       const run = (variant: Variant) => (context: gsap.Context) => {
         // Pelo contexto do matchMedia: trocar de variante desfaz os loops da anterior
-        const startLoops = () => context.add(() => startHeroLoops(section, variant))
+        const startLoops = () => {
+          context.add(() => startHeroLoops(section, variant))
+        }
 
         // Cruzar o breakpoint depois da entrada não repete a animação, só religa os loops
         if (played) return startLoops()
