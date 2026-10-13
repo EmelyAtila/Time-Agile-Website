@@ -4,22 +4,22 @@ import { gsap } from './gsap.config'
 const CTA_EVERY = 4.5
 
 /** Tamanho do botão com o mouse em cima (1 = não cresce) */
-const CTA_HOVERED = 1.06
+const CTA_HOVERED = 1.04
 
 /** Quanto o botão afunda enquanto está pressionado (1 = não afunda) */
 const CTA_PRESSED = 0.92
 
 /** Inclinação (graus) do tranco que o botão dá quando o mouse entra */
-const CTA_KICK = 4
+const CTA_KICK = 1.5
 
-/** Cores do confete que estoura em volta do botão quando o mouse entra */
+/** Cores do confete que salta em volta do botão quando o mouse entra */
 const CONFETTI_COLORS = ['pink', 'yellow', 'orange', 'pink-light'] as const
 
-/** Pedaços de confete por estouro (0 desliga o confete) */
-const CONFETTI_PIECES = 14
+/** Pedaços de confete por entrada: poucos, é uma faísca e não uma festa (0 desliga) */
+const CONFETTI_PIECES = 6
 
 /** Intervalo mínimo (s) entre dois estouros: entrar e sair rápido não vira chuva de confete */
-const CONFETTI_COOLDOWN = 1
+const CONFETTI_COOLDOWN = 1.5
 
 /** Ponto do contorno do botão (uma pílula) e a direção para fora dele, para `t` de 0 a 1 */
 function onOutline(box: DOMRect, t: number) {
@@ -52,7 +52,7 @@ function onOutline(box: DOMRect, t: number) {
  * - parado, dá um pulinho de gelatina de tempos em tempos;
  * - quando o mouse entra, dá um tranco e cresce com elástico, as letras pulam em onda a partir
  *   do ponteiro, três cores se espalham em círculo do ponto de entrada (amarelo, rosa e por
- *   fim o laranja), estoura confete em volta e a seta fica apontando enquanto o mouse está lá;
+ *   fim o laranja), salta um pouco de confete e a seta fica apontando enquanto o mouse está lá;
  * - no clique afunda, volta com elástico e a seta dispara para fora e reentra pelo outro lado.
  * `cta` é o wrapper do botão: o Button tem transition-all e brigaria com o GSAP.
  * Devolve a limpeza. Crie dentro de um contexto do GSAP, que desfaz o loop no revert.
@@ -108,8 +108,8 @@ export function animateHeaderCta(cta: HTMLElement) {
     body = gsap
       .timeline()
       .to(cta, {
-        scaleX: 1.13,
-        scaleY: 0.88,
+        scaleX: 1.06,
+        scaleY: 0.95,
         rotation: CTA_KICK * side,
         duration: 0.13,
         ease: 'power2.out',
@@ -118,8 +118,8 @@ export function animateHeaderCta(cta: HTMLElement) {
         scaleX: CTA_HOVERED,
         scaleY: CTA_HOVERED,
         rotation: 0,
-        duration: 0.9,
-        ease: 'elastic.out(1.4, 0.3)',
+        duration: 0.7,
+        ease: 'elastic.out(1.1, 0.4)',
       })
   }
 
@@ -132,8 +132,8 @@ export function animateHeaderCta(cta: HTMLElement) {
     arrowMove = hovered
       ? gsap.fromTo(
           arrow,
-          { x: 2 },
-          { x: 9, autoAlpha: 1, duration: 0.36, ease: 'sine.inOut', yoyo: true, repeat: -1 }
+          { x: 3 },
+          { x: 7, autoAlpha: 1, duration: 0.6, ease: 'sine.inOut', yoyo: true, repeat: -1 }
         )
       : gsap.to(arrow, { x: 0, autoAlpha: 1, duration: 0.6, ease: 'elastic.out(1, 0.4)' })
   }
@@ -160,12 +160,12 @@ export function animateHeaderCta(cta: HTMLElement) {
       const box = letter.getBoundingClientRect()
       return Math.abs(box.left + box.width / 2 - clientX)
     })
-    const stagger = { each: 0.022, from: distances.indexOf(Math.min(...distances)) }
+    const stagger = { each: 0.02, from: distances.indexOf(Math.min(...distances)) }
     wave = gsap
       .timeline()
       .to(letters, {
-        yPercent: -38,
-        rotation: (index: number) => (index % 2 ? 9 : -9),
+        yPercent: -22,
+        rotation: (index: number) => (index % 2 ? 4 : -4),
         duration: 0.16,
         ease: 'power2.out',
         stagger,
@@ -175,8 +175,8 @@ export function animateHeaderCta(cta: HTMLElement) {
         {
           yPercent: 0,
           rotation: 0,
-          duration: 0.5,
-          ease: 'bounce.out',
+          duration: 0.4,
+          ease: 'back.out(2)',
           stagger,
           clearProps: 'transform',
         },
@@ -194,10 +194,10 @@ export function animateHeaderCta(cta: HTMLElement) {
     for (let index = 0; index < CONFETTI_PIECES; index++) {
       const start = onOutline(box, (index + gsap.utils.random(0, 0.6)) / CONFETTI_PIECES)
       const angle = start.angle + gsap.utils.random(-0.5, 0.5)
-      const distance = gsap.utils.random(26, 62)
-      const duration = gsap.utils.random(0.65, 0.95)
+      const distance = gsap.utils.random(14, 30)
+      const duration = gsap.utils.random(0.5, 0.7)
       // Metade bolinhas, metade fitinhas
-      const [width, height] = index % 2 ? [8, 8] : [5, 14]
+      const [width, height] = index % 2 ? [6, 6] : [4, 10]
       const color = CONFETTI_COLORS[index % CONFETTI_COLORS.length]
 
       const piece = document.createElement('span')
@@ -237,7 +237,7 @@ export function animateHeaderCta(cta: HTMLElement) {
         )
         .to(
           piece,
-          { y: `+=${gsap.utils.random(14, 30)}`, duration: duration * 0.45, ease: 'power1.in' },
+          { y: `+=${gsap.utils.random(6, 14)}`, duration: duration * 0.45, ease: 'power1.in' },
           duration * 0.55
         )
         .to(piece, { scale: 0, duration: 0.25, ease: 'power1.in' }, duration - 0.25)
@@ -257,7 +257,7 @@ export function animateHeaderCta(cta: HTMLElement) {
       duration: 0.5,
       ease: 'power2.out',
       // Cada cor sai um pouco depois da anterior: é o que deixa as faixas visíveis à frente do laranja
-      stagger: 0.08,
+      stagger: 0.05,
     }
     // Se as cores ainda estavam se recolhendo, continuam de onde estão em vez de recomeçar do zero
     const receding = flood?.isActive()
