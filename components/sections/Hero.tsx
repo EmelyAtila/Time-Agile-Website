@@ -1,46 +1,56 @@
-import { Instagram } from 'lucide-react'
 import { site } from '@/content/site'
-import { Container, SectionHeading } from '@/components/ui'
 import { Logo } from '@/components/layout/Logo'
+import { InstagramIcon } from '@/components/decor/InstagramIcon'
 import { WhatsAppIcon } from '@/components/decor/WhatsAppIcon'
+import { HeroIntro } from './hero/HeroIntro'
+import { HeroRibbons } from './hero/HeroRibbons'
+
+const TITLE = 'Sua Marca Merece Ser Lembrada'
+
+const SOCIAL_LINKS = [
+  { label: 'Instagram', href: site.social.instagram, Icon: InstagramIcon },
+  { label: 'WhatsApp', href: site.contact.whatsappUrl, Icon: WhatsAppIcon },
+]
 
 export function Hero() {
   return (
-    <section id="inicio" aria-labelledby="hero-title" className="relative overflow-hidden">
-      {/* Fitas decorativas: usar <Ribbon /> com os paths do mockup */}
-      <Container className="relative flex min-h-screen flex-col justify-end pb-16 pt-header">
-        {/* No mockup o título acompanha a fita laranja (SVG <textPath>) */}
-        <SectionHeading id="hero-title" as="h1">
-          Sua Marca Merece Ser Lembrada!
-        </SectionHeading>
+    <HeroIntro
+      id="inicio"
+      aria-labelledby="hero-title"
+      // Altura amarrada à largura nos extremos: no desktop mantém a proporção dentro do
+      // que as curvas conseguem acompanhar (stretch em heroPaths.ts)
+      className="relative isolate min-h-[max(100svh,135vw)] overflow-hidden lg:min-h-[max(min(100svh,75vw),38vw)]"
+    >
+      {/* O título visível é desenhado sobre a fita (SVG decorativo); este vale para leitor de tela e SEO */}
+      <h1 id="hero-title" className="sr-only">
+        {TITLE}!
+      </h1>
 
-        <div className="flex items-end justify-between">
-          <Logo className="text-7xl" />
+      <HeroRibbons title={`${TITLE} !`} />
 
-          <ul className="flex gap-3" aria-label="Redes sociais">
-            <li>
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 px-[var(--hero-padding-x)] pb-[clamp(2.5rem,6vw,5.5rem)]">
+        <Logo data-intro="logo" className="h-auto w-[clamp(11.5rem,28.3vw,26.25rem)]" />
+
+        <ul
+          data-intro="social"
+          aria-label="Redes sociais"
+          className="flex shrink-0 items-center gap-5 rounded-full border-2 border-white/70 bg-brand-pink px-[22px] py-3.5 text-white"
+        >
+          {SOCIAL_LINKS.map(({ label, href, Icon }) => (
+            <li key={label}>
               <a
-                href={site.social.instagram}
+                href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Instagram"
+                aria-label={label}
+                className="-m-1.5 block rounded-full p-1.5 transition-transform duration-300 ease-brand hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
               >
-                <Instagram aria-hidden />
+                <Icon className="size-[30px]" />
               </a>
             </li>
-            <li>
-              <a
-                href={site.contact.whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-              >
-                <WhatsAppIcon className="size-6" />
-              </a>
-            </li>
-          </ul>
-        </div>
-      </Container>
-    </section>
+          ))}
+        </ul>
+      </div>
+    </HeroIntro>
   )
 }
