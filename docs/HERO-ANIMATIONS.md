@@ -7,6 +7,7 @@ Como a entrada do Hero funciona, onde ajustar e o que ficou para depois.
 | Arquivo | Papel |
 | --- | --- |
 | `animations/useHeroIntro.ts` | A timeline do GSAP. Tempos, eases e ordem ficam todos aqui. |
+| `animations/heroLoops.ts` | Loops que começam quando a entrada termina: o "!" do título e o botão do header. |
 | `components/sections/hero/heroPaths.ts` | Curvas das fitas, tamanho e posição do título (desktop e mobile). |
 | `components/sections/hero/HeroRibbons.tsx` | SVG inline das fitas com o título em `<textPath>`. |
 | `components/sections/hero/HeroIntro.tsx` | `<section>` client que liga os dois hooks. O resto do Hero é server. |
@@ -51,6 +52,17 @@ Para mexer:
 - **Proporção da tela (desktop):** o mockup é 1480×871, mas uma janela de navegador costuma ser bem mais larga (perto de 2:1). Em vez de ampliar o desenho e cortar em cima e embaixo, `useFluidArt` estica só a coordenada x das curvas até a proporção da seção. Assim os laços da fita amarela (topo) e da rosa-claro (base) aparecem inteiros em qualquer largura. Espessura das fitas e tamanho do título crescem por igual (√ do fator), então nada deforma. O intervalo aceito é o `stretch` de `HERO_ART_DESKTOP` (0.78 a 1.55, de 4:3 até ~2.6:1), e a altura mínima do Hero em `Hero.tsx` segura a seção dentro desse intervalo. Sem JS vale o recorte antigo (`preserveAspectRatio`).
 
 Para marcar algo novo para a entrada: `data-intro="nome"` no elemento e um tween no hook. Não aninhe `data-intro`, e não anime direto um elemento que tenha `transition-*` do Tailwind (use um wrapper, como o do CTA no Header).
+
+## Loops
+
+Começam quando a entrada termina (`onComplete` da timeline) e ficam em `animations/heroLoops.ts`.
+
+- **"!" do título:** balança apoiado na base, três idas e voltas que vão diminuindo, e descansa `MARK_EVERY` (2.6s) até o próximo. Só roda com o Hero na tela; rolou para fora, pausa.
+- **Botão do header:** a cada `CTA_EVERY` (4.5s) dá um pulinho de gelatina (achata e volta com elástico) enquanto a seta dá um bote para a frente. Roda na página inteira, porque o header acompanha a rolagem.
+- O "!" é um `<tspan data-hero-mark>` dentro do título (prop `mark` de `HeroRibbons`). Quem balança é o atributo `rotate` do `<tspan>`, que gira o glifo: `transform` de CSS não funciona em `<tspan>`.
+- No botão quem anima é o wrapper `data-intro="cta"` e o ícone da seta, nunca o `Button`, que tem `transition-all`.
+- Com "reduzir movimento" não há loop. Trocar de arte (cruzar `lg`) desfaz os loops de uma e religa na outra.
+- Cada balanço do "!" redesenha o título inteiro com a sombra, por cerca de 1,2s. Se pesar em celular fraco, aumente `MARK_EVERY` antes de mexer na sombra.
 
 ## Barra da navegação
 
@@ -112,7 +124,8 @@ Nada aqui foi descartado; ficou fora do escopo da entrada.
 
 ### Efeitos contínuos
 
-- [ ] **Loops sutis:** ponto da logo quicando de vez em quando, pill das redes flutuando, "!" do título balançando.
+- [x] **Loops sutis, primeira parte:** "!" do título balançando e botão do header com pulinho (ver "Loops").
+- [ ] **Loops sutis, o que falta:** ponto da logo quicando de vez em quando e pill das redes flutuando. Entram em `animations/heroLoops.ts`.
 - [ ] **Parallax com o mouse:** fitas em camadas seguindo o cursor (`gsap.quickTo`), só desktop.
 - [ ] **Saída no scroll:** fitas se recolhendo ou em parallax ao rolar para "Sobre" (`ScrollTrigger` com scrub, já integrado ao Lenis).
 
