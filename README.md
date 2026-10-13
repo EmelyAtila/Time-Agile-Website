@@ -39,7 +39,7 @@ components/
   decor/             Ribbon (fitas), Smiley, InstagramIcon, WhatsAppIcon — elementos puramente visuais
   providers/         SmoothScrollProvider (Lenis + GSAP)
 content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
-animations/          gsap.config.ts, useScrollReveal, useHeroIntro, useNavScrollSpy (barra do menu)
+animations/          gsap.config.ts, useScrollReveal, useHeroIntro, useNavScrollSpy (barra do menu), useHeaderDock (fundo do header)
 hooks/               useMediaQuery, useScrollPosition, useSmoothScroll
 lib/                 metadata, validations (zod), escape-html, utils (cn)
 styles/              tokens.css (fonte da verdade do design), base.css
