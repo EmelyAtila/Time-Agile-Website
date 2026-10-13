@@ -3,6 +3,7 @@
 import type { RefObject } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from './gsap.config'
+import { startHeroLoops } from './heroLoops'
 
 type Variant = 'desktop' | 'mobile'
 
@@ -175,6 +176,7 @@ function buildIntro(section: HTMLElement, variant: Variant) {
 /**
  * Animação de entrada do Hero: as fitas se desenrolam, o título vem atrás pela laranja
  * e depois entram logo, navegação e redes. Toca uma vez por carregamento da página.
+ * Quando termina, liga os loops de animations/heroLoops.ts.
  * Uso: const ref = useRef(null); useHeroIntro(ref); <section ref={ref}>…</section>
  * Mapa dos tempos e ideias adiadas: docs/HERO-ANIMATIONS.md
  */
@@ -187,14 +189,19 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
       let played = false
       const mm = gsap.matchMedia()
 
-      const run = (variant: Variant) => () => {
-        // Cruzar o breakpoint depois da entrada não repete a animação
-        if (played) return
+      const run = (variant: Variant) => (context: gsap.Context) => {
+        // Pelo contexto do matchMedia: trocar de variante desfaz os loops da anterior
+        const startLoops = () => context.add(() => startHeroLoops(section, variant))
+
+        // Cruzar o breakpoint depois da entrada não repete a animação, só religa os loops
+        if (played) return startLoops()
         played = true
 
         const tl = buildIntro(section, variant)
         document.documentElement.setAttribute(READY_ATTR, '')
         if (!tl) return
+
+        tl.eventCallback('onComplete', startLoops)
 
         // Espera a Satoshi para o título não mudar de largura no meio do caminho
         let cancelled = false
