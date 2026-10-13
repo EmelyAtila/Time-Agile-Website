@@ -11,7 +11,7 @@ export function Footer() {
     <footer className="bg-brand-wine text-white">
       <Container className="grid gap-12 py-16 md:grid-cols-[2fr_1fr_1fr]">
         <div>
-          <Logo className="text-4xl" />
+          <Logo className="h-auto w-44" />
           <p>{site.footerDescription}</p>
           <ul className="flex gap-3" aria-label="Redes sociais">
             <li>
