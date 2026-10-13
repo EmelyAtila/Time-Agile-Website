@@ -68,12 +68,12 @@ Começam quando a entrada termina (`onComplete` da timeline), em `animations/her
 Tudo em `animations/headerCta.ts`, ligado junto com os loops.
 
 - **Parado:** a cada `CTA_EVERY` (4.5s) dá um pulinho de gelatina (achata e volta com elástico) enquanto a seta dá um bote para a frente. Roda na página inteira, porque o header acompanha a rolagem.
-- **Mouse entra:** acontece tudo de uma vez, em cerca de 1s.
-  - O botão dá um tranco (achata e inclina `CTA_KICK`, 4°, para o lado de onde o mouse veio) e assenta maior (`CTA_HOVERED`, 1.06).
+- **Mouse entra:** acontece tudo de uma vez, em menos de 1s. Os valores são contidos de propósito, para o botão acompanhar o resto do site sem roubar a cena; todos são constantes no topo do arquivo.
+  - O botão dá um tranco leve (achata e inclina `CTA_KICK`, 1.5°, para o lado de onde o mouse veio) e assenta maior (`CTA_HOVERED`, 1.04).
   - Três cores se espalham em círculo a partir do ponto de entrada: amarelo, rosa-claro e por fim o laranja, que fica.
-  - As letras pulam em onda, começando pela mais próxima do ponteiro.
-  - Estoura confete nas cores da marca em volta do botão (`CONFETTI_PIECES`, 14; 0 desliga). `CONFETTI_COOLDOWN` (1s) impede chuva de confete ao entrar e sair rápido.
-  - A seta fica indo e voltando, apontando, enquanto o mouse estiver em cima.
+  - As letras sobem em onda (uns 6px), começando pela mais próxima do ponteiro.
+  - Saltam alguns pedacinhos de confete nas cores da marca (`CONFETTI_PIECES`, 6; 0 desliga). `CONFETTI_COOLDOWN` (1.5s) impede chuva de confete ao entrar e sair rápido.
+  - A seta fica indo e voltando devagar, apontando, enquanto o mouse estiver em cima.
 - **Mouse sai:** as cores se recolhem para o ponto de saída (o laranja primeiro) e botão e seta voltam ao lugar com elástico.
 - **Clique:** ao pressionar ele afunda (`CTA_PRESSED`, 0.92); ao soltar volta com elástico, e a seta dispara para a direita, some e reentra pela esquerda. Pressionar e arrastar para fora só desfaz o afundado. Pelo teclado (Enter) acontece o mesmo, sem a fase de segurar.
 - Com o mouse em cima ou durante o clique o pulinho pausa, e só volta depois de um descanso inteiro.
