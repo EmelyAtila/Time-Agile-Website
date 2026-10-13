@@ -22,9 +22,6 @@ const HOP_HEIGHT = 30
 /** Atraso (s) entre uma letra e a seguinte no pulo: é o que faz a onda */
 const HOP_STAGGER = 0.03
 
-/** Rolagem (px) a partir da qual o header ganha fundo */
-const SCROLLED_AFTER = 24
-
 /**
  * Barra da navegação que acompanha a rolagem: fica sob o item da seção atual e, quando a
  * próxima seção se aproxima, desliza até o item dela no mesmo ritmo do scroll.
@@ -37,7 +34,6 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
   const navRef = useRef<HTMLElement>(null)
   const indicatorRef = useRef<HTMLSpanElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [isScrolled, setIsScrolled] = useState(false)
 
   useGSAP(
     () => {
@@ -214,7 +210,6 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
         scroll.scaleX = 1 + STRETCH * Math.sin(Math.PI * progress)
         render()
         setActiveIndex(Math.min(Math.round(position), last))
-        setIsScrolled(window.scrollY > SCROLLED_AFTER)
       }
 
       // Só aparece depois de posicionada: sem JS ela não teria como achar o item
@@ -259,5 +254,5 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
     { dependencies: [hrefs] }
   )
 
-  return { navRef, indicatorRef, activeIndex, isScrolled }
+  return { navRef, indicatorRef, activeIndex }
 }
