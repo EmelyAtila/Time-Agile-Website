@@ -37,6 +37,8 @@
   --container-padding-x: 24px;
   --section-padding-y: 96px;
   --header-height: 80px;
+  /* Margem lateral do Header e do Hero: 72px nos 1480px do mockup */
+  --hero-padding-x: clamp(1.5rem, 4.86vw, 4.5rem);
 
   /* Raios */
   --radius-sm: 8px;
