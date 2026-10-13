@@ -4,9 +4,16 @@ import { HERO_ART_DESKTOP, HERO_ART_MOBILE, type HeroArt } from './heroPaths'
 type HeroRibbonsProps = {
   /** Texto que corre sobre a fita laranja (o <h1> acessível fica no Hero) */
   title: string
+  /** Pontuação final do título: fica num <tspan> próprio para balançar sozinha (heroLoops.ts) */
+  mark: string
 }
 
-function Art({ art, title, className }: { art: HeroArt; title: string; className?: string }) {
+function Art({
+  art,
+  title,
+  mark,
+  className,
+}: HeroRibbonsProps & { art: HeroArt; className?: string }) {
   const guideId = `hero-title-guide-${art.id}`
 
   return (
@@ -48,7 +55,10 @@ function Art({ art, title, className }: { art: HeroArt; title: string; className
         }}
       >
         <textPath data-hero-title href={`#${guideId}`} startOffset={art.title.startOffset}>
-          {title}
+          {`${title} `}
+          <tspan data-hero-mark rotate={0}>
+            {mark}
+          </tspan>
         </textPath>
       </text>
     </svg>
@@ -59,11 +69,11 @@ function Art({ art, title, className }: { art: HeroArt; title: string; className
  * Fitas do Hero com o título sobre a laranja. As duas variantes vão para o HTML e o
  * CSS mostra uma só; o corte (lg) é o mesmo usado em animations/useHeroIntro.ts.
  */
-export function HeroRibbons({ title }: HeroRibbonsProps) {
+export function HeroRibbons(props: HeroRibbonsProps) {
   return (
     <>
-      <Art art={HERO_ART_MOBILE} title={title} className="lg:hidden" />
-      <Art art={HERO_ART_DESKTOP} title={title} className="hidden lg:block" />
+      <Art art={HERO_ART_MOBILE} {...props} className="lg:hidden" />
+      <Art art={HERO_ART_DESKTOP} {...props} className="hidden lg:block" />
     </>
   )
 }

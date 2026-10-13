@@ -26,9 +26,9 @@ export function Hero() {
         {TITLE}!
       </h1>
 
-      <HeroRibbons title={`${TITLE} !`} />
+      <HeroRibbons title={TITLE} mark="!" />
 
-      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 px-[var(--hero-padding-x)] pb-[clamp(2.5rem,6vw,5.5rem)]">
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 px-[var(--hero-padding-x)] pb-[clamp(1.75rem,4vw,3.75rem)]">
         <Logo data-intro="logo" className="h-auto w-[clamp(11.5rem,28.3vw,26.25rem)]" />
 
         <ul
