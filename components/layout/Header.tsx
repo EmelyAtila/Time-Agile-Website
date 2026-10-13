@@ -33,10 +33,18 @@ export function Header() {
               <li key={link.href} data-intro="nav-item" data-nav-item>
                 <a
                   href={link.href}
+                  aria-label={link.label}
                   aria-current={link.href === activeHref ? 'location' : undefined}
                   className="block py-2 transition-colors duration-300 hover:text-brand-pink"
                 >
-                  {link.label}
+                  {/* Letra por letra para o pulo de useNavScrollSpy; o nome do link vem do aria-label */}
+                  <span aria-hidden>
+                    {Array.from(link.label, (letter, index) => (
+                      <span key={index} data-nav-letter className="inline-block whitespace-pre">
+                        {letter}
+                      </span>
+                    ))}
+                  </span>
                 </a>
               </li>
             ))}
