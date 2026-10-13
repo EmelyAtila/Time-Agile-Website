@@ -73,6 +73,15 @@ Uma barra laranja só, que anda pelo menu conforme a seção em que a página es
 - Toque não tem hover: no tablet a barra só segue a rolagem.
 - O teclado não move a barra: quem navega por Tab tem o anel de foco, e a barra continua indicando a seção em que a página está.
 
+### Pulo dos links
+
+- Quando a barra entra por baixo de um link, as letras dele pulam em onda, no sentido em que a barra vem. Vale para a rolagem e para o mouse: indo de "Início" a "Contato" com o mouse, os links do caminho pulam um atrás do outro.
+- Só a entrada conta. A barra sair de baixo de um link, ou o mouse entrar no link em que a barra já está, não dispara nada.
+- `HOP_HEIGHT` (30): altura do pulo, em % da altura da linha (uns 9px no desktop). `HOP_STAGGER` (0.03): atraso entre uma letra e a seguinte. Subida, queda (`bounce.out`) e inclinação das letras ficam na função `hop`.
+- Para as letras pularem separadas, cada uma é um `<span data-nav-letter>` em `Header.tsx`. O nome que o leitor de tela lê vem do `aria-label` do link; as letras são `aria-hidden`.
+- Redimensionar a janela muda a barra de lugar sem ela ter passado por nenhum link, então não conta (`relayout`).
+- Com "reduzir movimento" não há pulo.
+
 Para isso o Header passou a ser **fixo**. No topo ele fica solto sobre o Hero, na posição do mockup; depois de `SCROLLED_AFTER` (24px) de rolagem vira uma faixa creme translúcida, para o menu continuar legível sobre as outras seções.
 
 A posição da barra (`x`, `scaleX`) é do scroll-spy; a entrada do Hero só anima `scaleY` e opacidade dela. Não inclua a barra no `clearProps` do fim da timeline.
