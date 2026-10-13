@@ -64,6 +64,15 @@ Uma barra laranja só, que anda pelo menu conforme a seção em que a página es
 - Com "reduzir movimento" a barra troca de item de uma vez. Sem JS ela não aparece.
 - Seções fora do menu (Depoimentos, a faixa de tags) não têm item: a barra continua no item anterior enquanto a página passa por elas.
 
+### Com o mouse
+
+- Passando o mouse pelo menu, a barra desliza até o item apontado, esticando no caminho como na rolagem, e volta para a seção atual quando o mouse sai do menu. No vão entre dois itens ela espera no último.
+- `POINTER_SLIDE` (0.45): duração desse deslize. O pequeno excesso na chegada vem do ease `back.out(1.2)` em `pointAt`.
+- Rolar com a roda devolve a barra à rolagem, mesmo com o mouse parado sobre um item. O hover volta a valer quando o mouse entra em outro item.
+- Clicar num item prende a barra nele até a página chegar à seção (`pinned`). Sem isso, no topo da página, o header sobe ao rolar, o item sai de baixo do mouse e a barra voltaria até a seção atual para depois refazer o caminho.
+- Toque não tem hover: no tablet a barra só segue a rolagem.
+- O teclado não move a barra: quem navega por Tab tem o anel de foco, e a barra continua indicando a seção em que a página está.
+
 Para isso o Header passou a ser **fixo**. No topo ele fica solto sobre o Hero, na posição do mockup; depois de `SCROLLED_AFTER` (24px) de rolagem vira uma faixa creme translúcida, para o menu continuar legível sobre as outras seções.
 
 A posição da barra (`x`, `scaleX`) é do scroll-spy; a entrada do Hero só anima `scaleY` e opacidade dela. Não inclua a barra no `clearProps` do fim da timeline.
