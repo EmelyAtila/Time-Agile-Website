@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { ArrowRight, Menu, X } from 'lucide-react'
 import { NAV_LINKS, PRIMARY_CTA } from '@/content/nav'
 import { Button } from '@/components/ui'
-import { cn } from '@/lib/utils'
+import { useHeaderDock } from '@/animations/useHeaderDock'
 import { useNavScrollSpy } from '@/animations/useNavScrollSpy'
 
 const NAV_HREFS = NAV_LINKS.map((link) => link.href)
@@ -12,19 +12,26 @@ const NAV_HREFS = NAV_LINKS.map((link) => link.href)
 // Os `data-intro` são animados pela entrada do Hero (animations/useHeroIntro.ts)
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
-  const { navRef, indicatorRef, activeIndex, isScrolled } = useNavScrollSpy(NAV_HREFS)
+  const headerRef = useHeaderDock()
+  const { navRef, indicatorRef, activeIndex } = useNavScrollSpy(NAV_HREFS)
   const activeHref = NAV_HREFS[activeIndex]
 
   return (
+    // No topo fica solto sobre o Hero, na posição do mockup (--header-offset abaixo do topo), e
+    // sobe junto com a página até encostar no topo da janela. Quem encaixa é o navegador: o
+    // padding-top guarda a folga e o `top` negativo deixa essa folga rolar para fora antes de
+    // grudar. A margem negativa faz o conteúdo começar por baixo do header.
     <header
-      className={cn(
-        'fixed inset-x-0 top-0 z-50 h-header transition-[top,background-color,box-shadow] duration-300',
-        // No topo fica solto sobre o Hero, na posição do mockup; rolou, vira uma faixa legível
-        isScrolled
-          ? 'bg-[color-mix(in_srgb,var(--color-cream)_88%,transparent)] shadow-card backdrop-blur-md'
-          : 'lg:top-[clamp(0px,2vw,1.875rem)]'
-      )}
+      ref={headerRef}
+      className="sticky top-[calc(var(--header-offset)*-1)] z-50 -mb-[calc(var(--header-height)+var(--header-offset))] box-content h-header pt-[var(--header-offset)] [--header-offset:0px] lg:[--header-offset:clamp(0px,2vw,1.875rem)]"
     >
+      {/* Fundo que aparece no ritmo do scroll (--header-solid, de useHeaderDock), para o menu
+          continuar legível sobre as outras seções */}
+      <div
+        aria-hidden
+        data-header-band
+        className="absolute inset-x-0 bottom-0 -z-10 h-header bg-[color-mix(in_srgb,var(--color-cream)_88%,transparent)] opacity-[var(--header-solid,0)] shadow-card backdrop-blur-md"
+      />
       {/* Medidas fluidas: nos 1480px do mockup dão 20px de fonte e 32px entre os links */}
       <div className="flex h-full items-center justify-end gap-[clamp(1.25rem,2.7vw,2.5rem)] px-[var(--hero-padding-x)] text-[clamp(1rem,1.35vw,1.25rem)]">
         <nav ref={navRef} aria-label="Principal" className="relative hidden md:block">
