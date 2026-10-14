@@ -37,5 +37,4 @@ export interface Testimonial {
   author: string
   quote: string
   color: BrandColor
-  photo: ImageAsset
 }
