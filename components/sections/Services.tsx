@@ -5,11 +5,11 @@ import { ServiceCard } from './services/ServiceCard'
 import { ServiceFan } from './services/ServiceFan'
 import { SERVICE_CARDS, STAGE } from './services/serviceCards'
 
-// `--fan` é a maior largura de leque que cabe na janela: 2.0313 = 1480 / 728.6, a proporção da seção no mockup
+// `--fan` é a largura do leque: --stage-width (styles/tokens.css) o faz caber na altura da janela
 export function Services() {
   return (
     <section id="servicos" aria-labelledby="services-title">
-      <div className="mx-auto max-w-[92.5rem] pb-16 pt-12 md:pt-14 lg:pt-[calc(var(--fan)*0.05)] lg:[--fan:clamp(62rem,min(100vw_-_2rem,(100svh_-_var(--header-height)_-_1.5rem)_*_2.0313),92.5rem)]">
+      <div className="mx-auto max-w-[92.5rem] pb-16 pt-12 md:pt-14 lg:pt-[calc(var(--fan)*0.05)] lg:[--fan:var(--stage-width)]">
         {/* lg:pl acompanha o leque, que fica um pouco à direita do centro */}
         <header className="px-6 text-center lg:pl-[calc(1.5rem+var(--fan)*0.0224)]">
           <SectionHeading
@@ -23,7 +23,7 @@ export function Services() {
           </p>
         </header>
 
-                <ServiceFan
+        <ServiceFan
           className="relative mt-8 flex flex-col items-center gap-4 md:grid md:grid-cols-[repeat(2,18.5rem)] md:justify-center md:gap-x-3 md:gap-y-6 lg:mx-auto lg:mt-[calc(var(--fan)*0.025)] lg:block lg:aspect-[var(--stage)] lg:w-[var(--fan)]"
           style={{ '--stage': `${STAGE.width} / ${STAGE.height}` } as CSSProperties}
         >
