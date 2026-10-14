@@ -28,7 +28,9 @@ export function useSmoothScroll() {
       const target = document.querySelector(href)
       if (!target) return
       e.preventDefault()
-      lenis.scrollTo(target as HTMLElement, { offset: -80 })
+      // Sem `offset`: o Lenis já desconta o scroll-margin-top da seção (styles/base.css),
+      // que é a altura do header. Somar outro desconto aqui para a seção 80px abaixo dele
+      lenis.scrollTo(target as HTMLElement)
     }
 
     document.addEventListener('click', handleAnchorClick)
