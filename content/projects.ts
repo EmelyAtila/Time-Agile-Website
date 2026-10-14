@@ -7,10 +7,10 @@ export const projectsIntro = {
     'Conheça alguns dos projetos desenvolvidos pela Time Agile, onde estratégia, criatividade e identidade visual se unem para criar experiências que fortalecem marcas e aproximam empresas do seu público.',
   ],
   image: {
-    src: '/images/projects/iranides-portrait.png',
+    src: '/images/projects/sticker-iranides.webp',
     alt: 'Iranides Souza, sócia da Time Agile, sorrindo',
-    width: 1679,
-    height: 937,
+    width: 894,
+    height: 1078,
   } satisfies ImageAsset,
 }
 
