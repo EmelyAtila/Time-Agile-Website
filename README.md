@@ -37,7 +37,7 @@ components/
     about/           AboutTeam (adesivos da equipe sobre os blobs)
     services/        ServiceCard, serviceCards (posições, inclinações e movimento de hover de cada card), ServiceFan (wrapper client)
     tags/            TagLoop (wrapper client do loop da faixa de tags), TagRibbon (fita laranja por trás das tags)
-    projects/        ProjectsPortrait (Iranides sobre os blobs), ProjectsArrow (seta na borda da faixa rosa)
+    projects/        ProjectsPortrait (Iranides sobre os blobs), ProjectsArrow (seta na borda da faixa rosa), ProjectShowcase + showcaseLayout (faixa rosa com os projetos e as fotos), ProjectsRibbon (fita rosa que se desenha com a rolagem)
   forms/             ContactForm
   ui/                Button, Container, SectionHeading, Carousel  (barrel em index.ts)
   decor/             Ribbon (fitas), Smiley, InstagramIcon, WhatsAppIcon — elementos puramente visuais
