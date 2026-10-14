@@ -6,28 +6,14 @@ import { gsap } from './gsap.config'
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)'
 
-/** Velocidade da faixa sozinha, em px por segundo */
 const MARQUEE_SPEED = 45
-/** A rolagem acelera a faixa em +1x a cada SCROLL_BOOST px/s */
+// +1x de velocidade a cada SCROLL_BOOST px/s de rolagem
 const SCROLL_BOOST = 600
-/** Aceleração máxima vinda da rolagem: 3 = até 4x a velocidade normal */
 const MAX_BOOST = 3
-/** Quanto do embalo da rolagem sobra a cada quadro (a 60fps): some em ~1s */
 const BOOST_DECAY = 0.94
-/** Fração da diferença até a velocidade-alvo vencida a cada quadro: freia e arranca macio */
 const SPEED_EASE = 0.06
 
-/**
- * Faixa de tags em loop infinito. Anda sozinha para a esquerda; rolando a página ela
- * acelera e segue o sentido da rolagem (subindo a página, a faixa volta), e com o mouse
- * em cima freia até parar, para dar tempo de ler.
- * Marcação: o ref vai na janela da faixa (overflow-hidden), que tem dentro um
- * `[data-marquee-track]` com duas cópias iguais da lista. A faixa anda uma cópia e volta ao
- * início sem salto, então cada cópia precisa ter a mesma largura, incluindo o espaço
- * depois do último item.
- * Sem JS ou com "reduzir movimento" a faixa fica parada.
- * Uso: const ref = useTagMarquee(); <div ref={ref}><div data-marquee-track>…</div></div>
- */
+// `[data-marquee-track]` precisa de duas cópias da lista com a mesma largura, senão o loop salta
 export function useTagMarquee() {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -41,7 +27,6 @@ export function useTagMarquee() {
       const setX = gsap.quickSetter(track, 'x', 'px')
       let width = copy.getBoundingClientRect().width
       let x = 0
-      /** 1: para a esquerda (página descendo); -1: para a direita (página subindo) */
       let direction = 1
       let speed = 1
       let boost = 0
@@ -69,7 +54,6 @@ export function useTagMarquee() {
         setX(x)
       }
 
-      // A largura muda com a janela e quando a fonte termina de carregar
       const resize = new ResizeObserver(() => {
         width = copy.getBoundingClientRect().width
       })

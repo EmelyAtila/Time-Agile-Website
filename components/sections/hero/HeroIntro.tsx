@@ -4,10 +4,7 @@ import { useRef, type ComponentProps } from 'react'
 import { useHeroIntro } from '@/animations/useHeroIntro'
 import { useFluidArt } from './useFluidArt'
 
-/**
- * <section> do Hero que dispara a animação de entrada.
- * Só este wrapper é client: os filhos (fitas, logo) continuam renderizados no servidor.
- */
+// Só este wrapper é client: os filhos continuam renderizados no servidor
 export function HeroIntro(props: ComponentProps<'section'>) {
   const ref = useRef<HTMLElement>(null)
 

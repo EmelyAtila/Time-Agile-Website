@@ -56,7 +56,7 @@ export function Testimonials() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        {/* Carrossel ocupa a largura toda: setas ficam dentro da tela para não gerar scroll horizontal */}
+        {/* Setas dentro da tela para não gerar scroll horizontal */}
         <CarouselPrevious className="left-4" />
         <CarouselNext className="right-4" />
       </Carousel>

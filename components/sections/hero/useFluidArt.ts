@@ -13,13 +13,7 @@ function stretchX(d: string, k: number) {
   return d.replace(NUMBER, (n) => (index++ % 2 === 0 ? String(round(Number(n) * k)) : n))
 }
 
-/**
- * Ajusta a arte marcada com `data-stretch="min,max"` à proporção da seção.
- * Em vez de ampliar o SVG e cortar o que sobra (o que comia os laços das fitas em
- * telas largas), estica só a coordenada x das curvas. Espessura das fitas e tamanho
- * do título crescem por igual (√k), então nada fica deformado.
- * Sem JS vale o `preserveAspectRatio` do próprio SVG.
- */
+// Estica só o x das curvas em vez de ampliar e cortar o SVG, que comia os laços em telas largas
 export function useFluidArt(ref: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {
     const section = ref.current

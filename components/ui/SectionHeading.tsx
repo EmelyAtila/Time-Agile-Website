@@ -8,7 +8,6 @@ type SectionHeadingProps = {
   children: ReactNode
 }
 
-/** Título de seção — o `id` é usado pelo `aria-labelledby` da <section>. */
 export function SectionHeading({ id, as: Tag = 'h2', className, children }: SectionHeadingProps) {
   return (
     <Tag id={id} className={cn('font-sans font-bold', className)}>

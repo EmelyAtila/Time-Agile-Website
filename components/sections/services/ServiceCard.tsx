@@ -19,13 +19,7 @@ type ServiceCardProps = {
   style?: CSSProperties
 }
 
-/**
- * Card de serviço. É uma peça só: tudo dentro dele é posicionado em % do card e a letra em
- * `cqw`, então a composição do mockup se mantém em qualquer largura.
- * O card gira por fora (quem posiciona é o pai, em Services.tsx) e recorta o que passa da
- * borda; por dentro, uma camada desfaz o giro para as peças usarem as medidas da página.
- * No hover, o `<article>` e o adesivo fazem o movimento de `art.hover` (ServiceFan.tsx).
- */
+// Por dentro, uma camada desfaz o giro do card para as peças usarem os eixos da página
 export function ServiceCard({ service, art, className, style }: ServiceCardProps) {
   const left = (x: number) => `${(x / art.width) * 100}%`
   const top = (y: number) => `${(y / art.height) * 100}%`
@@ -41,7 +35,6 @@ export function ServiceCard({ service, art, className, style }: ServiceCardProps
     block: ServiceCardArt['title'],
     font: { size: number; leading: number }
   ): CSSProperties => {
-    // O bloco gira em torno do canto por onde as linhas alinham
     const anchor: CSSProperties =
       block.align === 'right'
         ? { right: left(art.width - block.x), textAlign: 'right', transformOrigin: 'top right' }

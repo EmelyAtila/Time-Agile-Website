@@ -12,10 +12,6 @@ interface UseScrollRevealOptions {
   stagger?: number
 }
 
-/**
- * Anima os filhos marcados com `data-reveal` quando o container entra na viewport.
- * Uso: const ref = useScrollReveal(); <div ref={ref}><p data-reveal>…</p></div>
- */
 export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
   options: UseScrollRevealOptions = {}
 ) {

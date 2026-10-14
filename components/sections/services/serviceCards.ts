@@ -1,16 +1,8 @@
-/*
- * Arte dos cards de serviço, medida em docs/Desktop - 1.svg. Tudo em px do mockup.
- * O leque ocupa o trecho de 1480×484 que começa em y 1677; `x` e `y` do card são o canto
- * de cima à esquerda nesse trecho, e é em torno dele que o card gira.
- * O que vai dentro do card (emoji, número, adesivo e textos) é medido a partir desse mesmo
- * canto, com os eixos da página — no mockup cada peça tem a própria inclinação, e os
- * arquivos exportados já vêm inclinados.
- */
+// Medidas em px de docs/Desktop - 1.svg, a partir do canto de cima à esquerda de cada card
 import type { CardHover } from '@/animations/useServiceCardsHover'
 
 export const STAGE = { width: 1480, height: 484 }
 
-/** Tipografia dos cards: [tamanho, entrelinha] em px do mockup */
 export const CARD_TITLE = { size: 24, leading: 32 }
 export const CARD_TEXT = { size: 18, leading: 28 }
 
@@ -19,9 +11,8 @@ type Placed = { x: number; y: number }
 type Picture = Placed & { src: string; width: number; height: number }
 
 type TextBlock = Placed & {
-  /** Giro em graus em torno do ponto (x, y) */
   angle: number
-  /** `right`: (x, y) é o canto de cima à direita e as linhas alinham por ele */
+  // `right`: (x, y) é o canto de cima à direita
   align: 'left' | 'right'
 }
 
@@ -29,13 +20,9 @@ export type ServiceCardArt = Placed & {
   width: number
   height: number
   angle: number
-  /** Movimento do card quando o mouse passa (animations/useServiceCardsHover.ts) */
   hover: CardHover
-  /** Carinha de fundo, já branca e translúcida no arquivo */
   emoji: Picture
-  /** Etiqueta com o número do card */
   badge: Picture
-  /** Posição do adesivo; o arquivo e o tamanho vêm de content/services.ts */
   sticker: Placed
   title: TextBlock
   description: TextBlock
@@ -91,7 +78,7 @@ export const SERVICE_CARDS: ServiceCardArt[] = [
     height: 408.721,
     angle: 7.014,
     hover: 'swing',
-    // O smile exportado veio pequeno e rosa: este foi tirado do mockup, como os outros
+    // O smile exportado veio errado: este foi tirado do mockup
     emoji: { src: `${IMAGES}/smile-card.svg`, x: -44.32, y: -15.98, width: 292, height: 288 },
     badge: { src: `${IMAGES}/numero-card-4.svg`, x: 233.74, y: 49.09, width: 37, height: 31 },
     sticker: { x: 28.68, y: 235.03 },

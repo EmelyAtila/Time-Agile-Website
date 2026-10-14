@@ -5,7 +5,6 @@ import './globals.css'
 import { siteMetadata, siteViewport } from '@/lib/metadata'
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider'
 
-// Fonte principal (corpo de texto)
 const notoSerif = Noto_Serif({
   subsets: ['latin'],
   weight: ['400', '600', '700', '800'],
@@ -13,7 +12,6 @@ const notoSerif = Noto_Serif({
   display: 'swap',
 })
 
-// Fonte secundária (títulos, navegação, botões) — arquivo variável, cobre pesos 300–900
 const satoshi = localFont({
   src: [
     {
@@ -31,7 +29,6 @@ const satoshi = localFont({
   display: 'swap',
 })
 
-// Fonte criativa (destaques, nomes, títulos de projetos)
 const handelson = localFont({
   src: '../public/fonts/handelson-one-maisfontes.086c/handelson-one.otf',
   weight: '400',

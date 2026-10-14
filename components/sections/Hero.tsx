@@ -17,11 +17,10 @@ export function Hero() {
     <HeroIntro
       id="inicio"
       aria-labelledby="hero-title"
-      // Altura amarrada à largura nos extremos: no desktop mantém a proporção dentro do
-      // que as curvas conseguem acompanhar (stretch em heroPaths.ts)
+      // Limites de proporção que as curvas conseguem acompanhar (stretch em heroPaths.ts)
       className="relative isolate min-h-[max(100svh,135vw)] overflow-hidden lg:min-h-[max(min(100svh,75vw),38vw)]"
     >
-      {/* O título visível é desenhado sobre a fita (SVG decorativo); este vale para leitor de tela e SEO */}
+      {/* O título visível é SVG decorativo; este é para leitor de tela e SEO */}
       <h1 id="hero-title" className="sr-only">
         {TITLE}!
       </h1>

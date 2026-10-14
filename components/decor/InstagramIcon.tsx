@@ -1,6 +1,5 @@
 import type { SVGProps } from 'react'
 
-// Glifo do mockup (public/logos/logo-instagram.svg); herda a cor do texto
 export function InstagramIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 30 30" fill="currentColor" aria-hidden {...props}>

@@ -5,21 +5,12 @@ import { ServiceCard } from './services/ServiceCard'
 import { ServiceFan } from './services/ServiceFan'
 import { SERVICE_CARDS, STAGE } from './services/serviceCards'
 
-/*
- * Quatro faixas de tela:
- * - celular (até md): cards em coluna;
- * - tablet (md): cards em duas colunas;
- * - notebook e monitor (lg em diante): o leque do mockup, com tudo proporcional a `--fan`,
- *   a largura do leque. Ela é a maior que cabe na largura e na ALTURA da janela: do topo da
- *   seção até a base dos cards o mockup mede 728.6px para 1480px de largura (1480 / 728.6 =
- *   2.0313), então num notebook a seção inteira aparece abaixo do header; num monitor maior
- *   ela para nos 1480px do mockup.
- */
+// `--fan` é a maior largura de leque que cabe na janela: 2.0313 = 1480 / 728.6, a proporção da seção no mockup
 export function Services() {
   return (
     <section id="servicos" aria-labelledby="services-title">
       <div className="mx-auto max-w-[92.5rem] pb-16 pt-12 md:pt-14 lg:pt-[calc(var(--fan)*0.05)] lg:[--fan:clamp(62rem,min(100vw_-_2rem,(100svh_-_var(--header-height)_-_1.5rem)_*_2.0313),92.5rem)]">
-        {/* lg:pl: no mockup o leque fica um pouco à direita do centro, e o cabeçalho o acompanha */}
+        {/* lg:pl acompanha o leque, que fica um pouco à direita do centro */}
         <header className="px-6 text-center lg:pl-[calc(1.5rem+var(--fan)*0.0224)]">
           <SectionHeading
             id="services-title"
@@ -32,10 +23,7 @@ export function Services() {
           </p>
         </header>
 
-        {/* No leque cada card fica na posição e inclinação do mockup, o primeiro por cima do
-            seguinte. Nas faixas menores os mesmos cards seguem inclinados, e os cantos se
-            sobrepõem só pelo giro. Cada card tem um movimento próprio no hover (ServiceFan) */}
-        <ServiceFan
+                <ServiceFan
           className="relative mt-8 flex flex-col items-center gap-4 md:grid md:grid-cols-[repeat(2,18.5rem)] md:justify-center md:gap-x-3 md:gap-y-6 lg:mx-auto lg:mt-[calc(var(--fan)*0.025)] lg:block lg:aspect-[var(--stage)] lg:w-[var(--fan)]"
           style={{ '--stage': `${STAGE.width} / ${STAGE.height}` } as CSSProperties}
         >

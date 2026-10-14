@@ -2,9 +2,7 @@ import { cn } from '@/lib/utils'
 import { HERO_ART_DESKTOP, HERO_ART_MOBILE, type HeroArt } from './heroPaths'
 
 type HeroRibbonsProps = {
-  /** Texto que corre sobre a fita laranja (o <h1> acessível fica no Hero) */
   title: string
-  /** Pontuação final do título: fica num <tspan> próprio para balançar sozinha (heroLoops.ts) */
   mark: string
 }
 
@@ -65,10 +63,7 @@ function Art({
   )
 }
 
-/**
- * Fitas do Hero com o título sobre a laranja. As duas variantes vão para o HTML e o
- * CSS mostra uma só; o corte (lg) é o mesmo usado em animations/useHeroIntro.ts.
- */
+// As duas variantes vão para o HTML e o CSS mostra uma; o corte (lg) é o mesmo de useHeroIntro.ts
 export function HeroRibbons(props: HeroRibbonsProps) {
   return (
     <>

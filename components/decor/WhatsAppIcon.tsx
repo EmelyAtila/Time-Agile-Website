@@ -1,6 +1,5 @@
 import type { SVGProps } from 'react'
 
-// Glifo do mockup (public/logos/loho-whatsapp.svg); herda a cor do texto.
 // lucide-react não tem ícone de marca do WhatsApp
 export function WhatsAppIcon(props: SVGProps<SVGSVGElement>) {
   return (

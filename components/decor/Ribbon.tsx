@@ -2,7 +2,6 @@ import { cn } from '@/lib/utils'
 import type { BrandColor } from '@/types'
 
 type RibbonProps = {
-  /** Atributo `d` do path — copie as curvas do mockup (docs/Desktop - 1.svg) */
   d: string
   color: BrandColor
   strokeWidth?: number
@@ -10,7 +9,6 @@ type RibbonProps = {
   className?: string
 }
 
-/** Fita decorativa (as curvas coloridas do mockup). Puramente visual. */
 export function Ribbon({
   d,
   color,

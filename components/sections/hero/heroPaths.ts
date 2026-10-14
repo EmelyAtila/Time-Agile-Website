@@ -8,28 +8,20 @@ export type HeroRibbon = {
 }
 
 export type HeroArt = {
-  /** Sufixo dos ids do SVG — as duas variantes coexistem no DOM */
   id: 'desktop' | 'mobile'
   viewBox: string
-  /** Qual lado do desenho é preservado quando a seção não tem a proporção do viewBox */
   preserveAspectRatio: string
-  /**
-   * [mín, máx] do quanto as curvas podem esticar na horizontal para acompanhar a
-   * proporção da tela sem recorte (ver useFluidArt). Sem isso, vale só o recorte acima.
-   */
+  // [mín, máx] do esticão horizontal das curvas (useFluidArt)
   stretch?: [min: number, max: number]
-  /** Ordem de empilhamento: a primeira fica por baixo */
   ribbons: HeroRibbon[]
   title: {
-    /** Linha de centro da fita laranja — o título corre sobre ela */
     guide: string
-    /** Onde o texto começa, em % do comprimento do guia */
     startOffset: string
     fontSize: number
   }
 }
 
-/* Curvas copiadas de docs/Desktop - 1.svg (trecho 1480×871 do Hero). */
+// Curvas copiadas de docs/Desktop - 1.svg
 const DESKTOP_ORANGE =
   'M-40 231.38C47.5 168.377 105.389 149.315 213.5 163.38C337.73 179.543 447 304 476 408.875C486.784 447.874 527.084 528.583 566 546.379C665.5 591.879 740.628 543.776 821 522.879C889.325 505.115 964.667 510.404 1028.5 538.379C1154 593.379 1249.15 752.687 1373.5 824.379C1396.24 837.486 1434.1 860.776 1458 871.379'
 
@@ -64,11 +56,7 @@ export const HERO_ART_DESKTOP: HeroArt = {
   title: { guide: DESKTOP_ORANGE, startOffset: '7.7%', fontSize: 76.2 },
 }
 
-/*
- * Adaptação vertical das mesmas curvas (não existe mockup mobile).
- * O título e as fitas principais ficam nos ~520 de cima, que é o que sobra visível
- * num tablet em pé; o laço rosa-claro preenche o espaço extra dos celulares altos.
- */
+// Não existe mockup mobile: adaptação vertical das mesmas curvas
 const MOBILE_ORANGE =
   'M-30 165C30 120 95 110 150 150C215 197 190 300 235 360C275 413 340 400 420 470'
 

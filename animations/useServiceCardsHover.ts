@@ -4,27 +4,17 @@ import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from './gsap.config'
 
-/** Só com mouse de verdade e sem "reduzir movimento": no toque o hover não existe */
 const HOVER_OK = '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)'
 
-/**
- * Um movimento por card, cada um num eixo:
- * - `pop`: salta para a frente (agacha, cresce e se endireita); a câmera dá um clique;
- * - `draw`: sobe como uma carta puxada do baralho; a mão inclina oferecendo o produto;
- * - `pull`: é puxado para a direita; o celular fica para trás e alcança com elástico;
- * - `swing`: balança como um quadro pendurado no prego, para o lado de onde o mouse veio;
- *   a xícara balança ao contrário, como o café dentro dela.
- */
 export type CardHover = 'pop' | 'draw' | 'pull' | 'swing'
 
 type CardParts = {
   card: HTMLElement
   sticker: HTMLElement
-  /** 1 se o mouse entrou pela metade esquerda do card, -1 pela direita */
+  // 1 = mouse entrou pela metade esquerda, -1 = pela direita
   side: 1 | -1
 }
 
-/** Ponto em torno do qual o card e o adesivo giram e crescem */
 const ORIGINS: Record<CardHover, { card: string; sticker: string }> = {
   pop: { card: '50% 100%', sticker: '50% 50%' },
   draw: { card: '50% 100%', sticker: '0% 100%' },
@@ -93,16 +83,8 @@ const ENTER: Record<CardHover, (parts: CardParts) => gsap.core.Timeline> = {
 
 const REST = { xPercent: 0, yPercent: 0, rotation: 0, scale: 1 }
 
-/**
- * Hover dos cards de serviço: cada `<li data-card-hover>` faz o seu movimento (CardHover) ao
- * receber o mouse e volta ao lugar quando ele sai.
- * O `<li>` só escuta o mouse; quem se mexe é o `<article>` de dentro e o adesivo
- * (`data-card-sticker`). Assim o giro e a posição do leque (transform do `<li>`) ficam
- * intactos, os deslocamentos seguem a inclinação do card e a área do hover não foge do
- * ponteiro quando o card se desloca.
- * A sombra do hover é CSS (ServiceCard.tsx) e aparece também com "reduzir movimento".
- * Uso: const ref = useServiceCardsHover(); <ul ref={ref}>…</ul>
- */
+// O <li> só escuta o mouse e quem se mexe é o <article>: o transform do leque fica intacto
+// e a área do hover não foge do ponteiro
 export function useServiceCardsHover() {
   const ref = useRef<HTMLUListElement>(null)
 
@@ -144,8 +126,7 @@ export function useServiceCardsHover() {
           item.addEventListener('pointerenter', onPointerEnter)
           item.addEventListener('pointerleave', onPointerLeave)
 
-          // Os tweens do hover nascem fora do contexto do matchMedia, então o revert não os
-          // desfaz: sem isto, um card com o mouse em cima ficaria torto ao ligar "reduzir movimento"
+          // Os tweens do hover nascem fora do contexto do matchMedia, e o revert não os desfaz
           return () => {
             item.removeEventListener('pointerenter', onPointerEnter)
             item.removeEventListener('pointerleave', onPointerLeave)

@@ -2,15 +2,10 @@ import type { SVGProps } from 'react'
 import { site } from '@/content/site'
 
 type LogoProps = SVGProps<SVGSVGElement> & {
-  /** Mostra o "Marketing e Gestão" abaixo da marca */
   withTagline?: boolean
 }
 
-/**
- * Logomarca oficial (public/logos/logo-home.svg) inline. Cada parte fica num
- * `<g data-part>` para poder ser animada separadamente (ver animations/useHeroIntro.ts).
- * O tamanho vem da largura/altura passada em `className`.
- */
+// Cada `<g data-part>` é animado separadamente em animations/useHeroIntro.ts
 export function Logo({ withTagline = true, ...props }: LogoProps) {
   return (
     <svg

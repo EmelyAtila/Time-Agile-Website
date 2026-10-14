@@ -17,22 +17,17 @@ export function Header() {
   const activeHref = NAV_HREFS[activeIndex]
 
   return (
-    // No topo fica solto sobre o Hero, na posição do mockup (--header-offset abaixo do topo), e
-    // sobe junto com a página até encostar no topo da janela. Quem encaixa é o navegador: o
-    // padding-top guarda a folga e o `top` negativo deixa essa folga rolar para fora antes de
-    // grudar. A margem negativa faz o conteúdo começar por baixo do header.
+    // O `top` negativo deixa a folga do padding-top rolar para fora antes de grudar;
+    // a margem negativa faz o conteúdo começar por baixo do header
     <header
       ref={headerRef}
       className="sticky top-[calc(var(--header-offset)*-1)] z-50 -mb-[calc(var(--header-height)+var(--header-offset))] box-content h-header pt-[var(--header-offset)] [--header-offset:0px] lg:[--header-offset:clamp(0px,2vw,1.875rem)]"
     >
-      {/* Fundo que aparece no ritmo do scroll (--header-solid, de useHeaderDock), para o menu
-          continuar legível sobre as outras seções */}
       <div
         aria-hidden
         data-header-band
         className="absolute inset-x-0 bottom-0 -z-10 h-header bg-[color-mix(in_srgb,var(--color-cream)_88%,transparent)] opacity-[var(--header-solid,0)] shadow-card backdrop-blur-md"
       />
-      {/* Medidas fluidas: nos 1480px do mockup dão 20px de fonte e 32px entre os links */}
       <div className="flex h-full items-center justify-end gap-[clamp(1.25rem,2.7vw,2.5rem)] px-[var(--hero-padding-x)] text-[clamp(1rem,1.35vw,1.25rem)]">
         <nav ref={navRef} aria-label="Principal" className="relative hidden md:block">
           <ul className="flex items-center gap-[clamp(1.125rem,2.2vw,2rem)]">
@@ -44,7 +39,7 @@ export function Header() {
                   aria-current={link.href === activeHref ? 'location' : undefined}
                   className="block py-2 transition-colors duration-300 hover:text-brand-pink"
                 >
-                  {/* Letra por letra para o pulo de useNavScrollSpy; o nome do link vem do aria-label */}
+                  {/* O nome do link vem do aria-label */}
                   <span aria-hidden>
                     {Array.from(link.label, (letter, index) => (
                       <span key={index} data-nav-letter className="inline-block whitespace-pre">
@@ -56,7 +51,6 @@ export function Header() {
               </li>
             ))}
           </ul>
-          {/* Uma barra só, movida por useNavScrollSpy conforme a seção em que a página está */}
           <span
             ref={indicatorRef}
             data-nav-indicator
@@ -73,8 +67,7 @@ export function Header() {
             aria-label={PRIMARY_CTA.label}
             className="group relative isolate border-white/85 px-[1em] py-[0.4em] text-[0.95em] hover:bg-brand-pink"
           >
-            {/* Cores do hover, animadas por animations/headerCta.ts: duas ondas (amarela e rosa)
-                e o laranja que fica. Sem o GSAP as ondas não aparecem e o laranja é só um fade. */}
+            {/* Sem o GSAP as ondas não aparecem e o laranja é só um fade */}
             <span
               data-cta-ripple
               aria-hidden
@@ -90,7 +83,7 @@ export function Header() {
               aria-hidden
               className="absolute inset-0 -z-10 rounded-full bg-brand-orange opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             />
-            {/* Letra por letra para a onda do hover; o nome do botão vem do aria-label */}
+            {/* O nome do botão vem do aria-label */}
             <span aria-hidden>
               {Array.from(PRIMARY_CTA.label, (letter, index) => (
                 <span key={index} data-cta-letter className="inline-block whitespace-pre">

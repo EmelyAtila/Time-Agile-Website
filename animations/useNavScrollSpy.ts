@@ -4,32 +4,16 @@ import { useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from './gsap.config'
 
-/** A seção cujo topo já cruzou esta linha da tela é a ativa (fração da altura da janela) */
+// Frações da altura da janela
 const ACTIVE_LINE = 0.4
-
-/** Trecho antes da linha em que a barra desliza de um item para o próximo */
 const SLIDE_ZONE = 0.35
 
-/** Quanto a barra estica no meio do caminho entre dois itens (0 = não estica) */
 const STRETCH = 0.8
-
-/** Duração (s) do deslize quando o mouse troca de item no menu */
 const POINTER_SLIDE = 0.45
-
-/** Altura do pulo das letras de um link, em % da altura da linha */
 const HOP_HEIGHT = 30
-
-/** Atraso (s) entre uma letra e a seguinte no pulo: é o que faz a onda */
 const HOP_STAGGER = 0.03
 
-/**
- * Barra da navegação que acompanha a rolagem: fica sob o item da seção atual e, quando a
- * próxima seção se aproxima, desliza até o item dela no mesmo ritmo do scroll.
- * Com o mouse sobre o menu ela desliza até o item apontado e volta quando o mouse sai.
- * Cada link pula, letra por letra, quando a barra entra por baixo dele.
- * Uso: ligue `navRef` no <nav> (position: relative, itens com `data-nav-item` e letras
- * com `data-nav-letter`) e `indicatorRef` na barra (position: absolute, left: 0).
- */
+// `navRef` vai no <nav> (relative) e `indicatorRef` na barra (absolute, left: 0)
 export function useNavScrollSpy(hrefs: readonly string[]) {
   const navRef = useRef<HTMLElement>(null)
   const indicatorRef = useRef<HTMLSpanElement>(null)
@@ -49,8 +33,7 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       const center = (item: HTMLElement) => item.offsetLeft + item.offsetWidth / 2
 
-      // A barra tem duas origens: `scroll` (a rolagem) e `pointer` (o item sob o mouse).
-      // `mix` vai de uma à outra: 0 = segue a rolagem, 1 = sob o item apontado.
+      // `mix`: 0 = barra segue a rolagem, 1 = sob o item apontado pelo mouse
       const scroll = { x: 0, scaleX: 1 }
       const pointer = { x: 0, mix: 0, pull: 0 }
       let pointed: HTMLElement | null = null
@@ -59,12 +42,10 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
       let slide: gsap.core.Timeline | undefined
 
       const hops = new Map<HTMLElement, gsap.core.Timeline>()
-      // Centro da barra no quadro anterior; `undefined` quando o layout acabou de mudar
       let lastCenter: number | undefined
 
-      /** As letras do link pulam em onda, no sentido em que a barra vem */
       const hop = (item: HTMLElement, forward: boolean) => {
-        // Um pulo por vez: o excesso do deslize faz a barra cruzar a borda do item duas vezes
+        // O excesso do deslize faz a barra cruzar a borda do item duas vezes
         if (reducedMotion || hops.get(item)?.isActive()) return
         const letters = item.querySelectorAll('[data-nav-letter]')
         if (!letters.length) return
@@ -97,7 +78,6 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
         )
       }
 
-      /** Faz pular os itens em que a barra acabou de entrar */
       const bump = (barCenter: number) => {
         const before = lastCenter
         lastCenter = barCenter
@@ -106,7 +86,6 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
         items.forEach((item) => {
           const left = item.offsetLeft
           const right = left + item.offsetWidth
-          // Só a entrada conta: a barra sair de baixo de um item não faz ele pular
           if (before < left && barCenter >= left) hop(item, true)
           else if (before > right && barCenter <= right) hop(item, false)
         })
@@ -120,12 +99,11 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
         bump(x + indicator.offsetWidth / 2)
         gsap.set(indicator, {
           x,
-          // Os dois esticões (rolagem e mouse) podem coincidir: juntos não passam do máximo de um
           scaleX: Math.min(scaleX, 1 + STRETCH),
         })
       }
 
-      /** Leva a barra até o item apontado; `null` devolve a barra à rolagem */
+      // `null` devolve a barra à rolagem
       const pointAt = (item: HTMLElement | null) => {
         if (item === pointed) return
         pointed = item
@@ -143,7 +121,7 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
           return
         }
 
-        // Estica em proporção ao trajeto, para não pulsar parada ao apontar o item em que já está
+        // Proporcional ao trajeto, para não pulsar ao apontar o item em que já está
         const travel = Math.abs(gsap.utils.interpolate(scroll.x, to.x, to.mix) - from)
         const reach = gsap.utils.clamp(0, 1, travel / (indicator.offsetWidth * 2))
         const half = POINTER_SLIDE / 2
@@ -157,7 +135,6 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
       }
 
       const onPointerEnter = (event: PointerEvent) => {
-        // Toque não tem hover: a barra iria e voltaria a cada toque
         if (event.pointerType === 'touch') return
         pinned = null
         pointAt(event.currentTarget as HTMLElement)
@@ -165,8 +142,7 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
       const onPointerLeave = () => {
         if (!pinned) pointAt(null)
       }
-      // No topo o header sobe ao rolar e tira o item clicado de baixo do mouse: sem o `pinned`
-      // a barra voltaria à seção atual para depois refazer o caminho até o item
+      // O header sobe ao rolar e tira o item de baixo do mouse: sem o `pinned` a barra voltaria
       const onClick = (event: MouseEvent) => {
         if (event.currentTarget === pointed) pinned = pointed
       }
@@ -191,10 +167,8 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
         // A última seção pode ser curta demais para o topo dela chegar até a linha
         const pageEnd = document.documentElement.scrollHeight - viewport
         if (pageEnd > 0 && window.scrollY >= pageEnd - 2) position = last
-        // Com "reduzir movimento" a barra troca de item de uma vez, sem deslizar
         if (reducedMotion) position = Math.round(position)
 
-        // A página chegou à seção do item clicado: a barra volta a ser da rolagem
         if (pinned && Math.round(position) === items.indexOf(pinned)) {
           pinned = null
           if (!nav.matches(':hover')) pointAt(null)
@@ -216,7 +190,7 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
       gsap.set(indicator, { visibility: 'visible' })
       update()
 
-      // O layout mudou: a barra muda de lugar sem ter passado por baixo de nenhum item
+      // A barra muda de lugar sem ter passado por baixo de nenhum item: nada pula
       const relayout = () => {
         lastCenter = undefined
         update()
@@ -224,7 +198,7 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
 
       window.addEventListener('scroll', update, { passive: true })
       window.addEventListener('resize', relayout)
-      // Largura dos itens muda quando a fonte carrega ou o menu aparece/some
+      // Largura dos itens muda quando a fonte carrega
       const observer = new ResizeObserver(relayout)
       observer.observe(nav)
 
@@ -232,9 +206,8 @@ export function useNavScrollSpy(hrefs: readonly string[]) {
         item.addEventListener('pointerenter', onPointerEnter)
         item.addEventListener('click', onClick)
       })
-      // Sai do menu inteiro, e não de cada item: no vão entre dois itens a barra espera
+      // No menu inteiro: no vão entre dois itens a barra espera
       nav.addEventListener('pointerleave', onPointerLeave)
-      // Rolar com o mouse parado sobre o menu devolve a barra à seção em que a página está
       window.addEventListener('wheel', onWheel, { passive: true })
 
       return () => {

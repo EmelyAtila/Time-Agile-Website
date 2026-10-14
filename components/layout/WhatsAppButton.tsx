@@ -5,11 +5,10 @@ import { site } from '@/content/site'
 import { cn } from '@/lib/utils'
 import { WhatsAppIcon } from '@/components/decor/WhatsAppIcon'
 
-/** Faixa da tela onde o botão fica (de 90% a 95% da altura): ele aparece enquanto a seção passa por ela */
+// O botão aparece enquanto a seção passa pela faixa de 90% a 95% da altura da tela
 const BUTTON_BAND = '-90% 0px -5% 0px'
 
 type WhatsAppButtonProps = {
-  /** Seletor da seção em que o botão aparece; fora dela ele fica escondido */
   section: string
 }
 

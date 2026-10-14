@@ -6,17 +6,9 @@ import { gsap } from './gsap.config'
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)'
 
-/** Pausa (s) entre um balanço do smiley e o seguinte */
 const SMILEY_EVERY = 3.2
 
-/**
- * Loop dos smileys: de tempos em tempos a carinha balança de um lado para o outro e volta
- * com elástico, como o "!" do título (animations/heroLoops.ts). Só roda com o smiley na
- * tela e sem "reduzir movimento".
- * O ref vai num <g> de dentro do SVG, não no <svg>: a posição dele é feita com transform
- * do Tailwind, que o GSAP sobrescreveria.
- * Uso: const ref = useSmileyLoop(); <svg><g ref={ref}>…</g></svg>
- */
+// O ref vai num <g>, não no <svg>: o GSAP sobrescreveria o transform do Tailwind
 export function useSmileyLoop() {
   const ref = useRef<SVGGElement>(null)
 

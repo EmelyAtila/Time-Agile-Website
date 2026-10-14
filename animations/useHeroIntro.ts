@@ -15,7 +15,7 @@ const VARIANT_QUERY: Record<Variant, string> = {
   mobile: `(max-width: 1023.98px) and ${MOTION_OK}`,
 }
 
-/** Fitas na ordem de entrada: [cor, início (s), duração (s)]. A laranja puxa o título. */
+// [cor, início (s), duração (s)]
 const RIBBONS = [
   ['orange', 0, 1.4],
   ['pink', 0.25, 1.2],
@@ -23,13 +23,10 @@ const RIBBONS = [
   ['pink-light', 0.55, 1.2],
 ] as const
 
-/** Atraso do título em relação à fita laranja: é o que faz o texto vir "atrás" dela */
 const TITLE_DELAY = 0.2
-
-/** Quanto esperar pelas fontes antes de tocar mesmo assim */
 const FONT_TIMEOUT_MS = 400
 
-/** Desliga o CSS anti-flash de styles/base.css: daqui em diante o GSAP cuida do estado inicial */
+// Desliga o CSS anti-flash de styles/base.css
 const READY_ATTR = 'data-intro-ready'
 
 function buildIntro(section: HTMLElement, variant: Variant) {
@@ -44,18 +41,16 @@ function buildIntro(section: HTMLElement, variant: Variant) {
 
   const tl = gsap.timeline({ paused: true })
 
-  // 1. Fitas se desenrolando a partir das bordas
   RIBBONS.forEach(([color, at, duration]) => {
     tl.fromTo(
       inArt(`[data-ribbon="${color}"]`),
-      // pathLength=1 no SVG, então 1 = fita inteira. A folga (2 e 1.001) evita o
-      // pontinho que a ponta arredondada deixaria antes de a fita começar.
+      // Folga além de 1 para a ponta redonda não deixar um pontinho
       { strokeDasharray: '1 2', strokeDashoffset: 1.001 },
       {
         strokeDashoffset: 0,
         duration,
         ease: 'power2.out',
-        // O GSAP arredonda px para inteiro; numa escala de 0 a 1 a fita só piscaria
+        // Com pathLength=1 o arredondamento de px do GSAP faria a fita só piscar
         autoRound: false,
         clearProps: 'strokeDasharray,strokeDashoffset',
       },
@@ -63,7 +58,6 @@ function buildIntro(section: HTMLElement, variant: Variant) {
     )
   })
 
-  // 2. Título deslizando pela fita laranja, sempre atrás da ponta dela
   const title = art.querySelector<SVGTextPathElement>('[data-hero-title]')
   const guide = art.querySelector<SVGPathElement>('defs path')
   if (title && guide) {
@@ -78,7 +72,6 @@ function buildIntro(section: HTMLElement, variant: Variant) {
     )
   }
 
-  // 3. Logo, peça por peça
   const logoPart = (name: string) => inSection(`[data-intro="logo"] [data-part="${name}"]`)
   const logoLetters = (name: string) => inSection(`[data-intro="logo"] [data-part="${name}"] path`)
   const fromBase = { transformOrigin: '50% 100%' }
@@ -115,7 +108,6 @@ function buildIntro(section: HTMLElement, variant: Variant) {
       'logo+=0.75'
     )
 
-  // 4. Navegação e redes sociais
   const navItems = inHeader('nav-item')
   if (navItems.length) {
     tl.fromTo(
@@ -126,7 +118,7 @@ function buildIntro(section: HTMLElement, variant: Variant) {
     )
   }
 
-  // A posição da barra é de useNavScrollSpy (x e scaleX); aqui ela só brota da base
+  // x e scaleX da barra são de useNavScrollSpy
   const navIndicator = document.querySelector<HTMLElement>('[data-nav-indicator]')
   if (navIndicator) {
     tl.fromTo(
@@ -159,7 +151,7 @@ function buildIntro(section: HTMLElement, variant: Variant) {
     1.6
   )
 
-  // Terminou: devolve tudo ao CSS (sem transform/opacity inline sobrando para hovers e futuras animações)
+  // Devolve tudo ao CSS, sem inline sobrando para os hovers
   tl.set(
     [
       ...inSection('[data-intro="logo"] [data-part], [data-intro="logo"] [data-part] path'),
@@ -173,13 +165,7 @@ function buildIntro(section: HTMLElement, variant: Variant) {
   return tl
 }
 
-/**
- * Animação de entrada do Hero: as fitas se desenrolam, o título vem atrás pela laranja
- * e depois entram logo, navegação e redes. Toca uma vez por carregamento da página.
- * Quando termina, liga os loops de animations/heroLoops.ts.
- * Uso: const ref = useRef(null); useHeroIntro(ref); <section ref={ref}>…</section>
- * Mapa dos tempos e ideias adiadas: docs/HERO-ANIMATIONS.md
- */
+// Mapa dos tempos: docs/HERO-ANIMATIONS.md
 export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
   useGSAP(
     () => {
@@ -190,7 +176,7 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
       const mm = gsap.matchMedia()
 
       const run = (variant: Variant) => (context: gsap.Context) => {
-        // Pelo contexto do matchMedia: trocar de variante desfaz os loops da anterior
+        // No contexto do matchMedia: trocar de variante desfaz os loops da anterior
         const startLoops = () => {
           context.add(() => startHeroLoops(section, variant))
         }

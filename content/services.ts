@@ -6,8 +6,7 @@ export const servicesIntro = {
     'Criamos estratégias inteligentes para construir marcas fortes, aumentar sua visibilidade e impulsionar resultados reais.',
 }
 
-// Os \n são as quebras de linha do mockup: o texto do card faz parte da arte e não reflui.
-// As imagens são os adesivos exportados do mockup, convertidos de SVG para WebP em 3x.
+// Os \n são as quebras do mockup: o texto do card faz parte da arte e não reflui
 export const SERVICES: Service[] = [
   {
     number: '01',
@@ -41,7 +40,6 @@ export const SERVICES: Service[] = [
   },
 ]
 
-// Faixa em loop entre Serviços e Projetos (TagMarquee); as cores seguem a ordem da lista
 export const TAGS = [
   'Marketing',
   'Estratégia',

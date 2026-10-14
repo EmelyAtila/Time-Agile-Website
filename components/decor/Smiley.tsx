@@ -9,12 +9,7 @@ type SmileyProps = {
   className?: string
 }
 
-/**
- * Smiley desenhado à mão do mockup (public/logos/Smile.svg) inline, para a cor vir dos
- * tokens. O viewBox pega o desenho inteiro — o arquivo exportado já vem cortado na borda
- * esquerda. O tamanho vem da largura passada em `className`.
- * Balança sozinho de tempos em tempos (animations/useSmileyLoop.ts).
- */
+// Inline para a cor vir dos tokens; o viewBox corrige o corte na borda esquerda do arquivo exportado
 export function Smiley({ color, className }: SmileyProps) {
   const faceRef = useSmileyLoop()
 

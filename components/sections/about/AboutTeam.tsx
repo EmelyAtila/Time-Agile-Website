@@ -2,13 +2,9 @@ import Image from 'next/image'
 import { TEAM } from '@/content/about'
 import { cn } from '@/lib/utils'
 
-/*
- * Blobs copiados de docs/Desktop - 1.svg. O palco é o trecho de 750×520 do mockup onde
- * ficam os dois adesivos (x 686–1436, y 913–1433); as posições abaixo são % desse trecho.
- */
+// Trecho de docs/Desktop - 1.svg com os adesivos; as posições abaixo são % dele
 const STAGE_VIEWBOX = '686 913 750 520'
 
-// Ordem de empilhamento: o primeiro fica por baixo
 const BLOBS = [
   {
     color: 'pink',
@@ -20,7 +16,7 @@ const BLOBS = [
   },
 ]
 
-// Na ordem de TEAM (content/about.ts). Classes completas para o Tailwind detectá-las
+// Na ordem de TEAM (content/about.ts)
 const STICKERS = [
   {
     photo: 'left-[16.13%] top-[17.64%] w-[45.33%]',
@@ -30,7 +26,6 @@ const STICKERS = [
   },
   {
     photo: 'left-[46.13%] top-[16.54%] w-[43.87%]',
-    // No celular o cargo não cabe ao lado do rosto: sobe para o canto, numa linha só
     caption: 'right-[2%] top-0 md:top-[10.96%]',
     // O "a" final avança além da caixa do texto; recua para alinhar com o cargo
     name: 'mr-[0.1em]',
@@ -38,13 +33,8 @@ const STICKERS = [
   },
 ]
 
-/**
- * Adesivos da equipe sobre os blobs. Tudo escala junto com a largura do palco (unidades
- * `cqw`), então a composição do mockup vale em qualquer tamanho; a largura vem de `className`.
- */
 export function AboutTeam({ className }: { className?: string }) {
   return (
-    // overflow-y-clip: as fotos e os blobs passam um pouco da base e são cortados por ela
     <div
       className={cn(
         'relative aspect-[750/520] overflow-y-clip [container-type:inline-size]',

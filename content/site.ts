@@ -1,5 +1,3 @@
-// Dados institucionais da Time Agile — edite aqui para refletir em todo o site.
-
 const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '5561992656020'
 
 export const site = {
