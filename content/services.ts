@@ -41,4 +41,21 @@ export const SERVICES: Service[] = [
   },
 ]
 
-export const TAGS = ['Identidade', 'Marketing', 'Estratégia', 'Criatividade', 'Branding', 'Gestão']
+// Faixa em loop entre Serviços e Projetos (TagMarquee); as cores seguem a ordem da lista
+export const TAGS = [
+  'Marketing',
+  'Estratégia',
+  'Criatividade',
+  'Branding',
+  'Gestão',
+  'Conteúdo',
+  'Redes Sociais',
+  'Tráfego Pago',
+  'Consultoria',
+  'Posicionamento',
+  'Identidade Visual',
+  'Planejamento',
+  'Performance',
+  'Crescimento',
+  'Resultados',
+]
