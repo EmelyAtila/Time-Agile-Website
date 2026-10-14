@@ -34,12 +34,14 @@ components/
   layout/            Header, Footer, Logo, WhatsAppButton
   sections/          Hero, About, Services, TagMarquee, Projects, Testimonials, Contact
     hero/            HeroIntro (wrapper client), HeroRibbons, heroPaths (curvas das fitas), useFluidArt
+    about/           AboutTeam (adesivos da equipe sobre os blobs)
+    services/        ServiceCard, serviceCards (posições e inclinações do leque de cards)
   forms/             ContactForm
   ui/                Button, Container, SectionHeading, Carousel  (barrel em index.ts)
   decor/             Ribbon (fitas), Smiley, InstagramIcon, WhatsAppIcon — elementos puramente visuais
   providers/         SmoothScrollProvider (Lenis + GSAP)
 content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
-animations/          gsap.config.ts, useScrollReveal, useHeroIntro, heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header)
+animations/          gsap.config.ts, useScrollReveal, useHeroIntro, heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), useSmileyLoop (balanço dos smileys)
 hooks/               useMediaQuery, useScrollPosition, useSmoothScroll
 lib/                 metadata, validations (zod), escape-html, utils (cn)
 styles/              tokens.css (fonte da verdade do design), base.css
@@ -73,7 +75,6 @@ Procure por `TODO` no código:
 - Depoimentos reais.
 - `og-image.jpg`.
 - Páginas `/privacidade` e `/termos`.
-- As imagens de `public/images/services` são PNGs de 2 MB. O `next/image` otimiza na entrega, mas vale comprimir os originais.
 
 ## Docker
 
