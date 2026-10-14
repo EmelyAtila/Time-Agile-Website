@@ -33,6 +33,13 @@
   --header-height: 80px;
   /* Margem lateral do Header e do Hero: 72px nos 1480px do mockup */
   --hero-padding-x: clamp(1.5rem, 4.86vw, 4.5rem);
+  /* Largura dos 1480px do mockup no desktop. --page-width só acompanha a tela; --stage-width também
+     encolhe em janelas baixas para o leque de Serviços caber na altura (2.0313 = 1480 / 728.6) */
+  --page-width: clamp(62rem, 100vw - 2rem, 92.5rem);
+  --stage-width: max(
+    62rem,
+    min(var(--page-width), (100svh - var(--header-height) - 1.5rem) * 2.0313)
+  );
 
   --radius-sm: 8px;
   --radius-md: 16px;
