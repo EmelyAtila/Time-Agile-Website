@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react'
 import { SERVICES, servicesIntro } from '@/content/services'
 import { SectionHeading } from '@/components/ui'
 import { ServiceCard } from './services/ServiceCard'
+import { ServiceFan } from './services/ServiceFan'
 import { SERVICE_CARDS, STAGE } from './services/serviceCards'
 
 /*
@@ -33,8 +34,8 @@ export function Services() {
 
         {/* No leque cada card fica na posição e inclinação do mockup, o primeiro por cima do
             seguinte. Nas faixas menores os mesmos cards seguem inclinados, e os cantos se
-            sobrepõem só pelo giro */}
-        <ul
+            sobrepõem só pelo giro. Cada card tem um movimento próprio no hover (ServiceFan) */}
+        <ServiceFan
           className="relative mt-8 flex flex-col items-center gap-4 md:grid md:grid-cols-[repeat(2,18.5rem)] md:justify-center md:gap-x-3 md:gap-y-6 lg:mx-auto lg:mt-[calc(var(--fan)*0.025)] lg:block lg:aspect-[var(--stage)] lg:w-[var(--fan)]"
           style={{ '--stage': `${STAGE.width} / ${STAGE.height}` } as CSSProperties}
         >
@@ -59,7 +60,7 @@ export function Services() {
               />
             )
           })}
-        </ul>
+        </ServiceFan>
       </div>
     </section>
   )
