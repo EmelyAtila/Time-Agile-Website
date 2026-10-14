@@ -4,8 +4,9 @@ export const STAGE = { width: 1480, height: 1613.44 }
 
 type Box = { x: number; y: number; width: number; height: number }
 
-// Relativa à galeria; `photo` é relativa à moldura
-export type Frame = Box & { photo: Box; z: number }
+// Relativa à galeria; `photo` é relativa à moldura. Com `pull`, o hover puxa a foto para cima e para esse lado,
+// como uma carta do baralho, sem passar por cima das outras; sem ele, ela sobe e gira por cima
+export type Frame = Box & { photo: Box; z: number; pull?: 'left' | 'right' }
 
 export type Gallery = Box & {
   // Maior largura da galeria abaixo do lg, para o `sizes` das fotos
@@ -92,7 +93,8 @@ export const SHOWCASE: ShowcaseArt[] = [
   },
   {
     article: 'mt-16 md:mt-20 lg:mt-0',
-    header: 'lg:absolute lg:left-[calc(295.5*var(--u))] lg:top-[calc(801*var(--u))]',
+    // Na frente das fotos, que sobem no hover
+    header: 'relative z-10 lg:absolute lg:left-[calc(295.5*var(--u))] lg:top-[calc(801*var(--u))]',
     title: `${SCRIPT} text-brand-pink`,
     subtitle: `${SCRIPT} ml-[2.8em] mt-[0.1em] text-brand-orange`,
     gallery: {
@@ -109,6 +111,7 @@ export const SHOWCASE: ShowcaseArt[] = [
           width: 340,
           height: 496,
           z: 2,
+          pull: 'left',
           photo: { x: 21, y: 24, width: 299, height: 449 },
         },
         {
@@ -117,6 +120,7 @@ export const SHOWCASE: ShowcaseArt[] = [
           width: 353,
           height: 498,
           z: 1,
+          pull: 'right',
           photo: { x: 26, y: 25, width: 300, height: 449 },
         },
         {
