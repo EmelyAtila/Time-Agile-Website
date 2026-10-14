@@ -1,20 +1,16 @@
 import { TAGS } from '@/content/services'
 import { cn } from '@/lib/utils'
 import { TagLoop } from './tags/TagLoop'
+import { TagRibbon } from './tags/TagRibbon'
 
 // Classes completas (não interpolar) para o Tailwind detectá-las
 const tagColors = ['bg-brand-yellow', 'bg-brand-orange', 'bg-brand-pink', 'bg-brand-pink-light']
 
-/**
- * Faixa de tags em loop infinito: anda sozinha, acelera e segue o sentido da rolagem e para
- * com o mouse em cima (animations/useTagMarquee.ts).
- */
 export function TagMarquee() {
   const renderList = (hidden: boolean) => (
     // pr igual ao gap: as duas cópias ficam com a mesma largura e o loop não dá salto
     <ul className="flex shrink-0 gap-8 pr-8" aria-hidden={hidden || undefined}>
       {TAGS.map((tag, i) => (
-        // Com o mouse em cima a faixa para e a tag sobe inclinando, uma para cada lado
         <li
           key={tag}
           className={cn(
@@ -29,12 +25,16 @@ export function TagMarquee() {
   )
 
   return (
-    <TagLoop className="overflow-hidden py-12">
-      <div data-marquee-track className="flex w-max">
-        {renderList(false)}
-        {/* Cópia para o loop contínuo — oculta de leitores de tela */}
-        {renderList(true)}
-      </div>
-    </TagLoop>
+    // Sem z-index: a fita (-z-10) fica atrás também das seções vizinhas por onde passa
+    <div className="relative overflow-x-clip">
+      <TagRibbon className="-z-10" />
+
+      <TagLoop className="overflow-hidden py-12">
+        <div data-marquee-track className="flex w-max">
+          {renderList(false)}
+          {renderList(true)}
+        </div>
+      </TagLoop>
+    </div>
   )
 }
