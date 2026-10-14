@@ -15,7 +15,7 @@ const DASH = '1 1.02'
 const OUT = 1.01
 
 // Segundos que o desenho leva para alcançar a rolagem
-const LAG = 2
+const LAG = 1.2
 
 const STEPS = 400
 
