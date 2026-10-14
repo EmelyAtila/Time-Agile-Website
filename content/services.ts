@@ -6,35 +6,38 @@ export const servicesIntro = {
     'Criamos estratégias inteligentes para construir marcas fortes, aumentar sua visibilidade e impulsionar resultados reais.',
 }
 
+// Os \n são as quebras de linha do mockup: o texto do card faz parte da arte e não reflui.
+// As imagens são os adesivos exportados do mockup, convertidos de SVG para WebP em 3x.
 export const SERVICES: Service[] = [
   {
     number: '01',
-    title: 'Construímos conexões que fortalecem sua marca',
-    description: 'Planejamento, conteúdo e gestão completa para fortalecer sua presença digital.',
+    title: 'Construímos\nconexões que\nfortalecem sua\nmarca',
+    description:
+      'Planejamento, conteúdo e\ngestão completa para\nfortalecer sua presença\ndigital.',
     color: 'pink-light',
-    image: { src: '/images/services/camera.png', alt: '', width: 558, height: 447 },
+    image: { src: '/images/services/camera.webp', alt: '', width: 186, height: 206 },
   },
   {
     number: '02',
     title: 'Branding & Conteúdo',
     description:
-      'Transformando ideias em marcas memoráveis. Fotos, vídeos e identidade para criar conexões reais com seu público.',
+      'Transformando ideias em\nmarcas memoráveis.\nFotos, vídeos e\nidentidade para criar\nconexões reais com seu\npúblico.',
     color: 'yellow',
-    image: { src: '/images/services/coffee-pack.png', alt: '', width: 458, height: 545 },
+    image: { src: '/images/services/produto.webp', alt: '', width: 231, height: 202 },
   },
   {
     number: '03',
-    title: 'Planejando hoje o crescimento de amanhã.',
-    description: 'Consultoria para organizar processos e impulsionar resultados.',
+    title: 'Planejando hoje o\ncrescimento de\namanhã.',
+    description: 'Consultoria para\norganizar processos e\nimpulsionar resultados.',
     color: 'orange',
-    image: { src: '/images/services/phone.png', alt: '', width: 1536, height: 1024 },
+    image: { src: '/images/services/celular.webp', alt: '', width: 210, height: 200 },
   },
   {
     number: '04',
-    title: 'Impulsionando resultados com estratégias inteligentes.',
-    description: 'Campanhas de tráfego pago focadas em alcance, conversão e crescimento.',
+    title: 'Impulsionando\nresultados com\nestratégias inteligentes.',
+    description: 'Campanhas de tráfego\npago focadas em alcance,\nconversão e crescimento.',
     color: 'pink',
-    image: { src: '/images/services/coffee-mug.png', alt: '', width: 1536, height: 1024 },
+    image: { src: '/images/services/cafe.webp', alt: '', width: 269, height: 208 },
   },
 ]
 
