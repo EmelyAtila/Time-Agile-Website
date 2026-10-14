@@ -81,7 +81,7 @@ const LIFT = [
 
 // Carta puxada do baralho: afunda um pouco, sobe de lado passando do ponto e assenta
 const PULL_EASE =
-  '[@media(hover:hover)]:group-hover:shadow-card-hover [@media(hover:hover)]:group-hover:duration-[850ms] [@media(hover:hover)]:group-hover:ease-[linear(0,-0.12_14%,0.25_30%,0.75_46%,1.06_63%,1.01_80%,1)]'
+  '[@media(hover:hover)]:group-hover:shadow-card-hover [@media(hover:hover)]:group-hover:duration-500 [@media(hover:hover)]:group-hover:ease-[linear(0,-0.12_14%,0.25_30%,0.75_46%,1.06_63%,1.01_80%,1)]'
 const PULL = {
   left: `${PULL_EASE} [@media(hover:hover)]:group-hover:-translate-x-[8%] [@media(hover:hover)]:group-hover:-translate-y-[10%] [@media(hover:hover)]:group-hover:-rotate-[4deg]`,
   right: `${PULL_EASE} [@media(hover:hover)]:group-hover:translate-x-[8%] [@media(hover:hover)]:group-hover:-translate-y-[10%] [@media(hover:hover)]:group-hover:rotate-[4deg]`,
