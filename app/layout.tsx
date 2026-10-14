@@ -8,7 +8,7 @@ import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvide
 // Fonte principal (corpo de texto)
 const notoSerif = Noto_Serif({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
+  weight: ['400', '600', '700', '800'],
   variable: '--font-noto-serif',
   display: 'swap',
 })
