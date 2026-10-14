@@ -73,6 +73,20 @@ export function ProjectShowcase() {
   )
 }
 
+// Fotos alternam o giro ao subir
+const LIFT = [
+  '[@media(hover:hover)]:group-hover:-translate-y-1 [@media(hover:hover)]:group-hover:-rotate-2',
+  '[@media(hover:hover)]:group-hover:-translate-y-1 [@media(hover:hover)]:group-hover:rotate-2',
+]
+
+// Carta puxada do baralho: afunda um pouco, sobe de lado passando do ponto e assenta
+const PULL_EASE =
+  '[@media(hover:hover)]:group-hover:shadow-card-hover [@media(hover:hover)]:group-hover:duration-[850ms] [@media(hover:hover)]:group-hover:ease-[linear(0,-0.12_14%,0.25_30%,0.75_46%,1.06_63%,1.01_80%,1)]'
+const PULL = {
+  left: `${PULL_EASE} [@media(hover:hover)]:group-hover:-translate-x-[8%] [@media(hover:hover)]:group-hover:-translate-y-[10%] [@media(hover:hover)]:group-hover:-rotate-[4deg]`,
+  right: `${PULL_EASE} [@media(hover:hover)]:group-hover:translate-x-[8%] [@media(hover:hover)]:group-hover:-translate-y-[10%] [@media(hover:hover)]:group-hover:rotate-[4deg]`,
+}
+
 type ProjectGalleryProps = {
   gallery: Gallery
   images: (typeof PROJECTS)[number]['images']
@@ -100,10 +114,14 @@ function ProjectGallery({ gallery, images }: ProjectGalleryProps) {
         const { photo } = frame
         const below = Math.round((gallery.widthBelowLg * photo.width) / gallery.width)
 
+        // O <li> só recebe o hover e quem se mexe é a moldura: a área do hover não foge do ponteiro
         return (
           <li
             key={image.src}
-            className="absolute z-[var(--z)] bg-white transition-transform duration-500 ease-brand motion-reduce:transition-none [@media(hover:hover)]:hover:z-10 [@media(hover:hover)]:hover:-translate-y-1 [@media(hover:hover)]:hover:-rotate-2 [@media(hover:hover)]:even:hover:rotate-2"
+            className={cn(
+              'group absolute z-[var(--z)]',
+              !frame.pull && '[@media(hover:hover)]:hover:z-10'
+            )}
             style={
               {
                 left: pct(frame.x, gallery.width),
@@ -115,21 +133,28 @@ function ProjectGallery({ gallery, images }: ProjectGalleryProps) {
             }
           >
             <div
-              className="absolute"
-              style={{
-                left: pct(photo.x, frame.width),
-                top: pct(photo.y, frame.height),
-                width: pct(photo.width, frame.width),
-                height: pct(photo.height, frame.height),
-              }}
+              className={cn(
+                'absolute inset-0 bg-white transition-[transform,box-shadow] duration-500 ease-brand motion-reduce:transition-none',
+                frame.pull ? PULL[frame.pull] : LIFT[index % 2]
+              )}
             >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                sizes={`(min-width: 1480px) ${photo.width}px, (min-width: 1024px) ${+(photo.width / 14.8).toFixed(2)}vw, ${below}px`}
-                className="object-cover"
-              />
+              <div
+                className="absolute"
+                style={{
+                  left: pct(photo.x, frame.width),
+                  top: pct(photo.y, frame.height),
+                  width: pct(photo.width, frame.width),
+                  height: pct(photo.height, frame.height),
+                }}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  sizes={`(min-width: 1480px) ${photo.width}px, (min-width: 1024px) ${+(photo.width / 14.8).toFixed(2)}vw, ${below}px`}
+                  className="object-cover"
+                />
+              </div>
             </div>
           </li>
         )
