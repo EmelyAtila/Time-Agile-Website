@@ -7,6 +7,7 @@ export function Sorrizinho({ className }: { className?: string }) {
     // overflow-visible: pulando, o rosto passa um pouco do viewBox
     <svg
       aria-hidden
+      data-reveal="pop"
       viewBox="0 0 324 341"
       fill="var(--color-orange)"
       className={cn('pointer-events-none overflow-visible', className)}

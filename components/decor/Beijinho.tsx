@@ -7,6 +7,7 @@ export function Beijinho({ className }: { className?: string }) {
     // overflow-visible: inclinando, o anel passa um pouco do viewBox
     <svg
       aria-hidden
+      data-reveal="pop"
       viewBox="0 0 249 280"
       fill="var(--color-pink)"
       className={cn('pointer-events-none overflow-visible', className)}
