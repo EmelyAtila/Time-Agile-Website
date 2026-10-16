@@ -41,17 +41,20 @@ export function ContactForm() {
       onSubmit={handleSubmit(onSubmit)}
       noValidate
       aria-labelledby="contact-form-title"
+      data-reveal="lift"
+      data-reveal-at="0"
       className="relative rounded-[1.25rem] bg-brand-orange px-5 pb-7 pt-8 text-white md:px-8 lg:rounded-[calc(19*var(--u))] lg:pb-[calc(30.6*var(--u))] lg:pl-[calc(48*var(--u))] lg:pr-[calc(60.5*var(--u))] lg:pt-[calc(32.3*var(--u))]"
     >
       <h3
         id="contact-form-title"
+        data-reveal="rise"
         className="ml-1 font-sans text-[1.625rem] font-black leading-[1.2] lg:ml-[calc(6.4*var(--u))] lg:text-[length:calc(36*var(--u))]"
       >
         {contactContent.formTitle}
       </h3>
 
       <div className="mt-4 flex flex-col gap-4 lg:mt-[calc(17.7*var(--u))] lg:gap-[calc(19.5*var(--u))]">
-        <div className={FIELD}>
+        <div data-reveal="rise" className={FIELD}>
           <label htmlFor="contact-name" className={LABEL}>
             {fields.name.label}
           </label>
@@ -72,7 +75,7 @@ export function ContactForm() {
           )}
         </div>
 
-        <div className={FIELD}>
+        <div data-reveal="rise" className={FIELD}>
           <label htmlFor="contact-email" className={LABEL}>
             {fields.email.label}
           </label>
@@ -93,7 +96,7 @@ export function ContactForm() {
           )}
         </div>
 
-        <div className={FIELD}>
+        <div data-reveal="rise" className={FIELD}>
           <label htmlFor="contact-message" className={LABEL}>
             {fields.message.label}
           </label>
@@ -129,7 +132,7 @@ export function ContactForm() {
         />
       </div>
 
-      <div className="mt-5 flex flex-col items-center lg:mt-[calc(14*var(--u))]">
+      <div data-reveal="rise" className="mt-5 flex flex-col items-center lg:mt-[calc(14*var(--u))]">
         <button
           type="submit"
           disabled={isSubmitting}
