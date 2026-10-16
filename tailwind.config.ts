@@ -16,7 +16,6 @@ const config: Config = {
           red: 'var(--color-red)',
           whatsapp: 'var(--color-whatsapp)',
         },
-        error: 'var(--color-error)',
         muted: 'var(--color-text-muted)',
       },
       fontFamily: {
@@ -31,12 +30,7 @@ const config: Config = {
         xl: '1280px',
         '2xl': '1536px',
       },
-      maxWidth: {
-        container: 'var(--container-max-width)',
-      },
       spacing: {
-        section: 'var(--section-padding-y)',
-        gutter: 'var(--container-padding-x)',
         header: 'var(--header-height)',
       },
       borderRadius: {
