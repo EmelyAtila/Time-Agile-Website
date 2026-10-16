@@ -34,19 +34,22 @@ export function Testimonials() {
       aria-labelledby="testimonials-title"
       className="pb-16 pt-6 [--gap:1rem] [--n:1] [--strip:calc(100%_-_8rem)] md:[--gap:1.5rem] md:[--n:2] md:[--strip:min(100%_-_8rem,44rem)] lg:pb-[calc(var(--stage-width)*0.04)] lg:pt-[calc(var(--stage-width)*0.0128)] lg:[--gap:calc(var(--stage-width)*0.03)] lg:[--n:3] lg:[--strip:min(100%_-_8rem,var(--stage-width)*1.135)] xl:[--n:4]"
     >
-      <div className="mx-auto w-[var(--strip)]">
+      <div data-reveal-group className="mx-auto w-[var(--strip)]">
         <SectionHeading
           id="testimonials-title"
           className="text-right text-[1.75rem] font-black leading-[1.35] md:text-[2rem] lg:text-[length:calc(var(--stage-width)*0.02703)]"
         >
-          <span className="block text-brand-yellow">{testimonialsIntro.title}</span>
-          <span className="block text-brand-pink-light lg:mr-[0.27em]">
+          <span data-reveal="slide" className="block text-brand-yellow">
+            {testimonialsIntro.title}
+          </span>
+          <span data-reveal="slide" className="block text-brand-pink-light lg:mr-[0.27em]">
             {testimonialsIntro.highlight}
           </span>
         </SectionHeading>
       </div>
 
       <Carousel
+        data-reveal-group
         opts={{ loop: true, align: 'start' }}
         aria-label="Depoimentos de clientes"
         className="mx-auto mt-8 w-[var(--strip)] lg:mt-[calc(var(--stage-width)*0.0298)]"
@@ -58,7 +61,9 @@ export function Testimonials() {
               aria-hidden={copy > 0 || undefined}
               className="basis-[calc(100%/var(--n))] pl-[var(--gap)]"
             >
+              {/* A entrada anima o <figure>: o Embla move os slides em volta dele */}
               <figure
+                data-reveal="card-up"
                 className={cn(
                   'flex h-full flex-col items-center justify-center rounded-[1.125rem] px-5 py-6 text-center',
                   cardColors[item.color]
@@ -74,8 +79,8 @@ export function Testimonials() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious data-reveal="fade" />
+        <CarouselNext data-reveal="fade" />
       </Carousel>
     </section>
   )
