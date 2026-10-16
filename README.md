@@ -37,20 +37,20 @@ components/
     about/           AboutTeam (adesivos da equipe sobre os blobs)
     services/        ServiceCard, serviceCards (posições, inclinações e movimento de hover de cada card), CardFace (rostos de fundo dos cards, animados no hover), ServiceFan (wrapper client)
     tags/            TagLoop (wrapper client do loop da faixa de tags), TagRibbon (fita laranja por trás das tags)
-    projects/        ProjectsPortrait (Iranides sobre os blobs), ProjectsArrow (seta na borda da faixa rosa), ProjectShowcase + showcaseLayout (faixa rosa com os projetos e as fotos), ProjectsRibbon (fita rosa que se desenha com a rolagem)
+    projects/        ProjectsPortrait (Iranides sobre os blobs), ProjectsArrow (seta na borda da faixa rosa, que se desenha ao entrar na tela e balança no hover), ProjectShowcase + showcaseLayout (faixa rosa com os projetos e as fotos), ProjectsRibbon (fita rosa que se desenha com a rolagem)
     contact/         ContactSmileys (os quatro smileys na borda esquerda), ContactFacesLoop (wrapper client do beijo e da risada)
   forms/             ContactForm
-  ui/                Button, Container, SectionHeading, Carousel  (barrel em index.ts)
-  decor/             Ribbon (fitas), Smiley, Beijinho, Sorrizinho, InstagramIcon, LinkedInIcon, WhatsAppIcon, PaperPlaneIcon, SmartphoneIcon — elementos puramente visuais
+  ui/                Button, SectionHeading, Carousel  (barrel em index.ts)
+  decor/             Smiley, Beijinho, Sorrizinho, InstagramIcon, LinkedInIcon, WhatsAppIcon, PaperPlaneIcon, SmartphoneIcon — elementos puramente visuais
   providers/         SmoothScrollProvider (Lenis + GSAP)
 content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
-animations/          gsap.config.ts, useScrollReveal, useHeroIntro, heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), faceMotions (beijo, risada, piscadinha e balanço dos rostos, também no hover), useSmileyLoop (balanço dos smileys), useContactFaces (beijo do Beijinho e risada do Sorrizinho), useServiceCardsHover (hover dos cards de serviço), useTagMarquee (faixa de tags em loop), useScrollDraw (fita que se desenha com a rolagem)
-hooks/               useMediaQuery, useScrollPosition, useSmoothScroll
+animations/          gsap.config.ts, useScrollReveal, useHeroIntro, heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), faceMotions (beijo, risada, piscadinha e balanço dos rostos, também no hover), useSmileyLoop (balanço dos smileys), useContactFaces (beijo do Beijinho e risada do Sorrizinho), useServiceCardsHover (hover dos cards de serviço), useTagMarquee (faixa de tags em loop), useScrollDraw (fita que se desenha com a rolagem), useArrowDraw (seta que se desenha ao entrar na tela e balança no hover)
+hooks/               useSmoothScroll
 lib/                 metadata, validations (zod), escape-html, utils (cn)
 styles/              tokens.css (fonte da verdade do design), base.css
 types/               tipos compartilhados
-public/images/       about/, services/, projects/, testimonials/, os smileys do contato (Beijinho, Sorrizinho) e a logo branca do rodapé (logo-footer)
-public/fonts/        fontes locais (Handelson One)
+public/images/       about/, services/, projects/ e a logo branca do rodapé (logo-footer)
+public/fonts/        fontes locais (Satoshi e Handelson One)
 docs/                identidade visual e mockup (fora do build Docker)
 ```
 
@@ -59,7 +59,7 @@ docs/                identidade visual e mockup (fora do build Docker)
 - **Tokens** ficam em `styles/tokens.css` e o `tailwind.config.ts` apenas os mapeia para utilitários:
   - cores: `bg-brand-pink`, `text-brand-wine`, `bg-brand-cream`, etc.;
   - fontes: `font-serif` (Noto Serif, texto), `font-sans` (Satoshi, títulos/UI) e `font-script` (Handelson One, destaques);
-  - medidas: `max-w-container`, `px-gutter`, `py-section`, `shadow-cta`, `rounded-{sm,md,lg}`.
+  - medidas e efeitos: `h-header`, `rounded-{sm,md,lg}`, `shadow-card`, `shadow-card-hover`, `shadow-cta`.
 - Os componentes já têm markup semântico e classes mínimas de layout. A estilização visual é a próxima etapa.
 - Classes condicionais precisam ser **strings completas** (ex.: mapa `cardColors` em `Services.tsx`). Não use interpolação do tipo `` `bg-brand-${cor}` ``, porque o Tailwind não detecta essas classes.
 - Para animar, marque os elementos com `data-reveal` e use `const ref = useScrollReveal()` no container.
@@ -67,7 +67,7 @@ docs/                identidade visual e mockup (fora do build Docker)
 
 ### Fonte Handelson One
 
-A Handelson One é comercial e não está no Google Fonts. Coloque o arquivo em `public/fonts/HandelsonOne.woff2`; o `@font-face` já está em `styles/base.css`. Sem o arquivo, o site usa o fallback `cursive`.
+A Handelson One é comercial e não está no Google Fonts: o arquivo fica em `public/fonts/handelson-one-maisfontes.086c/` e é carregado com `next/font/local` em `app/layout.tsx`, como a Satoshi.
 
 ## Pendências de conteúdo
 
