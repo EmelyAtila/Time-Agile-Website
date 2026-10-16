@@ -41,6 +41,14 @@ section[id] {
   }
 }
 
+/* O mesmo para as entradas no scroll (animations/useScrollReveals.ts) */
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  html:not([data-reveal-ready]) [data-reveal] {
+    visibility: hidden;
+    animation: intro-failsafe 0s linear 4s forwards;
+  }
+}
+
 @keyframes intro-failsafe {
   to {
     visibility: visible;
