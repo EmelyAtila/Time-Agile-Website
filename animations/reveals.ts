@@ -161,27 +161,16 @@ export const REVEALS = {
     return tl
   },
 
-  // Polaroide jogada na mesa: cai girada e a foto revela
-  polaroid: (el, { desktop, index }) => {
-    const photo = el.querySelector('img')
-    const tl = gsap.timeline().from(el, {
+  // Polaroide jogada na mesa: cai girada e assenta
+  polaroid: (el, { desktop, index }) =>
+    gsap.from(el, {
       y: desktop ? -80 : -40,
       rotation: (desktop ? 16 : 9) * side(index),
       scale: 1.15,
       opacity: 0,
       duration: 0.85,
       ease: 'back.out(1.5)',
-    })
-    if (photo) {
-      tl.fromTo(
-        photo,
-        { filter: 'brightness(1.8) grayscale(1)' },
-        { filter: 'brightness(1) grayscale(0)', duration: 1.1, ease: 'power1.out' },
-        0.2
-      )
-    }
-    return tl
-  },
+    }),
 
   // Pílulas que estouram como bolhas. Sem a transição de CSS do hover, que atrasaria cada quadro
   bubbles: (el) => {
