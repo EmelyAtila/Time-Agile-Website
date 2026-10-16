@@ -24,22 +24,34 @@ export function Contact() {
 
       <div className="mx-auto max-w-[92.5rem] px-6 md:px-12 lg:w-[calc(1480*var(--u))] lg:max-w-none lg:px-0">
         {/* max-w em `em` para o texto quebrar como no mockup */}
-        <header className="mx-auto max-w-[33.5em] text-center text-[1.0625rem] md:text-[1.125rem] lg:text-[length:calc(24*var(--u))]">
+        <header
+          data-reveal-group
+          className="mx-auto max-w-[33.5em] text-center text-[1.0625rem] md:text-[1.125rem] lg:text-[length:calc(24*var(--u))]"
+        >
           <SectionHeading
             id="contact-title"
+            data-reveal="heading"
             className="text-[1.75rem] font-black leading-[1.35] text-brand-pink md:text-[2rem] lg:text-[length:calc(40*var(--u))]"
           >
             {contactContent.title}
           </SectionHeading>
-          <p className="mt-3 font-semibold leading-[1.54] lg:mt-[calc(3.6*var(--u))]">
+          <p
+            data-reveal="text"
+            className="mt-3 font-semibold leading-[1.54] lg:mt-[calc(3.6*var(--u))]"
+          >
             {contactContent.description}
           </p>
         </header>
 
-        <div className="relative mx-auto mt-12 max-w-[38rem] lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none">
+        {/* O card amarelo vem antes no DOM, mas é colado depois que o formulário sobe (data-reveal-at) */}
+        <div
+          data-reveal-group="lg"
+          className="relative mx-auto mt-12 max-w-[38rem] lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none">
           {/* Abaixo do lg vem antes do formulário e avança sobre o canto dele, como no desktop */}
           <aside
             aria-labelledby="contact-info-title"
+            data-reveal="sticker"
+            data-reveal-at="0.55"
             className="relative z-10 -mb-6 ml-auto w-fit lg:absolute lg:left-[calc(528*var(--u))] lg:top-[calc(-24*var(--u))] lg:mb-0 lg:ml-0 lg:w-[calc(329*var(--u))]"
           >
             <h3
