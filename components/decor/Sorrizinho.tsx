@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-// public/images/Sorrizinho.svg inline (coordenadas com 1 casa decimal) para animar as partes marcadas com data-part
+// Sorrizinho exportado do Figma, inline (coordenadas com 1 casa decimal) para animar as partes marcadas com data-part
 // (animations/faceMotions.ts). A boca é o traço de baixo; o de cima fica parado. A elipse é a área do hover, fora do <g> que se mexe
 export function Sorrizinho({ className }: { className?: string }) {
   return (

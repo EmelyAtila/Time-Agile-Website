@@ -5,7 +5,7 @@ export type CardFaceName = 'beijinho' | 'sorrizinho' | 'piscadinha' | 'smile'
 
 type Face = { viewBox: string; opacity: number; drawing: ReactNode }
 
-// public/images/services/*.svg inline (coordenadas com 1 casa decimal) para o hover do card animar as partes
+// Rostos exportados do Figma, inline (coordenadas com 1 casa decimal) para o hover do card animar as partes
 // marcadas com data-part (animations/faceMotions.ts). O smile veio do mockup, por isso o viewBox
 const FACES: Record<CardFaceName, Face> = {
   beijinho: {
