@@ -3,12 +3,14 @@
 import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from './gsap.config'
+import { FACE_MOTIONS, replay } from './faceMotions'
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)'
 
 const SMILEY_EVERY = 3.2
 
-// O ref vai num <g>, não no <svg>: o GSAP sobrescreveria o transform do Tailwind
+// O ref vai num <g>, não no <svg>: o GSAP sobrescreveria o transform do Tailwind.
+// Passar o mouse na elipse [data-face-hit] adianta o balanço
 export function useSmileyLoop() {
   const ref = useRef<SVGGElement>(null)
 
@@ -17,8 +19,7 @@ export function useSmileyLoop() {
     if (!face) return
 
     gsap.matchMedia().add(MOTION_OK, () => {
-      gsap.set(face, { transformOrigin: '50% 50%' })
-      gsap
+      const loop = gsap
         .timeline({
           repeat: -1,
           repeatDelay: SMILEY_EVERY,
@@ -30,10 +31,13 @@ export function useSmileyLoop() {
             toggleActions: 'play pause resume pause',
           },
         })
-        .to(face, { rotation: 14, duration: 0.2, ease: 'power2.out' })
-        .to(face, { rotation: -10, duration: 0.28, ease: 'sine.inOut' })
-        .to(face, { rotation: 6, duration: 0.24, ease: 'sine.inOut' })
-        .to(face, { rotation: 0, duration: 0.7, ease: 'elastic.out(1.4, 0.35)' })
+        .add(FACE_MOTIONS.wobble(face))
+
+      const hit = face.ownerSVGElement?.querySelector('[data-face-hit]')
+      const onPointerEnter = () => replay(loop)
+      hit?.addEventListener('pointerenter', onPointerEnter)
+
+      return () => hit?.removeEventListener('pointerenter', onPointerEnter)
     })
   })
 
