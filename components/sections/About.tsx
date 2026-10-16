@@ -7,14 +7,23 @@ export function About() {
   return (
     <section id="sobre" aria-labelledby="about-title" className="relative bg-brand-yellow">
       <div className="relative mx-auto max-w-[92.5rem] lg:min-h-[min(37.97vw,35.125rem)]">
-        <div className="px-[clamp(1.5rem,5.54vw,5.125rem)] pt-14 lg:py-[clamp(2.75rem,4.43vw,4.125rem)]">
-          {/* font-normal: a Handelson só tem peso 400 e o bold herdado seria sintético */}
+        <div
+          data-reveal-group="lg"
+          className="px-[clamp(1.5rem,5.54vw,5.125rem)] pt-14 lg:py-[clamp(2.75rem,4.43vw,4.125rem)]"
+        >
+          {/* font-normal: a Handelson só tem peso 400 e o bold herdado seria sintético.
+              inline-block: o carimbo da entrada precisa de transform */}
           <SectionHeading
             id="about-title"
+            data-reveal="heading"
             className="max-w-[19em] text-[clamp(1.75rem,4.2vw,2.125rem)] leading-[1.3] tracking-[0.015em] text-white lg:text-[clamp(1.75rem,2.59vw,2.4rem)]"
           >
             {about.title}{' '}
-            <em className="relative top-[0.04em] whitespace-nowrap font-script text-[1.67em] font-normal not-italic leading-[0] tracking-normal text-brand-pink">
+            <em
+              data-reveal="stamp"
+              data-reveal-at=">-0.35"
+              className="relative top-[0.04em] inline-block whitespace-nowrap font-script text-[1.67em] font-normal not-italic leading-[0] tracking-normal text-brand-pink"
+            >
               {about.highlight}
             </em>
           </SectionHeading>
@@ -23,6 +32,7 @@ export function About() {
             {about.paragraphs.map((paragraph) => (
               <p
                 key={paragraph}
+                data-reveal="text"
                 className="mt-[1.65em] text-white first:mt-0 first:text-brand-wine lg:whitespace-pre-line"
               >
                 {paragraph}
