@@ -20,10 +20,14 @@ export function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-brand-wine text-white lg:[--u:calc(var(--stage-width)/1480)] lg:[container-type:inline-size]">
+    <footer
+      data-reveal-group="lg"
+      className="bg-brand-wine text-white lg:[--u:calc(var(--stage-width)/1480)] lg:[container-type:inline-size]"
+    >
       <div className="mx-auto grid max-w-[92.5rem] gap-10 px-6 pb-12 pt-14 md:grid-cols-2 md:px-12 lg:min-h-[calc(422*var(--u))] lg:max-w-none lg:grid-cols-[calc(730cqw/14.8)_calc(174cqw/14.8)_1fr] lg:content-start lg:gap-0 lg:pb-0 lg:pl-[calc(145cqw/14.8)] lg:pr-0 lg:pt-[calc(86*var(--u))]">
         <div className="md:col-span-2 lg:col-span-1">
           <Image
+            data-reveal="rise"
             src="/images/logo-footer.svg"
             alt={`${site.name} — ${site.tagline}`}
             width={276}
@@ -31,10 +35,13 @@ export function Footer() {
             unoptimized
             className="h-auto w-56 lg:w-[calc(276*var(--u))]"
           />
-          <p className="mt-6 max-w-[30rem] text-[0.9375rem] font-semibold leading-[1.6] text-white/80 lg:mt-[calc(18*var(--u))] lg:w-[calc(461*var(--u))] lg:max-w-none lg:text-justify lg:text-[length:max(0.875rem,calc(20*var(--u)))] lg:leading-[1.565]">
+          <p
+            data-reveal="rise"
+            className="mt-6 max-w-[30rem] text-[0.9375rem] font-semibold leading-[1.6] text-white/80 lg:mt-[calc(18*var(--u))] lg:w-[calc(461*var(--u))] lg:max-w-none lg:text-justify lg:text-[length:max(0.875rem,calc(20*var(--u)))] lg:leading-[1.565]">
             {site.footerDescription}
           </p>
           <ul
+            data-reveal="rise"
             className="mt-5 flex gap-5 lg:ml-[calc(6*var(--u))] lg:mt-[calc(13*var(--u))] lg:gap-[calc(19*var(--u))]"
             aria-label="Redes sociais"
           >
@@ -63,7 +70,12 @@ export function Footer() {
           </ul>
         </div>
 
-        <nav aria-labelledby="footer-nav" className="lg:pt-[calc(34*var(--u))]">
+        <nav
+          aria-labelledby="footer-nav"
+          data-reveal="rise"
+          data-reveal-at="0.15"
+          className="lg:pt-[calc(34*var(--u))]"
+        >
           <h2 id="footer-nav" className={HEADING}>
             Navegue
           </h2>
@@ -78,7 +90,7 @@ export function Footer() {
           </ul>
         </nav>
 
-        <div className="lg:pt-[calc(34*var(--u))]">
+        <div data-reveal="rise" className="lg:pt-[calc(34*var(--u))]">
           <h2 id="footer-contact" className={HEADING}>
             Fale com a gente
           </h2>
@@ -116,7 +128,10 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t-2 border-white/70 lg:border-t-[length:max(2px,calc(3*var(--u)))]">
+      <div
+        data-reveal="wipe"
+        data-reveal-from="center"
+        className="border-t-2 border-white/70 lg:border-t-[length:max(2px,calc(3*var(--u)))]">
         <div className="mx-auto flex max-w-[92.5rem] flex-col items-center gap-3 px-6 py-6 text-center text-[0.875rem] text-white/60 md:flex-row md:justify-between md:px-12 md:text-left lg:min-h-[calc(84*var(--u))] lg:max-w-none lg:px-[calc(67cqw/14.8)] lg:pb-[calc(12*var(--u))] lg:pt-0 lg:text-[length:max(0.8125rem,calc(20*var(--u)))]">
           <p>
             © {year} {site.name}. Todos os direitos reservados.
