@@ -1,5 +1,6 @@
 // Medidas em px de docs/Desktop - 1.svg, a partir do canto de cima à esquerda de cada card
 import type { CardHover } from '@/animations/useServiceCardsHover'
+import type { CardFaceName } from './CardFace'
 
 export const STAGE = { width: 1480, height: 484 }
 
@@ -9,6 +10,8 @@ export const CARD_TEXT = { size: 18, leading: 28 }
 type Placed = { x: number; y: number }
 
 type Picture = Placed & { src: string; width: number; height: number }
+
+type Face = Placed & { name: CardFaceName; width: number }
 
 type TextBlock = Placed & {
   angle: number
@@ -21,7 +24,7 @@ export type ServiceCardArt = Placed & {
   height: number
   angle: number
   hover: CardHover
-  emoji: Picture
+  emoji: Face
   badge: Picture
   sticker: Placed
   title: TextBlock
@@ -39,7 +42,7 @@ export const SERVICE_CARDS: ServiceCardArt[] = [
     height: 402.695,
     angle: -7.374,
     hover: 'pop',
-    emoji: { src: `${IMAGES}/Beijinho.svg`, x: 0, y: 45.09, width: 342, height: 355 },
+    emoji: { name: 'beijinho', x: 0, y: 45.09, width: 342 },
     badge: { src: `${IMAGES}/numero-card-1.svg`, x: 237.96, y: -17.32, width: 37, height: 32 },
     sticker: { x: 0, y: -37.98 },
     title: { x: 274.26, y: 48.47, angle: -7.76, align: 'right' },
@@ -52,7 +55,7 @@ export const SERVICE_CARDS: ServiceCardArt[] = [
     height: 402.695,
     angle: 4.161,
     hover: 'draw',
-    emoji: { src: `${IMAGES}/sorrizinho.svg`, x: -29.22, y: 0, width: 325, height: 340 },
+    emoji: { name: 'sorrizinho', x: -29.22, y: 0, width: 325 },
     badge: { src: `${IMAGES}/numero-card-2.svg`, x: 235.4, y: 32.23, width: 37, height: 32 },
     sticker: { x: 10.99, y: 222 },
     title: { x: 28.39, y: 55.14, angle: 5.34, align: 'left' },
@@ -65,7 +68,7 @@ export const SERVICE_CARDS: ServiceCardArt[] = [
     height: 408.721,
     angle: -4.545,
     hover: 'pull',
-    emoji: { src: `${IMAGES}/piscadinha.svg`, x: 0, y: 23.3, width: 331, height: 380 },
+    emoji: { name: 'piscadinha', x: 0, y: 23.3, width: 331 },
     badge: { src: `${IMAGES}/numero-card-3.svg`, x: 241, y: -3.7, width: 36, height: 31 },
     sticker: { x: 0, y: 207.93 },
     title: { x: 43.99, y: 52.6, angle: -5.04, align: 'left' },
@@ -79,7 +82,7 @@ export const SERVICE_CARDS: ServiceCardArt[] = [
     angle: 7.014,
     hover: 'swing',
     // O smile exportado veio errado: este foi tirado do mockup
-    emoji: { src: `${IMAGES}/smile-card.svg`, x: -44.32, y: -15.98, width: 292, height: 288 },
+    emoji: { name: 'smile', x: -44.32, y: -15.98, width: 292 },
     badge: { src: `${IMAGES}/numero-card-4.svg`, x: 233.74, y: 49.09, width: 37, height: 31 },
     sticker: { x: 28.68, y: 235.03 },
     title: { x: 15.53, y: 59.84, angle: 7.6, align: 'left' },

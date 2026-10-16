@@ -2,6 +2,7 @@ import Image from 'next/image'
 import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import type { BrandColor, Service } from '@/types'
+import { CardFace } from './CardFace'
 import { CARD_TEXT, CARD_TITLE, type ServiceCardArt } from './serviceCards'
 
 // Classes completas (não interpolar) para o Tailwind conseguir detectá-las
@@ -65,14 +66,7 @@ export function ServiceCard({ service, art, className, style }: ServiceCardProps
           className="absolute inset-0 origin-top-left"
           style={{ transform: `rotate(${-art.angle}deg)` }}
         >
-          <Image
-            src={art.emoji.src}
-            alt=""
-            width={art.emoji.width}
-            height={art.emoji.height}
-            className="absolute h-auto max-w-none"
-            style={picture(art.emoji)}
-          />
+          <CardFace name={art.emoji.name} className="absolute h-auto" style={picture(art.emoji)} />
           <Image
             data-card-sticker
             src={service.image.src}
