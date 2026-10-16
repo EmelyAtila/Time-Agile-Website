@@ -158,6 +158,6 @@ Nada aqui foi descartado; ficou fora do escopo da entrada.
 ### Pendências que apareceram no caminho
 
 - [x] **Botão flutuante do WhatsApp por cima da pill das redes.** Resolvido: o flutuante só aparece enquanto está sobre a seção Contato (`components/layout/WhatsAppButton.tsx`, prop `section`, definida em `app/page.tsx`). No Hero, nas outras seções e no rodapé ele fica escondido e fora do Tab.
-- [ ] `public/logos/logo-instagram.svg` e `loho-whatsapp.svg` (nome com erro de digitação) viraram componentes em `components/decor/` e não são mais carregados pelo site. Remover de `public/` ou mover para `docs/`.
+- [x] **Arquivos de `public/logos/` sem uso.** Resolvido: viraram componentes em `components/decor/` e a pasta foi removida junto com as outras imagens sem uso.
 - [ ] Sombra do título (`drop-shadow`) é recalculada a cada quadro enquanto o texto se move. Se pesar em celular fraco, aplicar só no fim.
 - [ ] Conferir em Safari e Firefox reais: a verificação foi feita só no Chrome.
