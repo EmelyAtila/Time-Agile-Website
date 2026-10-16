@@ -18,7 +18,7 @@ export function Contact() {
     <section
       id="contato"
       aria-labelledby="contact-title"
-      className="relative overflow-x-clip pb-20 pt-10 lg:pb-[calc(141.3*var(--u))] lg:pt-[calc(10.3*var(--u))] lg:[--u:min(var(--stage-width)/1480,(100svh_-_var(--header-height)_-_1rem)/940)]"
+      className="relative overflow-x-clip pb-20 pt-10 lg:pb-[calc(117.3*var(--u))] lg:pt-[calc(30.3*var(--u))] lg:[--u:min(var(--stage-width)/1480,(100svh_-_var(--header-height)_-_1rem)/940)]"
     >
       <ContactSmileys className="hidden lg:block" />
 
@@ -36,7 +36,7 @@ export function Contact() {
           </p>
         </header>
 
-        <div className="relative mx-auto mt-12 max-w-[38rem] lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(108.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none">
+        <div className="relative mx-auto mt-12 max-w-[38rem] lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none">
           {/* Abaixo do lg vem antes do formulário e avança sobre o canto dele, como no desktop */}
           <aside
             aria-labelledby="contact-info-title"
