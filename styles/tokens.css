@@ -14,22 +14,16 @@
   --color-cream: #fbf2e1;
   --color-red: #ff3131;
   --color-whatsapp: #25d366;
-  --color-error: #dc2626;
 
   --color-bg: var(--color-cream);
   --color-text: var(--color-wine);
   --color-text-muted: rgb(60 5 19 / 0.7);
-  --color-cta: var(--color-pink);
-  --color-cta-hover: var(--color-orange);
 
   /* Variáveis injetadas por next/font em app/layout.tsx */
   --font-serif: var(--font-noto-serif), Georgia, serif;
   --font-sans: var(--font-satoshi), system-ui, sans-serif;
   --font-script: var(--font-handelson), cursive;
 
-  --container-max-width: 1280px;
-  --container-padding-x: 24px;
-  --section-padding-y: 96px;
   --header-height: 80px;
   /* Margem lateral do Header e do Hero: 72px nos 1480px do mockup */
   --hero-padding-x: clamp(1.5rem, 4.86vw, 4.5rem);
@@ -44,13 +38,10 @@
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
-  --radius-full: 9999px;
 
   --shadow-card: 0 4px 24px rgb(60 5 19 / 0.08);
   --shadow-card-hover: 0 12px 40px rgb(60 5 19 / 0.16);
   --shadow-cta: 0 8px 24px rgb(253 66 116 / 0.35);
 
   --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
 }
