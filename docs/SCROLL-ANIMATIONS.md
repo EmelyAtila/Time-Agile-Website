@@ -1,9 +1,15 @@
 # Entradas no scroll
 
-Cada seção entra uma vez, quando chega à tela. As entradas animam só `transform`, `opacity` e `clip-path`; a única exceção é o `filter` das polaroides. O conteúdo já vem pronto do servidor, então o SEO e o leitor de tela não mudam. Com `prefers-reduced-motion` ou sem JavaScript, tudo aparece pronto.
+As entradas são **presas à rolagem**. Cada bloco começa a entrar quando o topo dele chega a 80% da tela e termina quando ele está inteiro na tela; se for mais alto que a tela, termina com o topo a 20%. Entre o começo e o fim há sempre pelo menos 35% da altura da tela de rolagem.
 
-- `animations/reveals.ts`: os presets (o que cada entrada faz) e `LEAD` (intervalo até o próximo elemento).
-- `animations/useScrollReveals.ts`: acha os grupos, monta uma timeline e um ScrollTrigger por grupo e, no fim, devolve tudo ao CSS.
+- Rolando devagar, a entrada vai devagar. Parando, ela para junto.
+- Ela persegue a rolagem com 0,5s de atraso, para não andar aos trancos.
+- Só avança, nunca volta. Depois de terminar, fica pronta para sempre.
+
+As entradas animam só `transform`, `opacity` e `clip-path`. O conteúdo já vem pronto do servidor, então o SEO e o leitor de tela não mudam. Com `prefers-reduced-motion` ou sem JavaScript, tudo aparece pronto.
+
+- `animations/reveals.ts`: os presets (o que cada entrada faz) e `LEAD` (intervalo até o próximo elemento, no tempo da timeline).
+- `animations/useScrollReveals.ts`: acha os grupos, liga a timeline de cada um à rolagem (`START_AT`, `TALL_END_AT`, `MIN_RANGE`, `LAG`) e, no fim, devolve tudo ao CSS.
 - `components/providers/ScrollReveals.tsx`: liga o hook. Está montado em `app/page.tsx`.
 - `styles/base.css`: esconde `[data-reveal]` até o hook assumir. Tem um failsafe de 4s, caso o JS falhe.
 
@@ -12,7 +18,7 @@ Cada seção entra uma vez, quando chega à tela. As entradas animam só `transf
 | Atributo | Onde | O que faz |
 | --- | --- | --- |
 | `data-reveal="<preset>"` | no elemento | anima com aquele preset |
-| `data-reveal-group` | no bloco que dispara | os `[data-reveal]` de dentro entram juntos, na ordem do DOM, quando o topo do bloco passa de 80% da tela |
+| `data-reveal-group` | no bloco que conduz a entrada | os `[data-reveal]` de dentro entram juntos, na ordem do DOM, conforme o bloco entra na tela |
 | `data-reveal-group="lg"` | idem | grupo só a partir do lg; abaixo dele, cada elemento dispara sozinho (blocos altos no celular) |
 | `data-reveal-at="<posição>"` | no elemento | posição do GSAP na timeline do grupo (`"0"`, `"0.55"`, `"<"`, `">-0.35"`); sem ele, entra `LEAD` segundos depois do anterior |
 | `data-reveal-from="center"` | com `wipe` | abre do meio em vez da esquerda |
@@ -20,10 +26,10 @@ Cada seção entra uma vez, quando chega à tela. As entradas animam só `transf
 Regras:
 - Sem grupo, o elemento dispara sozinho.
 - Quem está dentro de outro `[data-reveal]` entra sempre no grupo dele, como o "Crescer!" no título do Sobre e os campos no formulário.
-- Grupo sem altura, com filhos todos absolutos (como os projetos no desktop), dispara pela posição do primeiro elemento.
-- Perto do fim da página, o gatilho nunca passa do limite da rolagem: o rodapé também entra.
-- Recarregar no meio da página deixa prontas as seções que já ficaram para trás.
-- Cruzar o lg reconstrói as entradas, mas o que já tocou não toca de novo.
+- Grupo sem altura, com filhos todos absolutos (como os projetos no desktop), acompanha a posição do primeiro elemento.
+- Perto do fim da página, o fim da entrada nunca passa do limite da rolagem: o rodapé também termina.
+- Recarregar no meio da página deixa prontas as seções que já ficaram para trás. A seção que está na tela pula para o ponto da rolagem.
+- Cruzar o lg reconstrói as entradas, mas o que já terminou não toca de novo.
 
 **Não animar elementos que outro hook já move**: `article` dos cards (hover), `<g data-face>` (rostos), o `<g>` do `useSmileyLoop`, paths das fitas e da seta. Em quem já tem `transform` do Tailwind, use um `<g data-pop>` por dentro (Smiley), `clip-path`, ou anime o pai.
 
@@ -44,7 +50,7 @@ Regras:
 | `fade` | só opacidade |
 | `wipe` | `clip-path` abrindo na horizontal |
 | `card` | cartas dadas: no desktop, cada card sai do meio do leque e voa até o lugar, e o rosto do fundo se mexe ao assentar; abaixo do lg, sobe girando |
-| `polaroid` | foto jogada na mesa, que revela de branco e cinza para a cor |
+| `polaroid` | foto jogada na mesa: cai girada e assenta |
 | `bubbles` | as `li` de dentro estouram como bolhas |
 | `card-up` | card sobe girando um pouco |
 
@@ -59,7 +65,7 @@ O SplitText divide em palavras, não em linhas, então um resize não quebra a d
 | Sobre | título palavra a palavra, "Crescer!" carimbado; parágrafos fluem; blobs em gelatina; fotos coladas; nomes escritos à mão; smiley com pop |
 | Serviços | título e descrição; cartas dadas a partir do meio do leque; cada rosto reage ao assentar |
 | Tags | pílulas estouram em sequência enquanto a faixa corre |
-| Projetos | título e texto; blobs; Iranides colada; faixa rosa abrindo; títulos escritos à mão; polaroides caindo e revelando |
+| Projetos | título e texto; blobs; Iranides colada; faixa rosa abrindo; títulos escritos à mão; polaroides caindo |
 | Depoimentos | as duas linhas do título entram pela direita; cards sobem; setas aparecem |
 | Contato | título e texto; formulário sobe e os campos em sequência; card amarelo colado sobre o canto; smileys, Beijinho e Sorrizinho com pop |
 | Rodapé | logo, texto, redes e colunas sobem; a linha da barra abre do meio |
