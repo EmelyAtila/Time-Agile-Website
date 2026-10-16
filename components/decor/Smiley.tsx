@@ -9,7 +9,8 @@ type SmileyProps = {
   className?: string
 }
 
-// Inline para a cor vir dos tokens; o viewBox corrige o corte na borda esquerda do arquivo exportado
+// Inline para a cor vir dos tokens; o viewBox corrige o corte na borda esquerda do arquivo exportado.
+// A elipse é a área do hover, fora do <g> que gira
 export function Smiley({ color, className }: SmileyProps) {
   const faceRef = useSmileyLoop()
 
@@ -21,7 +22,16 @@ export function Smiley({ color, className }: SmileyProps) {
       fill={`var(--color-${color})`}
       className={cn('pointer-events-none overflow-visible', className)}
     >
-      <g ref={faceRef}>
+      <ellipse
+        data-face-hit
+        cx={36.5}
+        cy={84.8}
+        rx={70}
+        ry={64.5}
+        fill="transparent"
+        className="[@media(hover:hover)]:pointer-events-auto"
+      />
+      <g ref={faceRef} data-face="wobble">
         <path d="M69.6666 34.9572C94.4253 45.4531 106.824 63.1072 105.141 82.9303C103.459 102.753 93.1131 120.557 80.4712 130.33C65.0746 143.322 44.7187 149.253 23.4897 144.418C2.45056 139.218 -17.3615 127.513 -25.3825 109.743C-33.8779 92.8855 -33.5269 73.547 -24.0385 55.3164C-14.5501 37.0857 2.5608 24.9475 22.3506 22.1786C38.4305 20.3166 54.9974 25.8138 69.6666 34.9572ZM63.9736 45.8956C50.8288 37.9707 36.4537 34.4835 23.0402 37.4441C8.48485 40.5246 -5.01408 49.8705 -11.656 62.632C-18.2979 75.3934 -18.4654 90.232 -11.9753 102.647C-5.67485 115.428 7.3782 125.603 22.6104 129.517C37.8426 133.431 53.35 130.595 65.5173 121.734C77.495 113.237 85.6582 99.6262 86.3002 83.8761C86.6575 68.673 77.8806 54.4297 63.9736 45.8956Z" />
         <path d="M85.4023 56.5703C88.2616 59.3719 90.7412 62.9027 91.9842 66.7358C89.6792 65.3581 86.9148 62.3742 85.3106 58.8203L85.4023 56.5703Z" />
         <path d="M15.4193 31.3472C16.0683 32.5887 16.1847 34.0241 15.2725 34.9472C14.4337 34.0702 14.3173 32.6348 15.4193 31.3472Z" />
