@@ -53,6 +53,7 @@ export function ServiceCard({ service, art, className, style }: ServiceCardProps
   return (
     <li
       data-card-hover={art.hover}
+      data-reveal="card"
       className={cn('group [container-type:inline-size]', className)}
       style={{ aspectRatio: `${art.width} / ${art.height}`, ...style }}
     >
