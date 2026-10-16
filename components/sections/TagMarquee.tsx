@@ -30,7 +30,7 @@ export function TagMarquee() {
       <TagRibbon className="-z-10" />
 
       <TagLoop className="overflow-hidden py-12">
-        <div data-marquee-track className="flex w-max">
+        <div data-marquee-track data-reveal="bubbles" className="flex w-max">
           {renderList(false)}
           {renderList(true)}
         </div>
