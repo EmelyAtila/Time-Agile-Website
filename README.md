@@ -41,7 +41,7 @@ components/
     contact/         ContactSmileys (os quatro smileys na borda esquerda)
   forms/             ContactForm
   ui/                Button, Container, SectionHeading, Carousel  (barrel em index.ts)
-  decor/             Ribbon (fitas), Smiley, InstagramIcon, WhatsAppIcon, PaperPlaneIcon, SmartphoneIcon — elementos puramente visuais
+  decor/             Ribbon (fitas), Smiley, InstagramIcon, LinkedInIcon, WhatsAppIcon, PaperPlaneIcon, SmartphoneIcon — elementos puramente visuais
   providers/         SmoothScrollProvider (Lenis + GSAP)
 content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
 animations/          gsap.config.ts, useScrollReveal, useHeroIntro, heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), useSmileyLoop (balanço dos smileys), useServiceCardsHover (hover dos cards de serviço), useTagMarquee (faixa de tags em loop), useScrollDraw (fita que se desenha com a rolagem)
@@ -49,7 +49,7 @@ hooks/               useMediaQuery, useScrollPosition, useSmoothScroll
 lib/                 metadata, validations (zod), escape-html, utils (cn)
 styles/              tokens.css (fonte da verdade do design), base.css
 types/               tipos compartilhados
-public/images/       about/, services/, projects/, testimonials/ e os smileys do contato (Beijinho, Sorrizinho)
+public/images/       about/, services/, projects/, testimonials/, os smileys do contato (Beijinho, Sorrizinho) e a logo branca do rodapé (logo-footer)
 public/fonts/        fontes locais (Handelson One)
 docs/                identidade visual e mockup (fora do build Docker)
 ```
