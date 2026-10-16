@@ -26,28 +26,38 @@ export function ProjectShowcase() {
           const art = SHOWCASE[index]
 
           return (
-            <article key={project.title} className={art.article}>
+            <article key={project.title} data-reveal-group className={art.article}>
               {/* Abaixo do lg a faixa termina no meio da primeira foto, como no mockup */}
               {art.band && (
                 <div
                   aria-hidden
+                  data-reveal="wipe"
                   className="absolute bottom-[calc(var(--frame)*0.5)] left-1/2 top-0 -z-10 w-screen -translate-x-1/2 bg-brand-pink lg:bottom-auto lg:h-[calc(503.45*var(--u))]"
                 />
               )}
 
               <header className={art.header}>
-                <h3 className={art.title}>{project.title}</h3>
+                <h3 data-reveal="handwrite" className={art.title}>
+                  {project.title}
+                </h3>
                 {project.subtitle && art.subtitle && (
-                  <p className={art.subtitle}>{project.subtitle}</p>
+                  <p data-reveal="rise" className={art.subtitle}>
+                    {project.subtitle}
+                  </p>
                 )}
               </header>
 
+              {/* A cópia depois da faixa sobe junto com o original (data-reveal-at="<"), para as linhas casarem */}
               {project.description && (
                 <>
-                  <p className={cn(TEXT, art.description)}>{project.description}</p>
+                  <p data-reveal="rise" className={cn(TEXT, art.description)}>
+                    {project.description}
+                  </p>
                   {art.afterBand && (
                     <p
                       aria-hidden
+                      data-reveal="rise"
+                      data-reveal-at="<"
                       className={cn(TEXT, 'hidden select-none lg:absolute lg:block', art.afterBand)}
                     >
                       {project.description}
@@ -118,6 +128,7 @@ function ProjectGallery({ gallery, images }: ProjectGalleryProps) {
         return (
           <li
             key={image.src}
+            data-reveal="polaroid"
             className={cn(
               'group absolute z-[var(--z)]',
               !frame.pull && '[@media(hover:hover)]:hover:z-10'
