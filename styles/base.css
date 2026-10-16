@@ -4,6 +4,8 @@ body {
   font-family: var(--font-serif);
   color: var(--color-text);
   background-color: var(--color-bg);
+  /* Entradas e decorações passam das bordas; clip (não hidden) não cria área de rolagem */
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
