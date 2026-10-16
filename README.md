@@ -38,13 +38,13 @@ components/
     services/        ServiceCard, serviceCards (posições, inclinações e movimento de hover de cada card), ServiceFan (wrapper client)
     tags/            TagLoop (wrapper client do loop da faixa de tags), TagRibbon (fita laranja por trás das tags)
     projects/        ProjectsPortrait (Iranides sobre os blobs), ProjectsArrow (seta na borda da faixa rosa), ProjectShowcase + showcaseLayout (faixa rosa com os projetos e as fotos), ProjectsRibbon (fita rosa que se desenha com a rolagem)
-    contact/         ContactSmileys (os quatro smileys na borda esquerda)
+    contact/         ContactSmileys (os quatro smileys na borda esquerda), ContactFacesLoop (wrapper client do beijo e da risada)
   forms/             ContactForm
   ui/                Button, Container, SectionHeading, Carousel  (barrel em index.ts)
-  decor/             Ribbon (fitas), Smiley, InstagramIcon, LinkedInIcon, WhatsAppIcon, PaperPlaneIcon, SmartphoneIcon — elementos puramente visuais
+  decor/             Ribbon (fitas), Smiley, Beijinho, Sorrizinho, InstagramIcon, LinkedInIcon, WhatsAppIcon, PaperPlaneIcon, SmartphoneIcon — elementos puramente visuais
   providers/         SmoothScrollProvider (Lenis + GSAP)
 content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
-animations/          gsap.config.ts, useScrollReveal, useHeroIntro, heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), useSmileyLoop (balanço dos smileys), useServiceCardsHover (hover dos cards de serviço), useTagMarquee (faixa de tags em loop), useScrollDraw (fita que se desenha com a rolagem)
+animations/          gsap.config.ts, useScrollReveal, useHeroIntro, heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), useSmileyLoop (balanço dos smileys), useContactFaces (beijo do Beijinho e risada do Sorrizinho), useServiceCardsHover (hover dos cards de serviço), useTagMarquee (faixa de tags em loop), useScrollDraw (fita que se desenha com a rolagem)
 hooks/               useMediaQuery, useScrollPosition, useSmoothScroll
 lib/                 metadata, validations (zod), escape-html, utils (cn)
 styles/              tokens.css (fonte da verdade do design), base.css
