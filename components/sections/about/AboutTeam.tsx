@@ -36,6 +36,7 @@ const STICKERS = [
 export function AboutTeam({ className }: { className?: string }) {
   return (
     <div
+      data-reveal-group
       className={cn(
         'relative aspect-[750/520] overflow-y-clip [container-type:inline-size]',
         className
@@ -43,7 +44,7 @@ export function AboutTeam({ className }: { className?: string }) {
     >
       <svg aria-hidden viewBox={STAGE_VIEWBOX} className="absolute inset-0 size-full">
         {BLOBS.map((blob) => (
-          <path key={blob.color} d={blob.d} fill={`var(--color-${blob.color})`} />
+          <path key={blob.color} data-reveal="blob" d={blob.d} fill={`var(--color-${blob.color})`} />
         ))}
       </svg>
 
@@ -53,6 +54,7 @@ export function AboutTeam({ className }: { className?: string }) {
             <figure>
               {/* SVG: o next/image entrega o arquivo como está, sem srcset */}
               <Image
+                data-reveal="sticker"
                 src={person.photo.src}
                 alt={person.photo.alt}
                 width={person.photo.width}
@@ -61,6 +63,7 @@ export function AboutTeam({ className }: { className?: string }) {
               />
               <figcaption className={cn('absolute w-max text-right', STICKERS[index].caption)}>
                 <span
+                  data-reveal="handwrite"
                   className={cn(
                     'block whitespace-nowrap font-script text-[length:max(1.125rem,6.667cqw)] leading-none',
                     STICKERS[index].name
@@ -69,6 +72,7 @@ export function AboutTeam({ className }: { className?: string }) {
                   {person.name}
                 </span>
                 <span
+                  data-reveal="rise"
                   className={cn(
                     'ml-auto block max-w-[10em] text-[length:max(0.6875rem,2.4cqw)] font-semibold leading-[1.55] text-white',
                     STICKERS[index].role
