@@ -34,7 +34,8 @@ export function Testimonials() {
       aria-labelledby="testimonials-title"
       className="pb-16 pt-6 [--gap:1rem] [--n:1] [--strip:calc(100%_-_8rem)] md:[--gap:1.5rem] md:[--n:2] md:[--strip:min(100%_-_8rem,44rem)] lg:pb-[calc(var(--stage-width)*0.04)] lg:pt-[calc(var(--stage-width)*0.0128)] lg:[--gap:calc(var(--stage-width)*0.03)] lg:[--n:3] lg:[--strip:min(100%_-_8rem,var(--stage-width)*1.135)] xl:[--n:4]"
     >
-      <div data-reveal-group className="mx-auto w-[var(--strip)]">
+      {/* overflow-x-clip: as linhas do título entram pela direita sem passar da borda da tela */}
+      <div data-reveal-group className="mx-auto w-[var(--strip)] overflow-x-clip">
         <SectionHeading
           id="testimonials-title"
           className="text-right text-[1.75rem] font-black leading-[1.35] md:text-[2rem] lg:text-[length:calc(var(--stage-width)*0.02703)]"
