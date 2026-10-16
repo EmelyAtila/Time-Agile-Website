@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from './gsap.config'
+import { FACE_MOTIONS, replay, type FaceMotion } from './faceMotions'
 
 const HOVER_OK = '(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)'
 
@@ -104,6 +105,10 @@ export function useServiceCardsHover() {
           gsap.set(card, { transformOrigin: ORIGINS[hover].card })
           gsap.set(sticker, { transformOrigin: ORIGINS[hover].sticker })
 
+          // O rosto de fundo (CardFace) se mexe com o mouse em qualquer ponto do card
+          const face = item.querySelector<SVGGElement>('[data-face]')
+          const faceMotion = face && FACE_MOTIONS[face.dataset.face as FaceMotion](face).pause()
+
           let motion: gsap.core.Animation | undefined
 
           const onPointerEnter = (event: PointerEvent) => {
@@ -115,6 +120,7 @@ export function useServiceCardsHover() {
               sticker,
               side: event.clientX < box.left + box.width / 2 ? 1 : -1,
             })
+            if (faceMotion) replay(faceMotion)
           }
 
           const onPointerLeave = (event: PointerEvent) => {
