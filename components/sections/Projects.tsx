@@ -10,9 +10,12 @@ export function Projects() {
     // introdução: em janelas baixas (palco mais estreito que a tela) ele cresce e vai um pouco para a esquerda
     <section id="projetos" aria-labelledby="projects-title" className="overflow-x-clip">
       <div className="relative mx-auto max-w-[92.5rem] lg:min-h-[calc(var(--stage-width)*0.3882)] lg:w-[var(--stage-width)] lg:max-w-none">
-        <div className="px-6 pt-6 md:px-12 md:pt-10 lg:ml-[calc((var(--stage-width)_-_var(--page-width))/3)] lg:pl-[calc(var(--text-stage)*0.0986)] lg:pr-0 lg:pt-[calc(var(--stage-width)*0.0649)] lg:[--text-stage:calc(var(--stage-width)_+_(var(--page-width)_-_var(--stage-width))/4)]">
+        <div
+          data-reveal-group="lg"
+          className="px-6 pt-6 md:px-12 md:pt-10 lg:ml-[calc((var(--stage-width)_-_var(--page-width))/3)] lg:pl-[calc(var(--text-stage)*0.0986)] lg:pr-0 lg:pt-[calc(var(--stage-width)*0.0649)] lg:[--text-stage:calc(var(--stage-width)_+_(var(--page-width)_-_var(--stage-width))/4)]">
           <SectionHeading
             id="projects-title"
+            data-reveal="heading"
             className="max-w-[15.5em] text-[1.75rem] font-black leading-[1.35] text-brand-orange md:text-[2rem] lg:text-[length:calc(var(--text-stage)*0.02703)]"
           >
             {projectsIntro.title}
@@ -21,7 +24,9 @@ export function Projects() {
           {/* max-w em `em` para as linhas quebrarem como no mockup em qualquer tamanho de letra */}
           <div className="mt-[1.55em] max-w-[29.8em] text-[1.0625rem] font-semibold leading-[1.54] md:text-[1.125rem] lg:text-[length:calc(var(--text-stage)*0.01622)]">
             {projectsIntro.paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
+              <p key={paragraph} data-reveal="text">
+                {paragraph}
+              </p>
             ))}
           </div>
         </div>
