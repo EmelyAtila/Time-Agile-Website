@@ -20,18 +20,22 @@ export function ProjectsPortrait({ className }: { className?: string }) {
   const { image } = projectsIntro
 
   return (
-    <div className={cn('relative aspect-[779/511.56] overflow-y-clip', className)}>
+    <div
+      data-reveal-group
+      className={cn('relative aspect-[779/511.56] overflow-y-clip', className)}
+    >
       <svg
         aria-hidden
         viewBox={`${STAGE.x} ${STAGE.y} ${STAGE.width} ${STAGE.height}`}
         className="absolute inset-0 size-full"
       >
         {BLOBS.map((blob) => (
-          <path key={blob.color} d={blob.d} fill={`var(--color-${blob.color})`} />
+          <path key={blob.color} data-reveal="blob" d={blob.d} fill={`var(--color-${blob.color})`} />
         ))}
       </svg>
 
       <Image
+        data-reveal="sticker"
         src={image.src}
         alt={image.alt}
         width={image.width}
