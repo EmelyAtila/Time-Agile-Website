@@ -1,16 +1,21 @@
 import { cn } from '@/lib/utils'
-import type { ReactNode } from 'react'
+import type { ComponentPropsWithoutRef, ReactNode } from 'react'
 
-type SectionHeadingProps = {
+type SectionHeadingProps = Omit<ComponentPropsWithoutRef<'h2'>, 'id' | 'children'> & {
   id: string
   as?: 'h1' | 'h2' | 'h3'
-  className?: string
   children: ReactNode
 }
 
-export function SectionHeading({ id, as: Tag = 'h2', className, children }: SectionHeadingProps) {
+export function SectionHeading({
+  id,
+  as: Tag = 'h2',
+  className,
+  children,
+  ...props
+}: SectionHeadingProps) {
   return (
-    <Tag id={id} className={cn('font-sans font-bold', className)}>
+    <Tag id={id} className={cn('font-sans font-bold', className)} {...props}>
       {children}
     </Tag>
   )
