@@ -12,29 +12,24 @@ const notoSerif = Noto_Serif({
   display: 'swap',
 })
 
+// Sem a itálica: o site não usa texto itálico, e ela seria pré-carregada à toa
 const satoshi = localFont({
-  src: [
-    {
-      path: '../public/fonts/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2',
-      weight: '300 900',
-      style: 'normal',
-    },
-    {
-      path: '../public/fonts/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-VariableItalic.woff2',
-      weight: '300 900',
-      style: 'italic',
-    },
-  ],
+  src: '../public/fonts/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2',
+  weight: '300 900',
+  style: 'normal',
   variable: '--font-satoshi',
   display: 'swap',
 })
 
+// Só aparece abaixo da dobra: sem preload, não disputa a rede com o Hero.
+// WOFF2 com o subset latin do Google Fonts (acentos, ç, aspas), gerado do .otf original
 const handelson = localFont({
-  src: '../public/fonts/handelson-one-maisfontes.086c/handelson-one.otf',
+  src: '../public/fonts/handelson-one-maisfontes.086c/handelson-one.woff2',
   weight: '400',
   style: 'normal',
   variable: '--font-handelson',
   display: 'swap',
+  preload: false,
 })
 
 export const metadata: Metadata = siteMetadata
@@ -42,7 +37,12 @@ export const viewport: Viewport = siteViewport
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${notoSerif.variable} ${satoshi.variable} ${handelson.variable}`}>
+    // suppressHydrationWarning: o script inline do Hero marca a entrada no <html> antes de o React hidratar
+    <html
+      suppressHydrationWarning
+      lang="pt-BR"
+      className={`${notoSerif.variable} ${satoshi.variable} ${handelson.variable}`}
+    >
       {/* suppressHydrationWarning: extensões do navegador injetam atributos no <body> */}
       <body
         className="bg-brand-cream font-serif text-brand-wine antialiased"
