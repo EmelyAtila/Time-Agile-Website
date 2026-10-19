@@ -6,19 +6,22 @@ Como a entrada do Hero funciona, onde ajustar e o que ficou para depois.
 
 | Arquivo | Papel |
 | --- | --- |
-| `animations/useHeroIntro.ts` | A timeline do GSAP. Tempos, eases e ordem ficam todos aqui. |
+| `styles/hero-intro.css` | A entrada em si: `@keyframes`, tempos e eases (os do GSAP, amostrados em `linear()`). |
+| `animations/heroBoot.ts` | Script inline, que roda durante o parse do HTML: estica as curvas, espera a fonte do título (até 400ms), faz o título deslizar com um `<animate>` de SVG e marca o `<html>` para o CSS começar. Também tem o esticão das curvas (`stretchHeroArt`). |
+| `animations/useHeroIntro.ts` | Lado do React: liga os loops quando a entrada termina. |
 | `animations/heroLoops.ts` | O que começa quando a entrada termina: o loop do "!" do título e o botão do header. |
 | `animations/headerCta.ts` | Botão do header: pulinho em loop, hover e clique. |
 | `components/sections/hero/heroPaths.ts` | Curvas das fitas, tamanho e posição do título (desktop e mobile). |
 | `components/sections/hero/HeroRibbons.tsx` | SVG inline das fitas com o título em `<textPath>`. |
 | `components/sections/hero/HeroIntro.tsx` | `<section>` client que liga os dois hooks. O resto do Hero é server. |
-| `components/sections/hero/useFluidArt.ts` | Ajusta as curvas do desktop à proporção da tela, sem recorte. |
+| `components/sections/hero/useFluidArt.ts` | Refaz o esticão das curvas a cada resize. |
+| `components/sections/Hero.tsx` | Coloca o script de `heroBoot.ts` no fim da `<section>`. |
 | `components/layout/Logo.tsx` | Logo oficial inline, dividida em `data-part` (`time`, `agile`, `bars`, `dot`, `tagline`). |
-| `styles/base.css` | CSS que esconde `[data-intro]` até o GSAP assumir, e o failsafe de 4s. |
+| `styles/base.css` | CSS que esconde `[data-intro]` até o script começar, e o failsafe de 4s (uma animação só, no `<html>`). |
 
 ## Linha do tempo
 
-Tempos em segundos a partir do início. Dura cerca de 2,4s e não bloqueia scroll nem clique.
+Tempos em segundos a partir de `data-intro-play`. Dura cerca de 2,4s e não bloqueia scroll nem clique.
 
 | Início | Elemento | Movimento | Ease |
 | --- | --- | --- | --- |
@@ -39,24 +42,29 @@ Tempos em segundos a partir do início. Dura cerca de 2,4s e não bloqueia scrol
 
 Para mexer:
 
-- **Ordem e duração das fitas:** constante `RIBBONS`.
-- **Distância entre a fita e o texto:** `TITLE_DELAY`. O título precisa ficar sempre atrás da ponta da laranja; se trocar o ease de um, confira o outro (texto na frente da fita aparece solto sobre o fundo).
-- **Bloco da logo inteiro:** label `'logo'` (0.95).
+- **Fitas, logo, header e redes:** `animation-delay` e `animation-duration` em `styles/hero-intro.css`. Os staggers usam `--i` (posição entre os irmãos).
+- **Título:** `titleDelay` e `titleDuration` no `CONFIG` de `heroBoot.ts`. O título precisa ficar sempre atrás da ponta da laranja; se trocar o ease de um, confira o outro (texto na frente da fita aparece solto sobre o fundo).
+- **Fim da entrada:** `introMs` no `CONFIG` (2350ms, o fim das redes). Se alongar a coreografia, aumente junto: é ele que desliga o CSS e solta os loops.
 
 ## Como funciona
 
-- **Fitas:** cada `<path>` tem `pathLength={1}` e a animação leva `stroke-dashoffset` de 1 a 0. Sem plugin.
-- **Título:** texto real em `<textPath>`, animando o atributo `startOffset` de um valor negativo (texto todo antes do path, portanto invisível) até a posição final. O `<h1>` acessível é o `sr-only` em `Hero.tsx`; o SVG é `aria-hidden`.
-- **Estado inicial:** o HTML do servidor já sai no estado final. O CSS esconde `[data-intro]` só com JS ligado e sem "reduzir movimento". Quando o hook assume, marca `<html data-intro-ready>` e o CSS para de valer.
+- **Sem esperar o JS da página:** o script inline de `heroBoot.ts` roda assim que o navegador lê o fim do Hero, antes de o React baixar e hidratar. Ele marca `<html data-intro-boot>` na hora e, quando a fonte do título chega (ou em 400ms), `data-intro-play`. Aí o CSS começa. Em `introMs`, ele marca `data-intro-done` e o CSS da entrada para de valer.
+- **Fitas:** cada `<path>` tem `pathLength={1}` e o `@keyframes` leva `stroke-dashoffset` de 1.001 a 0.
+- **Título:** texto real em `<textPath>`. O script mede o título e dá ao `<animate>` os valores do `startOffset`, de um valor negativo (texto todo antes do path, portanto invisível) até a posição final, em 30 passos do `back.out(1.1)`. O `<h1>` acessível é o `sr-only` em `Hero.tsx`; o SVG é `aria-hidden`.
+- **Estado inicial:** o HTML do servidor já sai no estado final. O CSS esconde `[data-intro]` só com JS ligado e sem "reduzir movimento", até `data-intro-play`.
+- **`animation-fill-mode: backwards`:** segura o começo durante o atraso e, no fim, não deixa nada aplicado. Assim o GSAP dos loops e os hovers assumem sem briga.
+- **`translate`/`rotate`/`scale` individuais, não `transform`.** Atenção: quando o GSAP anima um elemento, ele absorve essas propriedades no transform dele. Por isso a entrada da barra do menu anima um `<span>` de dentro, e não a barra que o scroll spy move.
+- **Hidratação:** o script muda atributos antes de o React hidratar (`d`, `viewBox`, `values` do `<animate>`, `data-*` no `<html>`), por isso o SVG do Hero e o `<html>` têm `suppressHydrationWarning`. O script não cria nem remove nós: isso quebraria a hidratação.
 - **Sem JS ou com `prefers-reduced-motion`:** nada é escondido e nada anima; o Hero aparece pronto.
-- **Responsivo:** duas artes no HTML, o CSS mostra uma (`lg`, 1024px). `gsap.matchMedia()` usa o mesmo corte.
-- **Proporção da tela (desktop):** o mockup é 1480×871, mas uma janela de navegador costuma ser bem mais larga (perto de 2:1). Em vez de ampliar o desenho e cortar em cima e embaixo, `useFluidArt` estica só a coordenada x das curvas até a proporção da seção. Assim os laços da fita amarela (topo) e da rosa-claro (base) aparecem inteiros em qualquer largura. Espessura das fitas e tamanho do título crescem por igual (√ do fator), então nada deforma. O intervalo aceito é o `stretch` de `HERO_ART_DESKTOP` (0.78 a 1.55, de 4:3 até ~2.6:1), e a altura mínima do Hero em `Hero.tsx` segura a seção dentro desse intervalo. Sem JS vale o recorte antigo (`preserveAspectRatio`).
+- **Navegação pelo cliente** (vindo de outra página do site) não roda o script inline: o hook vê que falta `data-intro-boot` e mostra o Hero pronto.
+- **Responsivo:** duas artes no HTML, o CSS mostra uma (`lg`, 1024px). O script e o `gsap.matchMedia()` usam o mesmo corte. Cruzar o `lg` depois da entrada não repete nada (`data-intro-done` desliga o CSS).
+- **Proporção da tela (desktop):** o mockup é 1480×871, mas uma janela de navegador costuma ser bem mais larga (perto de 2:1). Em vez de ampliar o desenho e cortar em cima e embaixo, `stretchHeroArt` estica só a coordenada x das curvas até a proporção da seção. A primeira vez é no script inline, antes de aparecer qualquer coisa; depois, `useFluidArt` refaz a cada resize. Assim os laços da fita amarela (topo) e da rosa-claro (base) aparecem inteiros em qualquer largura. Espessura das fitas e tamanho do título crescem por igual (√ do fator), então nada deforma. O intervalo aceito é o `stretch` de `HERO_ART_DESKTOP` (0.78 a 1.55, de 4:3 até ~2.6:1), e a altura mínima do Hero em `Hero.tsx` segura a seção dentro desse intervalo. Sem JS vale o recorte antigo (`preserveAspectRatio`).
 
-Para marcar algo novo para a entrada: `data-intro="nome"` no elemento e um tween no hook. Não aninhe `data-intro`, e não anime direto um elemento que tenha `transition-*` do Tailwind (use um wrapper, como o do CTA no Header).
+Para marcar algo novo para a entrada: `data-intro="nome"` no elemento e uma regra em `styles/hero-intro.css`, dentro do `html[data-intro-play]:not([data-intro-done])`. Não aninhe `data-intro`, e não anime direto um elemento que tenha `transition-*` do Tailwind (use um wrapper, como o do CTA no Header).
 
 ## Loops
 
-Começam quando a entrada termina (`onComplete` da timeline), em `animations/heroLoops.ts`.
+Começam quando a entrada termina (`<html data-intro-done>`, que `useHeroIntro` espera com um `MutationObserver`), em `animations/heroLoops.ts`.
 
 - **"!" do título:** balança apoiado na base, três idas e voltas que vão diminuindo, e descansa `MARK_EVERY` (2.6s) até o próximo. Só roda com o Hero na tela; rolou para fora, pausa.
 - O "!" é um `<tspan data-hero-mark>` dentro do título (prop `mark` de `HeroRibbons`). Quem balança é o atributo `rotate` do `<tspan>`, que gira o glifo: `transform` de CSS não funciona em `<tspan>`.
@@ -80,7 +88,7 @@ Tudo em `animations/headerCta.ts`, ligado junto com os loops.
 - As cores são três `<span>` dentro do botão (`data-cta-ripple` e `data-cta-fill`, em `Header.tsx`), recortados com `clip-path: circle()`. Sem o GSAP as ondas não aparecem e o laranja é só um fade por CSS (`group-hover`): é o que vale antes de a entrada terminar e com "reduzir movimento".
 - As letras são `<span data-cta-letter>`; o nome que o leitor de tela lê vem do `aria-label` do botão.
 - O confete é criado na hora, direto no `body` com `position: fixed`, e removido quando termina: assim não herda o tranco do botão.
-- Quem anima é o wrapper `data-intro="cta"`, a seta, as letras e os `<span>` das cores, nunca o `Button`, que tem `transition-all`.
+- Quem anima é o wrapper `data-intro="cta"`, a seta, as letras e os `<span>` das cores, nunca o `Button`, que tem transição de `transform`.
 - O disparo da seta não é interrompido quando o mouse sai. No topo da página o header sobe ao rolar e tira o botão de baixo do mouse logo depois do clique; se a saída cortasse o disparo, ele quase nunca apareceria.
 - Toque não tem hover: no tablet valem o pulinho e o clique.
 
@@ -121,15 +129,15 @@ Para isso o Header acompanha a página inteira. No topo ele fica solto sobre o H
 - **Sem animação por tempo.** A versão anterior trocava de estado aos 24px com uma transição de 300ms: na volta ao topo o header descia 30px sozinho enquanto a página ainda rolava, e o desfoque sumia de uma vez. Não volte a usar `transition` nesse encaixe.
 - O `sticky` depende de nenhum ancestral do header ter `overflow` diferente de `visible`. Se o menu parar de acompanhar a página, procure um `overflow-hidden` novo em `body` ou num wrapper.
 
-A posição da barra (`x`, `scaleX`) é do scroll-spy; a entrada do Hero só anima `scaleY` e opacidade dela. Não inclua a barra no `clearProps` do fim da timeline.
+A posição da barra (`x`, `scaleX`) é do scroll spy; a entrada do Hero anima só o `<span>` de dentro dela (`scale` em y e opacidade). Se o scroll spy só posicionar a barra depois de 1,9s, ela aparece sem a entrada.
 
 ## Armadilhas já resolvidas
 
-- **`autoRound: false` nas fitas.** O GSAP arredonda valores em `px` para inteiro. Com o comprimento normalizado para 1, a fita só assumia 0 ou 1 e aparecia inteira de uma vez.
+- **Título em repouso no primeiro quadro.** O `<animate>` só vale a partir do quadro seguinte ao `beginElement()`; o `<text>` fica com opacidade 0 durante o atraso do título (`intro-hold`).
 - **Guia do título separado da fita.** O `<textPath>` aponta para uma cópia do path em `<defs>` sem `pathLength`, que interferiria no `startOffset`.
 - **`stroke-dasharray: 1 2` e offset inicial 1.001.** Evita o pontinho que a ponta arredondada deixaria antes de a fita começar.
-- **Laços das fitas cortados em tela larga.** Com `slice` puro, uma janela 2.2:1 perdia ~100 unidades em cima e embaixo, justamente onde ficam os nós da amarela e da rosa-claro. Resolvido com o `useFluidArt`. Ao testar, use o tamanho da área útil do navegador (ex.: 1534×696 num monitor 1080p com escala de 125%), não a resolução da tela.
-- **`useFluidArt` só entende paths com `M` e `C` absolutos** (o que o Figma exporta para essas curvas). Um path com outros comandos é deixado como está.
+- **Laços das fitas cortados em tela larga.** Com `slice` puro, uma janela 2.2:1 perdia ~100 unidades em cima e embaixo, justamente onde ficam os nós da amarela e da rosa-claro. Resolvido com o `stretchHeroArt`. Ao testar, use o tamanho da área útil do navegador (ex.: 1534×696 num monitor 1080p com escala de 125%), não a resolução da tela.
+- **`stretchHeroArt` só entende paths com `M` e `C` absolutos** (o que o Figma exporta para essas curvas). Um path com outros comandos é deixado como está.
 - **`--hero-padding-x` usado como `px-[var(--hero-padding-x)]`.** Uma chave nova em `spacing` no `tailwind.config.ts` não foi captada pelo dev server que já estava rodando; a variável CSS direta não depende do config.
 
 ## Mobile

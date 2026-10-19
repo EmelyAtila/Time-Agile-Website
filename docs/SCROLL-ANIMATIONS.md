@@ -11,7 +11,8 @@ As entradas animam só `transform`, `opacity` e `clip-path`. O conteúdo já vem
 - `animations/reveals.ts`: os presets (o que cada entrada faz) e `LEAD` (intervalo até o próximo elemento, no tempo da timeline).
 - `animations/useScrollReveals.ts`: acha os grupos, liga a timeline de cada um à rolagem (`START_AT`, `TALL_END_AT`, `MIN_RANGE`, `LAG`) e, no fim, devolve tudo ao CSS.
 - `components/providers/ScrollReveals.tsx`: liga o hook. Está montado em `app/page.tsx`.
-- `styles/base.css`: esconde `[data-reveal]` até o hook assumir. Tem um failsafe de 4s, caso o JS falhe.
+- `styles/base.css`: esconde cada `[data-reveal]` até o grupo dele ser montado (`data-reveal-built`). O failsafe é uma animação só, no `<html>`, que mostra tudo em 4s se o JS falhar.
+- Os grupos são montados aos poucos, em fatias de até 8ms nos intervalos livres do navegador (`requestIdleCallback`), do mais perto da tela para o mais longe. Assim a montagem não vira uma tarefa longa nem engasga a entrada do Hero. As medidas só leem o layout (`offsetTop`), sem escrever nada antes, e as marcas `data-reveal-built` vão em lote no fim de cada fatia, para não invalidar o estilo entre um grupo e outro.
 
 ## Como marcar um elemento
 
@@ -56,7 +57,7 @@ Regras:
 
 No celular e no tablet, os presets com distância ou giro usam valores menores.
 
-O SplitText divide em palavras, não em linhas, então um resize não quebra a divisão. Ele espera as fontes e faz `revert()` quando o grupo termina.
+O SplitText divide em palavras, não em linhas, então um resize não quebra a divisão. Não precisa esperar as fontes, porque não mede nada. Faz `revert()` quando o grupo termina.
 
 ## Coreografia
 

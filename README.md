@@ -44,10 +44,10 @@ components/
   decor/             Smiley, Beijinho, Sorrizinho, InstagramIcon, LinkedInIcon, WhatsAppIcon, PaperPlaneIcon, SmartphoneIcon — elementos puramente visuais
   providers/         SmoothScrollProvider (Lenis + GSAP), ScrollReveals (liga as entradas no scroll)
 content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
-animations/          gsap.config.ts, reveals + useScrollReveals (entradas no scroll), useHeroIntro, heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), faceMotions (beijo, risada, piscadinha e balanço dos rostos, também no hover), useSmileyLoop (balanço dos smileys), useContactFaces (beijo do Beijinho e risada do Sorrizinho), useServiceCardsHover (hover dos cards de serviço), useTagMarquee (faixa de tags em loop), useScrollDraw (fita que se desenha com a rolagem), useArrowDraw (seta que se desenha ao entrar na tela e balança no hover)
+animations/          gsap.config.ts, reveals + useScrollReveals (entradas no scroll), heroBoot (script inline que começa a entrada do Hero antes do React), useHeroIntro (liga os loops do Hero), heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), faceMotions (beijo, risada, piscadinha e balanço dos rostos, também no hover), useSmileyLoop (balanço dos smileys), useContactFaces (beijo do Beijinho e risada do Sorrizinho), useServiceCardsHover (hover dos cards de serviço), useTagMarquee (faixa de tags em loop), useScrollDraw (fita que se desenha com a rolagem), useArrowDraw (seta que se desenha ao entrar na tela e balança no hover)
 hooks/               useSmoothScroll
 lib/                 metadata, validations (zod), escape-html, utils (cn)
-styles/              tokens.css (fonte da verdade do design), base.css
+styles/              tokens.css (fonte da verdade do design), base.css, hero-intro.css (entrada do Hero)
 types/               tipos compartilhados
 public/images/       about/, services/, projects/ e a logo branca do rodapé (logo-footer)
 public/fonts/        fontes locais (Satoshi e Handelson One)
@@ -63,11 +63,11 @@ docs/                identidade visual e mockup (fora do build Docker)
 - Os componentes já têm markup semântico e classes mínimas de layout. A estilização visual é a próxima etapa.
 - Classes condicionais precisam ser **strings completas** (ex.: mapa `cardColors` em `Services.tsx`). Não use interpolação do tipo `` `bg-brand-${cor}` ``, porque o Tailwind não detecta essas classes.
 - As entradas no scroll usam `data-reveal="<preset>"` nos elementos e `data-reveal-group` no bloco que dispara. Não precisa de hook no componente: `ScrollReveals` (montado em `app/page.tsx`) cuida de tudo. Presets e regras estão em `docs/SCROLL-ANIMATIONS.md`.
-- A entrada do Hero usa `data-intro` e a timeline de `animations/useHeroIntro.ts`. Tempos, funcionamento e ideias adiadas estão em `docs/HERO-ANIMATIONS.md`.
+- A entrada do Hero usa `data-intro`, o CSS de `styles/hero-intro.css` e o script inline de `animations/heroBoot.ts`, que começa sem esperar o JS da página. Tempos, funcionamento e ideias adiadas estão em `docs/HERO-ANIMATIONS.md`.
 
 ### Fonte Handelson One
 
-A Handelson One é comercial e não está no Google Fonts: o arquivo fica em `public/fonts/handelson-one-maisfontes.086c/` e é carregado com `next/font/local` em `app/layout.tsx`, como a Satoshi.
+A Handelson One é comercial e não está no Google Fonts: o arquivo fica em `public/fonts/handelson-one-maisfontes.086c/` (WOFF2 com o subset latin do Google Fonts, gerado do .otf original; um caractere fora do latin cai na fonte reserva) e é carregado com `next/font/local` em `app/layout.tsx`, como a Satoshi, mas sem preload, porque só aparece abaixo da dobra.
 
 ## Pendências de conteúdo
 
