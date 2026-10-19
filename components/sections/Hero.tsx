@@ -28,8 +28,13 @@ export function Hero() {
 
       <HeroRibbons title={TITLE} mark="!" />
 
-      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 px-[var(--hero-padding-x)] pb-[clamp(1.75rem,4vw,3.75rem)]">
-        <Logo data-intro="logo" className="h-auto w-[clamp(11.5rem,28.3vw,26.25rem)]" />
+      {/* No tablet a logo cresce e a barra sobe o quanto as fitas deixam: o vão da pílula, entre a fita laranja e a
+          rosa-clara, sobe conforme o Hero fica mais alto que 135vw (medido em tablets de 1024 a 1600 de altura) */}
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 px-[var(--hero-padding-x)] pb-[clamp(1.75rem,4vw,3.75rem)] md:max-lg:bottom-[max(0px,calc(96.3%_-_130vw))]">
+        <Logo
+          data-intro="logo"
+          className="h-auto w-[clamp(11.5rem,28.3vw,26.25rem)] md:max-lg:w-[40vw]"
+        />
 
         <ul
           data-intro="social"
