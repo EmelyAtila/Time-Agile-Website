@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import type { Metadata, Viewport } from 'next'
 import { Noto_Serif } from 'next/font/google'
 import localFont from 'next/font/local'
@@ -21,7 +22,7 @@ const satoshi = localFont({
   display: 'swap',
 })
 
-// Só aparece abaixo da dobra: sem preload, não disputa a rede com o Hero.
+// Só aparece abaixo da dobra: sem preload, e só entra depois do load (hooks/useLateScriptFont.ts).
 // WOFF2 com o subset latin do Google Fonts (acentos, ç, aspas), gerado do .otf original
 const handelson = localFont({
   src: '../public/fonts/handelson-one-maisfontes.086c/handelson-one.woff2',
@@ -31,6 +32,9 @@ const handelson = localFont({
   display: 'swap',
   preload: false,
 })
+
+// O fallback que o next/font ajusta às medidas da Handelson, sozinho: vale até ela entrar
+const handelsonFallback = handelson.style.fontFamily.split(',').slice(1).join(',').trim()
 
 export const metadata: Metadata = siteMetadata
 export const viewport: Viewport = siteViewport
@@ -42,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
       lang="pt-BR"
       className={`${notoSerif.variable} ${satoshi.variable} ${handelson.variable}`}
+      style={{ '--font-handelson-fallback': handelsonFallback || 'cursive' } as CSSProperties}
     >
       {/* suppressHydrationWarning: extensões do navegador injetam atributos no <body> */}
       <body
