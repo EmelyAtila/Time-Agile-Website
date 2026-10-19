@@ -9,6 +9,7 @@ const config: Config = {
         brand: {
           pink: 'var(--color-pink)',
           orange: 'var(--color-orange)',
+          'orange-dark': 'var(--color-orange-dark)',
           yellow: 'var(--color-yellow)',
           'pink-light': 'var(--color-pink-light)',
           wine: 'var(--color-wine)',

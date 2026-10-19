@@ -1,5 +1,23 @@
 /* Não usar `scroll-behavior: smooth`: a rolagem suave é do Lenis */
 
+/* A faixa da barra de rolagem fica reservada desde o primeiro layout: o script inline do Hero mede a
+   largura antes de a página crescer, e as curvas pulariam quando a barra aparecesse */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* A Handelson só aparece abaixo da dobra: entra depois do load (hooks/useLateScriptFont.ts), para não
+   disputar a rede com o JS e as fontes do Hero. Sem JS, entra direto */
+html[data-script-font] {
+  --font-script: var(--font-handelson), cursive;
+}
+
+@media (scripting: none) {
+  :root {
+    --font-script: var(--font-handelson), cursive;
+  }
+}
+
 body {
   font-family: var(--font-serif);
   color: var(--color-text);

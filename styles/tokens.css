@@ -12,6 +12,8 @@
 
   /* Complementares (extraídas do mockup) */
   --color-cream: #fbf2e1;
+  /* Laranja para texto sobre o creme: o da marca dá 2,3:1, este 3,5:1 (título grande pede 3:1) */
+  --color-orange-dark: #d35f00;
   --color-red: #ff3131;
   --color-whatsapp: #25d366;
 
@@ -22,7 +24,8 @@
   /* Variáveis injetadas por next/font em app/layout.tsx */
   --font-serif: var(--font-noto-serif), Georgia, serif;
   --font-sans: var(--font-satoshi), system-ui, sans-serif;
-  --font-script: var(--font-handelson), cursive;
+  /* A Handelson em si entra depois do load (styles/base.css); até lá, o fallback com as medidas dela */
+  --font-script: var(--font-handelson-fallback), cursive;
 
   --header-height: 80px;
   /* Margem lateral do Header e do Hero: 72px nos 1480px do mockup */
