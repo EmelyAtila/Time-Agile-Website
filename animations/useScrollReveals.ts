@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
+import { cancelIdle, whenIdle } from '@/lib/idle'
 import { gsap, ScrollTrigger } from './gsap.config'
 import { LEAD, REVEALS, type RevealEnv, type RevealName } from './reveals'
 
@@ -102,15 +103,6 @@ function buildTimeline(items: HTMLElement[], env: Omit<RevealEnv, 'index'>) {
 }
 
 const markBuilt = (items: Element[]) => items.forEach((el) => el.setAttribute(BUILT_ATTR, ''))
-
-// No Safari não há requestIdleCallback
-const schedule = (step: (deadline?: IdleDeadline) => void) =>
-  typeof requestIdleCallback === 'function'
-    ? requestIdleCallback(step, { timeout: IDLE_TIMEOUT_MS })
-    : window.setTimeout(step, 1)
-
-const unschedule = (handle: number) =>
-  typeof cancelIdleCallback === 'function' ? cancelIdleCallback(handle) : clearTimeout(handle)
 
 // Elementos marcados com data-reveal entram presos à rolagem: avançam enquanto o bloco entra na tela e
 // terminam com ele inteiro nela. Só avançam, nunca voltam. Contrato: docs/SCROLL-ANIMATIONS.md
@@ -223,16 +215,16 @@ export function useScrollReveals() {
         // entre um grupo e outro da fatia
         markBuilt(built)
 
-        if (queue.length) handle = schedule(step)
+        if (queue.length) handle = whenIdle(step, IDLE_TIMEOUT_MS)
         else html.setAttribute(READY_ATTR, '')
       }
 
-      handle = schedule(step)
+      handle = whenIdle(step, IDLE_TIMEOUT_MS)
 
       // Ao reverter (cruzar o lg), o que não terminou volta a se esconder até ser montado de novo
       return () => {
         cancelled = true
-        unschedule(handle)
+        cancelIdle(handle)
         html.removeAttribute(READY_ATTR)
         groups.forEach((group) => {
           group.splits.forEach((split) => split.revert())
