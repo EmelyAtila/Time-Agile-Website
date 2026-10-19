@@ -46,14 +46,14 @@ export function Contact() {
         {/* O card amarelo vem antes no DOM, mas é colado depois que o formulário sobe (data-reveal-at) */}
         <div
           data-reveal-group="lg"
-          className="relative mx-auto mt-12 max-w-[38rem] lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none"
+          className="relative mx-auto mt-12 flex max-w-[38rem] flex-col md:block lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none"
         >
-          {/* Abaixo do lg vem antes do formulário e avança sobre o canto dele, como no desktop */}
+          {/* No celular fica abaixo do formulário. No tablet vem antes e avança sobre o canto dele, como no desktop */}
           <aside
             aria-labelledby="contact-info-title"
             data-reveal="sticker"
             data-reveal-at="0.55"
-            className="relative z-10 -mb-6 ml-auto w-fit lg:absolute lg:left-[calc(528*var(--u))] lg:top-[calc(-24*var(--u))] lg:mb-0 lg:ml-0 lg:w-[calc(329*var(--u))]"
+            className="relative z-10 order-last ml-auto mt-8 w-fit md:-mb-6 md:mt-0 lg:absolute lg:left-[calc(528*var(--u))] lg:top-[calc(-24*var(--u))] lg:mb-0 lg:ml-0 lg:w-[calc(329*var(--u))]"
           >
             <h3
               id="contact-info-title"
