@@ -7,7 +7,7 @@ Como a entrada do Hero funciona, onde ajustar e o que ficou para depois.
 | Arquivo | Papel |
 | --- | --- |
 | `styles/hero-intro.css` | A entrada em si: `@keyframes`, tempos e eases (os do GSAP, amostrados em `linear()`). |
-| `animations/heroBoot.ts` | Script inline, que roda durante o parse do HTML: estica as curvas, espera a fonte do título (até 400ms), faz o título deslizar com um `<animate>` de SVG e marca o `<html>` para o CSS começar. Também tem o esticão das curvas (`stretchHeroArt`). |
+| `animations/heroBoot.ts` | Script inline, que roda durante o parse do HTML: estica as curvas, marca o `<html>` para o CSS começar na hora e faz o título deslizar quadro a quadro quando a fonte dele chega (até 400ms). Também tem o esticão das curvas (`stretchHeroArt`). |
 | `animations/useHeroIntro.ts` | Lado do React: liga os loops quando a entrada termina. |
 | `animations/heroLoops.ts` | O que começa quando a entrada termina: o loop do "!" do título e o botão do header. |
 | `animations/headerCta.ts` | Botão do header: pulinho em loop, hover e clique. |
@@ -48,13 +48,14 @@ Para mexer:
 
 ## Como funciona
 
-- **Sem esperar o JS da página:** o script inline de `heroBoot.ts` roda assim que o navegador lê o fim do Hero, antes de o React baixar e hidratar. Ele marca `<html data-intro-boot>` na hora e, quando a fonte do título chega (ou em 400ms), `data-intro-play`. Aí o CSS começa. Em `introMs`, ele marca `data-intro-done` e o CSS da entrada para de valer.
+- **Sem esperar o JS da página:** o script inline de `heroBoot.ts` roda assim que o navegador lê o fim do Hero, antes de o React baixar e hidratar. Ele marca `<html data-intro-boot>` e `data-intro-play` na hora, e o CSS começa. Em `introMs`, ele marca `data-intro-done` e o CSS da entrada para de valer.
+- **Só o título espera a fonte** (Satoshi), senão mudaria de largura no meio do caminho. Ele começa em `titleDelay` depois do início ou quando a fonte chega, o que vier por último, com teto de 400ms. Com a fonte em cache, a coreografia é a da tabela.
 - **Fitas:** cada `<path>` tem `pathLength={1}` e o `@keyframes` leva `stroke-dashoffset` de 1.001 a 0.
-- **Título:** texto real em `<textPath>`. O script mede o título e dá ao `<animate>` os valores do `startOffset`, de um valor negativo (texto todo antes do path, portanto invisível) até a posição final, em 30 passos do `back.out(1.1)`. O `<h1>` acessível é o `sr-only` em `Hero.tsx`; o SVG é `aria-hidden`.
+- **Título:** texto real em `<textPath>`. Antes de a entrada começar, o script tira o título do path (`startOffset="-100%"`). Quando a fonte chega, ele mede o título e escreve o `startOffset` a cada quadro (`requestAnimationFrame`), de um valor negativo (texto todo antes do path, portanto invisível) até a posição final, com o `back.out(1.1)`. O relógio é o do rAF, o mesmo das animações de CSS: mesmo que um quadro trave, título e fitas continuam juntos. O `<h1>` acessível é o `sr-only` em `Hero.tsx`; o SVG é `aria-hidden`.
 - **Estado inicial:** o HTML do servidor já sai no estado final. O CSS esconde `[data-intro]` só com JS ligado e sem "reduzir movimento", até `data-intro-play`.
 - **`animation-fill-mode: backwards`:** segura o começo durante o atraso e, no fim, não deixa nada aplicado. Assim o GSAP dos loops e os hovers assumem sem briga.
 - **`translate`/`rotate`/`scale` individuais, não `transform`.** Atenção: quando o GSAP anima um elemento, ele absorve essas propriedades no transform dele. Por isso a entrada da barra do menu anima um `<span>` de dentro, e não a barra que o scroll spy move.
-- **Hidratação:** o script muda atributos antes de o React hidratar (`d`, `viewBox`, `values` do `<animate>`, `data-*` no `<html>`), por isso o SVG do Hero e o `<html>` têm `suppressHydrationWarning`. O script não cria nem remove nós: isso quebraria a hidratação.
+- **Hidratação:** o script muda atributos antes de o React hidratar (`d`, `viewBox`, `startOffset` do `<textPath>`, `data-*` no `<html>`), por isso o SVG do Hero e o `<html>` têm `suppressHydrationWarning`. O script não cria nem remove nós: isso quebraria a hidratação.
 - **Sem JS ou com `prefers-reduced-motion`:** nada é escondido e nada anima; o Hero aparece pronto.
 - **Navegação pelo cliente** (vindo de outra página do site) não roda o script inline: o hook vê que falta `data-intro-boot` e mostra o Hero pronto.
 - **Responsivo:** duas artes no HTML, o CSS mostra uma (`lg`, 1024px). O script e o `gsap.matchMedia()` usam o mesmo corte. Cruzar o `lg` depois da entrada não repete nada (`data-intro-done` desliga o CSS).
@@ -133,7 +134,8 @@ A posição da barra (`x`, `scaleX`) é do scroll spy; a entrada do Hero anima s
 
 ## Armadilhas já resolvidas
 
-- **Título em repouso no primeiro quadro.** O `<animate>` só vale a partir do quadro seguinte ao `beginElement()`; o `<text>` fica com opacidade 0 durante o atraso do título (`intro-hold`).
+- **SMIL (`<animate>`) não serve para o título.** Ele só anda quando a linha do tempo de animação do documento começa, que no Chrome é perto do DOMContentLoaded. Com a página lenta (recarregar com o JS chegando devagar, celular), o título aparecia parado no lugar, sumia e só então deslizava. Por isso o rAF.
+- **Barra de rolagem.** O script mede o Hero quando a página ainda não tem barra de rolagem; quando ela aparecia (15px no Windows), as curvas pulavam no meio da entrada. `scrollbar-gutter: stable` no `<html>` (`styles/base.css`) reserva a faixa desde o começo.
 - **Guia do título separado da fita.** O `<textPath>` aponta para uma cópia do path em `<defs>` sem `pathLength`, que interferiria no `startOffset`.
 - **`stroke-dasharray: 1 2` e offset inicial 1.001.** Evita o pontinho que a ponta arredondada deixaria antes de a fita começar.
 - **Laços das fitas cortados em tela larga.** Com `slice` puro, uma janela 2.2:1 perdia ~100 unidades em cima e embaixo, justamente onde ficam os nós da amarela e da rosa-claro. Resolvido com o `stretchHeroArt`. Ao testar, use o tamanho da área útil do navegador (ex.: 1534×696 num monitor 1080p com escala de 125%), não a resolução da tela.

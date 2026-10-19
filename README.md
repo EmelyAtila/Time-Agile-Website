@@ -45,8 +45,8 @@ components/
   providers/         SmoothScrollProvider (Lenis + GSAP), ScrollReveals (liga as entradas no scroll)
 content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
 animations/          gsap.config.ts, reveals + useScrollReveals (entradas no scroll), heroBoot (script inline que começa a entrada do Hero antes do React), useHeroIntro (liga os loops do Hero), heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), faceMotions (beijo, risada, piscadinha e balanço dos rostos, também no hover), useSmileyLoop (balanço dos smileys), useContactFaces (beijo do Beijinho e risada do Sorrizinho), useServiceCardsHover (hover dos cards de serviço), useTagMarquee (faixa de tags em loop), useScrollDraw (fita que se desenha com a rolagem), useArrowDraw (seta que se desenha ao entrar na tela e balança no hover)
-hooks/               useSmoothScroll
-lib/                 metadata, validations (zod), escape-html, utils (cn)
+hooks/               useSmoothScroll, useLateScriptFont (Handelson depois do load)
+lib/                 metadata, validations (zod), escape-html, utils (cn), idle (requestIdleCallback com alternativa)
 styles/              tokens.css (fonte da verdade do design), base.css, hero-intro.css (entrada do Hero)
 types/               tipos compartilhados
 public/images/       about/, services/, projects/ e a logo branca do rodapé (logo-footer)
@@ -67,7 +67,7 @@ docs/                identidade visual e mockup (fora do build Docker)
 
 ### Fonte Handelson One
 
-A Handelson One é comercial e não está no Google Fonts: o arquivo fica em `public/fonts/handelson-one-maisfontes.086c/` (WOFF2 com o subset latin do Google Fonts, gerado do .otf original; um caractere fora do latin cai na fonte reserva) e é carregado com `next/font/local` em `app/layout.tsx`, como a Satoshi, mas sem preload, porque só aparece abaixo da dobra.
+A Handelson One é comercial e não está no Google Fonts: o arquivo fica em `public/fonts/handelson-one-maisfontes.086c/` (WOFF2 com o subset latin do Google Fonts, gerado do .otf original; um caractere fora do latin cai na fonte reserva) e é carregado com `next/font/local` em `app/layout.tsx`, como a Satoshi. Como só aparece abaixo da dobra, não tem preload e só entra depois do load da página (`hooks/useLateScriptFont.ts`). Até lá vale o fallback que o next/font ajusta às medidas dela, e sem JS ela entra direto.
 
 ## Pendências de conteúdo
 

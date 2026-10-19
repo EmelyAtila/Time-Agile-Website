@@ -32,6 +32,19 @@ A marca quer ser *"criativa e fora do padrão tradicional corporativo"*. É o op
 | Apoio     | `--color-wine`        | `#3C0513` | `brand-wine` (texto, footer) |
 | Mockup    | `--color-cream`       | `#FBF2E1` | `brand-cream` (fundo)  |
 | Mockup    | `--color-red`         | `#FF3131` | `brand-red` ("Contate-nos") |
+| Texto     | `--color-orange-dark` | `#D35F00` | `brand-orange-dark` (laranja de texto sobre o creme) |
+
+### Contraste do texto
+
+As cores principais não têm contraste para texto branco, e nem todas servem como texto sobre o creme. Mínimo da WCAG AA: 4,5:1 para texto e 3:1 para título grande (24px, ou 18,7px em negrito).
+
+| Texto | Sobre | Contraste | Uso |
+| --- | --- | --- | --- |
+| Branco | amarelo / laranja / rosa | 1,8 / 2,6 / 3,4:1 | não usar em texto. Nos títulos do Hero, no botão rosa e nos cards de serviço ficou como no mockup |
+| Vinho | amarelo / laranja / rosa / rosa-claro | 9,5 / 6,6 / 5,1 / 8,5:1 | texto sobre as cores fortes |
+| `orange-dark` | creme | 3,5:1 | só título grande (o laranja da marca dá 2,3:1) |
+| Rosa | creme | 3,0:1 | só título grande |
+| Amarelo / rosa-claro | creme | 1,6 / 1,8:1 | não usar em texto |
 
 ## Tipografia
 

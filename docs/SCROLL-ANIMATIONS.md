@@ -59,6 +59,10 @@ No celular e no tablet, os presets com distância ou giro usam valores menores.
 
 O SplitText divide em palavras, não em linhas, então um resize não quebra a divisão. Não precisa esperar as fontes, porque não mede nada. Faz `revert()` quando o grupo termina.
 
+- Usa `aria: 'none'`: as palavras divididas continuam sendo texto para o leitor de tela. O `'auto'` punha `aria-label` nos `<p>`, onde ele é proibido (o Lighthouse reprova) e ignorado, e escondia as palavras com `aria-hidden`. Enquanto o parágrafo estava dividido, o leitor de tela não lia nada.
+- A Handelson entra só depois do load (`hooks/useLateScriptFont.ts`). Quando ela chega, um `ScrollTrigger.refresh()` recalcula onde cada entrada começa, porque a troca de fonte pode mudar a altura dos blocos.
+- As fitas que se desenham com a rolagem (`animations/useScrollDraw.ts`) medem o trecho visível de cada path com uma amostra grossa e refinam só nas bordas. Elas só medem de novo quando o layout muda, então os refreshes sem resize saem de graça.
+
 ## Coreografia
 
 | Seção | Entrada |
