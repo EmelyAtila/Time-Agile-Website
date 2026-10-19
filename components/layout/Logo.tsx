@@ -5,7 +5,7 @@ type LogoProps = SVGProps<SVGSVGElement> & {
   withTagline?: boolean
 }
 
-// Cada `<g data-part>` é animado separadamente em animations/useHeroIntro.ts
+// Cada `<g data-part>` é animado separadamente na entrada do Hero (styles/hero-intro.css)
 export function Logo({ withTagline = true, ...props }: LogoProps) {
   return (
     <svg

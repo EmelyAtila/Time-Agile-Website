@@ -14,8 +14,11 @@ function Art({
 }: HeroRibbonsProps & { art: HeroArt; className?: string }) {
   const guideId = `hero-title-guide-${art.id}`
 
+  // suppressHydrationWarning: o script inline do Hero (animations/heroBoot.ts) estica as curvas e prepara
+  // o deslize do título antes de o React hidratar
   return (
     <svg
+      suppressHydrationWarning
       data-intro="art"
       data-hero-art={art.id}
       data-stretch={art.stretch?.join(',')}
@@ -27,12 +30,13 @@ function Art({
     >
       <defs>
         {/* Cópia sem pathLength: o da fita é normalizado para 1 e mexeria no startOffset */}
-        <path id={guideId} d={art.title.guide} />
+        <path suppressHydrationWarning id={guideId} d={art.title.guide} />
       </defs>
 
       {art.ribbons.map((ribbon) => (
         <path
           key={ribbon.color}
+          suppressHydrationWarning
           data-ribbon={ribbon.color}
           d={ribbon.d}
           pathLength={1}
@@ -45,6 +49,7 @@ function Art({
       ))}
 
       <text
+        suppressHydrationWarning
         fontSize={art.title.fontSize}
         dy="0.36em"
         className="fill-white font-sans font-bold"
@@ -53,6 +58,13 @@ function Art({
         }}
       >
         <textPath data-hero-title href={`#${guideId}`} startOffset={art.title.startOffset}>
+          {/* Sem valores até o script medir o título; antes de começar, vale o startOffset de repouso */}
+          <animate
+            suppressHydrationWarning
+            attributeName="startOffset"
+            begin="indefinite"
+            fill="freeze"
+          />
           {`${title} `}
           <tspan data-hero-mark rotate={0}>
             {mark}

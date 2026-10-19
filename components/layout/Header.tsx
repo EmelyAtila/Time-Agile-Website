@@ -9,7 +9,7 @@ import { useNavScrollSpy } from '@/animations/useNavScrollSpy'
 
 const NAV_HREFS = NAV_LINKS.map((link) => link.href)
 
-// Os `data-intro` são animados pela entrada do Hero (animations/useHeroIntro.ts)
+// Os `data-intro` são animados pela entrada do Hero (styles/hero-intro.css)
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const headerRef = useHeaderDock()
@@ -51,15 +51,18 @@ export function Header() {
               </li>
             ))}
           </ul>
+          {/* A entrada anima o <span> de dentro: o GSAP do scroll spy absorveria o `scale` do CSS */}
           <span
             ref={indicatorRef}
             data-nav-indicator
             aria-hidden
-            className="invisible absolute -bottom-1 left-0 h-1.5 w-[26px] bg-brand-orange"
-          />
+            className="invisible absolute -bottom-1 left-0 h-1.5 w-[26px]"
+          >
+            <span className="block size-full bg-brand-orange" />
+          </span>
         </nav>
 
-        {/* Wrapper: o Button tem transition-all, que brigaria com o GSAP */}
+        {/* Wrapper: o Button tem transição de transform, que brigaria com o GSAP */}
         <div data-intro="cta" className="hidden md:block">
           <Button
             href={PRIMARY_CTA.href}

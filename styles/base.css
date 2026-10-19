@@ -35,25 +35,24 @@ section[id] {
   top: 1rem;
 }
 
-/* Esconde [data-intro] até o GSAP assumir, senão piscam prontos antes de animar. Failsafe de 4s. */
+/* Esconde a entrada do Hero até o script inline dele começar (styles/hero-intro.css) e as entradas no
+   scroll até o GSAP assumir, senão piscam prontas antes de animar (cada [data-reveal] é solto quando o
+   grupo dele é montado). Failsafe: uma animação só, no <html>, mostra tudo em 4s se o JS não chegar */
 @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
-  html:not([data-intro-ready]) [data-intro] {
-    visibility: hidden;
-    animation: intro-failsafe 0s linear 4s forwards;
+  html:not([data-intro-play]) [data-intro],
+  html:not([data-reveal-ready]) [data-reveal]:not([data-reveal-built]) {
+    visibility: var(--js-pending, hidden);
+  }
+
+  html:not([data-intro-play]),
+  html:not([data-reveal-ready]) {
+    animation: js-failsafe 0s linear 4s forwards;
   }
 }
 
-/* O mesmo para as entradas no scroll (animations/useScrollReveals.ts) */
-@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
-  html:not([data-reveal-ready]) [data-reveal] {
-    visibility: hidden;
-    animation: intro-failsafe 0s linear 4s forwards;
-  }
-}
-
-@keyframes intro-failsafe {
+@keyframes js-failsafe {
   to {
-    visibility: visible;
+    --js-pending: visible;
   }
 }
 

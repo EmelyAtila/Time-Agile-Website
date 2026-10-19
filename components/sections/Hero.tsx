@@ -1,3 +1,4 @@
+import { HERO_BOOT } from '@/animations/heroBoot'
 import { site } from '@/content/site'
 import { Logo } from '@/components/layout/Logo'
 import { InstagramIcon } from '@/components/decor/InstagramIcon'
@@ -50,6 +51,9 @@ export function Hero() {
           ))}
         </ul>
       </div>
+
+      {/* Roda durante o parse do HTML: a entrada começa sem esperar o JS da página */}
+      <script dangerouslySetInnerHTML={{ __html: HERO_BOOT }} />
     </HeroIntro>
   )
 }

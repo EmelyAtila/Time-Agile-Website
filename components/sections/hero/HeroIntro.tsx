@@ -8,7 +8,7 @@ import { useFluidArt } from './useFluidArt'
 export function HeroIntro(props: ComponentProps<'section'>) {
   const ref = useRef<HTMLElement>(null)
 
-  // Nesta ordem: a arte precisa estar na proporção final antes de a entrada medir o título
+  // A entrada em si roda antes do React (animations/heroBoot.ts); aqui ficam o resize e os loops
   useFluidArt(ref)
   useHeroIntro(ref)
 

@@ -33,7 +33,7 @@ function onOutline(box: DOMRect, t: number) {
   return { x: left + Math.cos(angle) * radius, y: middle + Math.sin(angle) * radius, angle }
 }
 
-// `cta` é o wrapper do botão: o Button tem transition-all e brigaria com o GSAP
+// `cta` é o wrapper do botão: o Button tem transição de transform e brigaria com o GSAP
 export function animateHeaderCta(cta: HTMLElement) {
   const arrow = cta.querySelector('svg')
   const fill = cta.querySelector<HTMLElement>('[data-cta-fill]')
