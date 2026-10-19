@@ -62,6 +62,7 @@ docs/                identidade visual e mockup (fora do build Docker)
   - medidas e efeitos: `h-header`, `rounded-{sm,md,lg}`, `shadow-card`, `shadow-card-hover`, `shadow-cta`.
 - Os componentes já têm markup semântico e classes mínimas de layout. A estilização visual é a próxima etapa.
 - Classes condicionais precisam ser **strings completas** (ex.: mapa `cardColors` em `Services.tsx`). Não use interpolação do tipo `` `bg-brand-${cor}` ``, porque o Tailwind não detecta essas classes.
+- As cores da marca são CSS vars, e o Tailwind 3 não gera o modificador de opacidade para elas: `text-brand-wine/75` sai sem CSS nenhum, sem aviso. Para transparência, use `color-mix`, como no fundo do header e no anel de erro do formulário.
 - As entradas no scroll usam `data-reveal="<preset>"` nos elementos e `data-reveal-group` no bloco que dispara. Não precisa de hook no componente: `ScrollReveals` (montado em `app/page.tsx`) cuida de tudo. Presets e regras estão em `docs/SCROLL-ANIMATIONS.md`.
 - A entrada do Hero usa `data-intro`, o CSS de `styles/hero-intro.css` e o script inline de `animations/heroBoot.ts`, que começa sem esperar o JS da página. Tempos, funcionamento e ideias adiadas estão em `docs/HERO-ANIMATIONS.md`.
 
