@@ -64,50 +64,12 @@ export function bootHero(stretch: (section: HTMLElement) => void, config: BootCo
   const html = document.documentElement
   const section = document.currentScript?.closest('section')
   if (!section) return
-  // Avisa o React que a entrada já está a caminho, mesmo enquanto espera a fonte
+  // Avisa o React que a entrada já começou
   html.setAttribute(config.bootAttr, '')
 
-  let started = false
-  let title: SVGTextPathElement | null = null
-
-  // O título desliza pelo path com um <animate> no startOffset (CSS não anima atributo)
-  const slideTitle = () => {
-    const art = title?.closest('svg')
-    const guide = art?.querySelector<SVGPathElement>('defs path')
-    const slide = title?.querySelector<SVGAnimateElement>('animate')
-    if (!title || !guide || !slide) return
-
-    const rest = parseFloat(title.getAttribute('startOffset') ?? '0')
-    // Começa todo antes do início do path: letras fora do path não são desenhadas
-    const length = (title.getComputedTextLength() / guide.getTotalLength()) * 100
-    const from = -Math.round((length + 2) * 1000) / 1000
-    const total = config.titleDelay + config.titleDuration
-    const hold = config.titleDelay / total
-    const steps = 30
-    const values = [from]
-    const keyTimes = [0]
-    for (let i = 0; i <= steps; i++) {
-      // back.out(1.1) do GSAP
-      const p = i / steps - 1
-      const eased = p * p * (2.1 * p + 1.1) + 1
-      values.push(Math.round((from + (rest - from) * eased) * 1000) / 1000)
-      keyTimes.push(Math.round((hold + (1 - hold) * (i / steps)) * 10000) / 10000)
-    }
-    slide.setAttribute('dur', `${total}s`)
-    slide.setAttribute('values', values.map((value) => `${value}%`).join(';'))
-    slide.setAttribute('keyTimes', keyTimes.join(';'))
-    slide.beginElement()
-  }
-
-  const start = () => {
-    if (started) return
-    started = true
-    try {
-      slideTitle()
-    } finally {
-      html.setAttribute(config.playAttr, '')
-      setTimeout(() => html.setAttribute(config.doneAttr, ''), config.introMs)
-    }
+  const play = () => {
+    html.setAttribute(config.playAttr, '')
+    setTimeout(() => html.setAttribute(config.doneAttr, ''), config.introMs)
   }
 
   try {
@@ -115,18 +77,50 @@ export function bootHero(stretch: (section: HTMLElement) => void, config: BootCo
     if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return
 
     const variant = matchMedia('(min-width: 1024px)').matches ? 'desktop' : 'mobile'
-    title = section.querySelector(`[data-hero-art="${variant}"] [data-hero-title]`)
-    if (!title) return start()
-
-    // Só a fonte do título: o título não muda de largura no meio do caminho
-    const { fontWeight, fontFamily } = getComputedStyle(title)
-    const timeout = new Promise((resolve) => setTimeout(resolve, config.fontTimeoutMs))
-    Promise.race([document.fonts.load(`${fontWeight} 1em ${fontFamily}`), timeout]).then(
-      start,
-      start
+    const title = section.querySelector<SVGTextPathElement>(
+      `[data-hero-art="${variant}"] [data-hero-title]`
     )
+    const guide = title?.closest('svg')?.querySelector<SVGPathElement>('defs path')
+    if (!title || !guide) return play()
+
+    // Só o título espera a fonte dele, senão mudaria de largura no meio do caminho; o resto começa já
+    const { fontWeight, fontFamily } = getComputedStyle(title)
+    const fontReady = document.fonts.load(`${fontWeight} 1em ${fontFamily}`)
+    const timeout = new Promise((resolve) => setTimeout(resolve, config.fontTimeoutMs))
+    const rest = title.getAttribute('startOffset') ?? '0'
+
+    // Fora do path até a fonte chegar: letras fora do path não são desenhadas
+    title.setAttribute('startOffset', '-100%')
+    play()
+    const titleAt = performance.now() + config.titleDelay * 1000
+
+    // O startOffset muda a cada quadro, no relógio das animações de CSS. Um <animate> do SVG só andaria
+    // quando a linha do tempo de animação do documento começa, que no Chrome é perto do fim do carregamento
+    const slide = () => {
+      try {
+        // Começa todo antes do início do path
+        const from = -((title.getComputedTextLength() / guide.getTotalLength()) * 100 + 2)
+        const to = parseFloat(rest)
+        const begin = Math.max(titleAt, performance.now())
+        const duration = config.titleDuration * 1000
+        const frame = (now: number) => {
+          const p = Math.min(Math.max((now - begin) / duration, 0), 1)
+          // back.out(1.1) do GSAP
+          const q = p - 1
+          const value = from + (to - from) * (q * q * (2.1 * q + 1.1) + 1)
+          title.setAttribute('startOffset', p < 1 ? `${Math.round(value * 1000) / 1000}%` : rest)
+          if (p < 1) requestAnimationFrame(frame)
+        }
+        title.setAttribute('startOffset', `${Math.round(from * 1000) / 1000}%`)
+        requestAnimationFrame(frame)
+      } catch {
+        title.setAttribute('startOffset', rest)
+      }
+    }
+
+    Promise.race([fontReady, timeout]).then(slide, slide)
   } catch {
-    start()
+    if (!html.hasAttribute(config.playAttr)) play()
   }
 }
 

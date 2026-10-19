@@ -334,11 +334,6 @@
     animation-delay: 0.55s;
   }
 
-  /* O <animate> do título só vale a partir do frame seguinte: no atraso dele, o título fica escondido */
-  html[data-intro-play]:not([data-intro-done]) [data-hero-art] text {
-    animation: intro-hold 0.2s;
-  }
-
   /* Logo: letras pela base */
   html[data-intro-play]:not([data-intro-done]) [data-intro='logo'] [data-part] path {
     transform-box: fill-box;
@@ -395,13 +390,6 @@
   to {
     stroke-dasharray: 1 2;
     stroke-dashoffset: 0;
-  }
-}
-
-@keyframes intro-hold {
-  from,
-  to {
-    opacity: 0;
   }
 }
 

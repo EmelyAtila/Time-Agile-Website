@@ -57,14 +57,12 @@ function Art({
           filter: `drop-shadow(0 ${art.title.fontSize * 0.05}px ${art.title.fontSize * 0.04}px rgb(0 0 0 / 0.25))`,
         }}
       >
-        <textPath data-hero-title href={`#${guideId}`} startOffset={art.title.startOffset}>
-          {/* Sem valores até o script medir o título; antes de começar, vale o startOffset de repouso */}
-          <animate
-            suppressHydrationWarning
-            attributeName="startOffset"
-            begin="indefinite"
-            fill="freeze"
-          />
+        <textPath
+          suppressHydrationWarning
+          data-hero-title
+          href={`#${guideId}`}
+          startOffset={art.title.startOffset}
+        >
           {`${title} `}
           <tspan data-hero-mark rotate={0}>
             {mark}
