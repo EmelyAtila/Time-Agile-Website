@@ -54,11 +54,11 @@ export function Contact() {
             aria-labelledby="contact-info-title"
             data-reveal="sticker"
             data-reveal-at="0.55"
-            className="relative z-10 order-last ml-auto mt-8 w-fit md:-mb-6 md:mt-0 lg:absolute lg:left-[calc(528*var(--u))] lg:top-[calc(-24*var(--u))] lg:mb-0 lg:ml-0 lg:w-[calc(329*var(--u))]"
+            className="relative z-10 order-last mx-auto mt-8 w-fit md:-mb-6 md:mr-0 md:mt-0 lg:absolute lg:left-[calc(528*var(--u))] lg:top-[calc(-24*var(--u))] lg:mb-0 lg:ml-0 lg:w-[calc(329*var(--u))]"
           >
             <h3
               id="contact-info-title"
-              className="mb-2 ml-1 font-sans text-[1.5rem] font-black leading-[1.2] text-brand-red lg:absolute lg:bottom-full lg:mb-[calc(7.7*var(--u))] lg:ml-[calc(4.7*var(--u))] lg:text-[length:calc(32*var(--u))]"
+              className="mb-2 text-center font-sans text-[1.5rem] font-black leading-[1.2] text-brand-red md:ml-1 md:text-left lg:absolute lg:bottom-full lg:mb-[calc(7.7*var(--u))] lg:ml-[calc(4.7*var(--u))] lg:text-[length:calc(32*var(--u))]"
             >
               {contactContent.infoTitle}
             </h3>
