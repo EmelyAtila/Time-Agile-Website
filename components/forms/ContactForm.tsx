@@ -63,7 +63,7 @@ export function ContactForm() {
       <h3
         id="contact-form-title"
         data-reveal="rise"
-        className="ml-1 font-sans text-[1.625rem] font-black leading-[1.2] lg:ml-[calc(6.4*var(--u))] lg:text-[length:calc(36*var(--u))]"
+        className="text-balance text-center font-sans text-[1.625rem] font-black leading-[1.2] md:ml-1 md:text-left lg:ml-[calc(6.4*var(--u))] lg:text-[length:calc(36*var(--u))]"
       >
         {contactContent.formTitle}
       </h3>
@@ -115,6 +115,7 @@ export function ContactForm() {
           <label htmlFor="contact-message" className={LABEL}>
             {fields.message.label}
           </label>
+          {/* Mais baixa no celular para o título da seção e o formulário inteiro caberem juntos na tela (360×740) */}
           <textarea
             id="contact-message"
             rows={5}
@@ -123,7 +124,7 @@ export function ContactForm() {
             aria-describedby={errors.message ? 'contact-message-error' : undefined}
             className={cn(
               INPUT,
-              'h-40 resize-none py-3 leading-[1.5] lg:h-[calc(158.7*var(--u))] lg:py-[calc(10*var(--u))]'
+              'h-24 resize-none py-3 leading-[1.5] md:h-40 lg:h-[calc(158.7*var(--u))] lg:py-[calc(10*var(--u))]'
             )}
             {...register('message')}
           />
