@@ -35,9 +35,10 @@ export function Contact() {
           >
             {contactContent.title}
           </SectionHeading>
+          {/* No celular só o título, para ele aparecer junto do formulário; o leitor de tela continua lendo o texto */}
           <p
             data-reveal="text"
-            className="mt-3 font-semibold leading-[1.54] lg:mt-[calc(3.6*var(--u))]"
+            className="mt-3 font-semibold leading-[1.54] max-md:sr-only lg:mt-[calc(3.6*var(--u))]"
           >
             {contactContent.description}
           </p>
@@ -46,7 +47,7 @@ export function Contact() {
         {/* O card amarelo vem antes no DOM, mas é colado depois que o formulário sobe (data-reveal-at) */}
         <div
           data-reveal-group="lg"
-          className="relative mx-auto mt-12 flex max-w-[38rem] flex-col md:block lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none"
+          className="relative mx-auto mt-8 flex max-w-[38rem] flex-col md:mt-12 md:block lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none"
         >
           {/* No celular fica abaixo do formulário. No tablet vem antes e avança sobre o canto dele, como no desktop */}
           <aside
