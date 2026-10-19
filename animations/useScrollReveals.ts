@@ -16,40 +16,45 @@ const MIN_RANGE = 0.35
 
 // Segundos que a entrada leva para alcançar a rolagem
 const LAG = 0.5
-const FONT_TIMEOUT_MS = 400
 
-// Desliga o CSS anti-flash de styles/base.css
+// Os grupos são montados aos poucos, nos intervalos livres: de uma vez, travaria a entrada do Hero
+const SLICE_MS = 8
+const IDLE_TIMEOUT_MS = 300
+
+// Desligam o CSS anti-flash de styles/base.css: o primeiro por elemento, o segundo quando todos foram montados
+const BUILT_ATTR = 'data-reveal-built'
 const READY_ATTR = 'data-reveal-ready'
 
 // O que as entradas deixam inline; no fim volta tudo ao CSS, para os hovers
 const CLEAR =
   'transform,transformOrigin,opacity,visibility,clipPath,filter,pointerEvents,transition'
 
-type Group = Pick<RevealEnv, 'splits' | 'extras'>
+type Group = Pick<RevealEnv, 'splits' | 'extras'> & { items: HTMLElement[]; done: boolean }
+type Pending = { items: HTMLElement[]; trigger: Element; distance: number }
 
-// Medida sem o transform da própria entrada (um pop em scale 0 teria altura 0)
-function layoutRect(el: Element) {
-  const { style } = el as HTMLElement
-  const transform = style.transform
-  style.transform = 'none'
+// Posição na página sem transforms e só lendo: escrever antes de medir forçaria um layout por grupo.
+// Nos SVGs, as entradas animam um <g data-pop> de dentro, então o <svg> pode ser medido como está
+function layoutBox(el: Element) {
+  if (el instanceof HTMLElement) {
+    let top = 0
+    for (let node: Element | null = el; node instanceof HTMLElement; node = node.offsetParent) {
+      top += node.offsetTop
+    }
+    return { top, height: el.offsetHeight }
+  }
   const rect = el.getBoundingClientRect()
-  style.transform = transform
-  return rect
+  return { top: rect.top + window.scrollY, height: rect.height }
 }
 
 // Trecho da rolagem (px) em que a entrada acontece. Nunca passa do fim da rolagem: o que fica perto do fim
 // da página (rodapé) também termina
 function scrollRange(trigger: Element) {
-  const rect = layoutRect(trigger)
+  const { top, height } = layoutBox(trigger)
   const vh = window.innerHeight
-  const top = rect.top + window.scrollY
   const last = ScrollTrigger.maxScroll(window) - 1
 
   let start = top - vh * START_AT
-  let end = Math.max(
-    Math.min(rect.bottom + window.scrollY - vh, top - vh * TALL_END_AT),
-    start + vh * MIN_RANGE
-  )
+  let end = Math.max(Math.min(top + height - vh, top - vh * TALL_END_AT), start + vh * MIN_RANGE)
   if (end > last) {
     end = last
     start = Math.min(start, end - vh * MIN_RANGE)
@@ -96,6 +101,17 @@ function buildTimeline(items: HTMLElement[], env: Omit<RevealEnv, 'index'>) {
   return tl
 }
 
+const markBuilt = (items: Element[]) => items.forEach((el) => el.setAttribute(BUILT_ATTR, ''))
+
+// No Safari não há requestIdleCallback
+const schedule = (step: (deadline?: IdleDeadline) => void) =>
+  typeof requestIdleCallback === 'function'
+    ? requestIdleCallback(step, { timeout: IDLE_TIMEOUT_MS })
+    : window.setTimeout(step, 1)
+
+const unschedule = (handle: number) =>
+  typeof cancelIdleCallback === 'function' ? cancelIdleCallback(handle) : clearTimeout(handle)
+
 // Elementos marcados com data-reveal entram presos à rolagem: avançam enquanto o bloco entra na tela e
 // terminam com ele inteiro nela. Só avançam, nunca voltam. Contrato: docs/SCROLL-ANIMATIONS.md
 export function useScrollReveals() {
@@ -117,80 +133,111 @@ export function useScrollReveals() {
       }
 
       const groups: Group[] = []
+      let pending: Pending[] | null = null
+      let handle = 0
       let cancelled = false
 
-      const build = () => {
+      // Fila do mais perto da tela para o mais longe; o que já passou fica pronto, sem animar
+      const collectPending = () => {
+        const list: Pending[] = []
+        // As marcas vão no fim: marcar no meio invalidaria o estilo antes de cada medida
+        const ready: Element[] = []
         collectGroups(desktop).forEach((all, key) => {
+          ready.push(...all.filter(hasPlayed))
           const items = all.filter((el) => !hasPlayed(el))
           if (!items.length) return
           // Grupo sem altura (filhos todos absolutos) acompanha a posição do primeiro elemento
-          const trigger = layoutRect(key).height ? key : items[0]
-          // Já passou (recarregou no meio da página): fica pronto, sem animar
-          if (window.scrollY >= scrollRange(trigger).end) {
+          const trigger = layoutBox(key).height ? key : items[0]
+          const { start, end } = scrollRange(trigger)
+          if (window.scrollY >= end) {
             markPlayed(items)
+            ready.push(...items)
             return
           }
+          list.push({ items, trigger, distance: Math.max(0, start - window.scrollY) })
+        })
+        markBuilt(ready)
+        return list.sort((a, b) => a.distance - b.distance)
+      }
 
-          const group: Group = { splits: [], extras: [] }
-          groups.push(group)
-          const tl = buildTimeline(items, { desktop, ...group })
+      const buildGroup = ({ items, trigger }: Pending) => {
+        const group: Group = { items, splits: [], extras: [], done: false }
+        groups.push(group)
+        const tl = buildTimeline(items, { desktop, splits: group.splits, extras: group.extras })
 
-          let done = false
-          const finish = () => {
-            if (done) return
-            done = true
-            markPlayed(items)
-            scroll.kill()
-            // O alvo de um .call() é a própria função
-            const targets = tl
-              .getChildren(true, true, false)
-              .flatMap((tween) => (tween as gsap.core.Tween).targets<unknown>())
-              .filter((target): target is Element => target instanceof Element)
-            gsap.set(targets, { clearProps: CLEAR })
-            group.splits.forEach((split) => split.revert())
-          }
+        const finish = () => {
+          if (group.done) return
+          group.done = true
+          markPlayed(items)
+          scroll.kill()
+          // O alvo de um .call() é a própria função
+          const targets = tl
+            .getChildren(true, true, false)
+            .flatMap((tween) => (tween as gsap.core.Tween).targets<unknown>())
+            .filter((target): target is Element => target instanceof Element)
+          gsap.set(targets, { clearProps: CLEAR })
+          group.splits.forEach((split) => split.revert())
+        }
 
-          // A entrada persegue a rolagem com atraso, para não andar aos trancos. false: dispara os .call()
-          const shown = { progress: 0 }
-          let reached = 0
-          const follow = gsap.quickTo(shown, 'progress', {
-            duration: LAG,
-            ease: 'power1.out',
-            onUpdate: () => {
-              tl.progress(shown.progress, false)
-              if (shown.progress >= 1) finish()
-            },
-          })
+        // A entrada persegue a rolagem com atraso, para não andar aos trancos. false: dispara os .call()
+        const shown = { progress: 0 }
+        let reached = 0
+        const follow = gsap.quickTo(shown, 'progress', {
+          duration: LAG,
+          ease: 'power1.out',
+          onUpdate: () => {
+            tl.progress(shown.progress, false)
+            if (shown.progress >= 1) finish()
+          },
+        })
 
-          const advance = ({ progress }: ScrollTrigger) => {
-            if (progress <= reached) return
-            reached = progress
-            follow(progress)
-          }
+        const advance = ({ progress }: ScrollTrigger) => {
+          if (progress <= reached) return
+          reached = progress
+          follow(progress)
+        }
 
-          const scroll = ScrollTrigger.create({
-            trigger,
-            start: () => scrollRange(trigger).start,
-            end: () => scrollRange(trigger).end,
-            onUpdate: advance,
-            onRefresh: advance,
-          })
+        const scroll = ScrollTrigger.create({
+          trigger,
+          start: () => scrollRange(trigger).start,
+          end: () => scrollRange(trigger).end,
+          onUpdate: advance,
+          onRefresh: advance,
         })
       }
 
-      // Espera as fontes: o SplitText mede as palavras na fonte final
-      const timeout = new Promise((resolve) => setTimeout(resolve, FONT_TIMEOUT_MS))
-      Promise.race([document.fonts.ready, timeout]).then(() => {
+      // Uma fatia por intervalo livre, e pelo menos um grupo por fatia
+      const step = (deadline?: IdleDeadline) => {
         if (cancelled) return
-        context.add(build)
-        html.setAttribute(READY_ATTR, '')
-      })
+        const until = performance.now() + Math.min(SLICE_MS, deadline?.timeRemaining() ?? SLICE_MS)
+        pending ??= collectPending()
+        const queue = pending
+        const built: Element[] = []
+        do {
+          const next = queue.shift()
+          if (!next) break
+          context.add(() => buildGroup(next))
+          built.push(...next.items)
+        } while (queue.length && performance.now() < until)
+        // Já estão no estado inicial do GSAP: o CSS pode soltar. Em lote, para não invalidar o estilo
+        // entre um grupo e outro da fatia
+        markBuilt(built)
 
+        if (queue.length) handle = schedule(step)
+        else html.setAttribute(READY_ATTR, '')
+      }
+
+      handle = schedule(step)
+
+      // Ao reverter (cruzar o lg), o que não terminou volta a se esconder até ser montado de novo
       return () => {
         cancelled = true
+        unschedule(handle)
+        html.removeAttribute(READY_ATTR)
         groups.forEach((group) => {
           group.splits.forEach((split) => split.revert())
           group.extras.forEach((animation) => animation.revert())
+          if (!group.done) group.items.forEach((el) => el.removeAttribute(BUILT_ATTR))
         })
       }
     })
