@@ -74,7 +74,8 @@ export function ServiceCard({ service, art, className, style }: ServiceCardProps
             alt={service.image.alt}
             width={service.image.width}
             height={service.image.height}
-            sizes="(min-width: 1480px) 270px, (min-width: 1024px) 19vw, 70vw"
+            // A largura do mockup é o máximo: abaixo do lg o card não passa de 18,5rem, a largura dele no mockup
+            sizes={`(min-width: 1480px) ${service.image.width}px, (min-width: 1024px) ${+(service.image.width / 14.8).toFixed(2)}vw, ${service.image.width}px`}
             className="absolute h-auto max-w-none"
             style={picture({ ...art.sticker, width: service.image.width })}
           />
