@@ -18,6 +18,8 @@ const OUT = 1.01
 const LAG = 0.5
 
 const STEPS = 400
+// Cada getPointAtLength percorre o path: amostra grossa e refina só nas bordas, com a mesma resolução de STEPS
+const COARSE = 8
 
 type Visible = { from: number; to: number; entry: number }
 
@@ -30,21 +32,38 @@ function measureVisible(path: SVGPathElement, top: number): Visible {
   const length = path.getTotalLength()
   if (!ctm || !length) return WHOLE
   const width = document.documentElement.clientWidth
+  const point = (step: number) =>
+    path.getPointAtLength((length * step) / STEPS).matrixTransform(ctm)
+  const inView = (step: number) => {
+    const { x } = point(step)
+    return x >= 0 && x <= width
+  }
   let first = -1
   let last = -1
-  let entry = 0
-  for (let step = 0; step <= STEPS; step++) {
-    const { x, y } = path.getPointAtLength((length * step) / STEPS).matrixTransform(ctm)
-    if (x < 0 || x > width) continue
-    if (first < 0) {
-      first = step
-      entry = y - top
-    }
+  for (let step = 0; step <= STEPS; step += COARSE) {
+    if (!inView(step)) continue
+    if (first < 0) first = step
     last = step
   }
   if (first < 0) return WHOLE
+  for (let step = Math.max(first - COARSE + 1, 0); step < first; step++) {
+    if (inView(step)) {
+      first = step
+      break
+    }
+  }
+  for (let step = Math.min(last + COARSE - 1, STEPS); step > last; step--) {
+    if (inView(step)) {
+      last = step
+      break
+    }
+  }
   // Um passo de folga para a ponta redonda não aparecer na borda
-  return { from: Math.max(first - 1, 0) / STEPS, to: Math.min(last + 1, STEPS) / STEPS, entry }
+  return {
+    from: Math.max(first - 1, 0) / STEPS,
+    to: Math.min(last + 1, STEPS) / STEPS,
+    entry: point(first).y - top,
+  }
 }
 
 // Desenha do começo do path para o fim: inverta o `d` se o traço vier ao contrário
@@ -81,10 +100,16 @@ export function useScrollDraw() {
         onUpdate: render,
       })
 
-      // Recalculado a cada refresh (resize): começa a desenhar quando a fita, não o svg, entra na tela
+      // Começa a desenhar quando a fita, não o svg, entra na tela. Só mede de novo quando o layout muda: os
+      // refreshes sem resize (load, troca de fonte) reaproveitam a medida
+      let measuredFor = ''
       const drawFrom = () => {
-        const { top } = svg.getBoundingClientRect()
-        visible = paths.map((path) => measureVisible(path, top))
+        const { top, left, width, height } = svg.getBoundingClientRect()
+        const layout = `${document.documentElement.clientWidth}:${left}:${width}:${height}`
+        if (layout !== measuredFor) {
+          measuredFor = layout
+          visible = paths.map((path) => measureVisible(path, top))
+        }
         const entry = Math.round(Math.min(...visible.map((part) => part.entry)))
         return `top${entry < 0 ? '-' : '+'}=${Math.abs(entry)} bottom`
       }
