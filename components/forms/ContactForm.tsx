@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { contactSchema, type ContactFormData } from '@/lib/validations'
+import { useForm, type Resolver } from 'react-hook-form'
+import type { ContactFormData } from '@/lib/validations'
 import { sendContactEmail, type ContactActionResult } from '@/app/actions/contact'
 import { contactContent } from '@/content/contact'
 import { cn } from '@/lib/utils'
@@ -21,6 +20,20 @@ const INPUT =
 const ERROR =
   'ml-2.5 font-serif text-[0.875rem] font-semibold text-brand-wine lg:ml-[calc(11.6*var(--u))]'
 
+// A validação (zod) só é baixada quando o formulário é usado, fora do JS inicial da página.
+// Se o download falhar, a próxima tentativa baixa de novo
+let validation: Promise<Resolver<ContactFormData>> | undefined
+const loadValidation = () =>
+  (validation ??= Promise.all([import('@hookform/resolvers/zod'), import('@/lib/validations')])
+    .then(([{ zodResolver }, { contactSchema }]) => zodResolver(contactSchema))
+    .catch((error: unknown) => {
+      validation = undefined
+      throw error
+    }))
+
+const resolver: Resolver<ContactFormData> = async (values, context, options) =>
+  (await loadValidation())(values, context, options)
+
 export function ContactForm() {
   const [result, setResult] = useState<ContactActionResult | null>(null)
   const {
@@ -28,7 +41,7 @@ export function ContactForm() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<ContactFormData>({ resolver: zodResolver(contactSchema) })
+  } = useForm<ContactFormData>({ resolver })
 
   const onSubmit = async (data: ContactFormData) => {
     const response = await sendContactEmail(data)
@@ -39,6 +52,8 @@ export function ContactForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
+      // Adianta o download da validação no primeiro foco, para o envio não esperar por ela
+      onFocus={() => void loadValidation().catch(() => undefined)}
       noValidate
       aria-labelledby="contact-form-title"
       data-reveal="lift"
