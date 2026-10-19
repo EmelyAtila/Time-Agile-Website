@@ -28,7 +28,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
   ref
 ) {
   const cls = cn(
-    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border-[1.5px] border-transparent font-serif font-semibold transition-all duration-300',
+    'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border-[1.5px] border-transparent font-serif font-semibold transition duration-300',
     'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-wine',
     'disabled:pointer-events-none disabled:opacity-60',
     variants[variant],
