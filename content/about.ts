@@ -15,20 +15,20 @@ export const TEAM: Person[] = [
     name: 'Mariana Gomes',
     role: 'Gestora da Marca',
     photo: {
-      src: '/images/about/sticker-mariana.svg',
+      src: '/images/about/sticker-mariana.webp',
       alt: 'Mariana Gomes segurando um celular',
-      width: 340,
-      height: 429,
+      width: 1020,
+      height: 1287,
     },
   },
   {
     name: 'Iranides Souza',
     role: 'Sócia e gestora empresarial',
     photo: {
-      src: '/images/about/sticker-iranides.svg',
+      src: '/images/about/sticker-iranides.webp',
       alt: 'Iranides Souza sorrindo com um celular nas mãos',
-      width: 329,
-      height: 434,
+      width: 987,
+      height: 1302,
     },
   },
 ]
