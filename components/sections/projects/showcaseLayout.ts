@@ -22,7 +22,7 @@ export type ShowcaseArt = {
   title: string
   subtitle?: string
   description?: string
-  // Cópia decorativa que mostra, em amarelo, as linhas que passam da faixa rosa
+  // Cópia decorativa que mostra as linhas que passam da faixa rosa
   afterBand?: string
   gallery?: Gallery
 }
@@ -39,8 +39,9 @@ export const SHOWCASE: ShowcaseArt[] = [
     header:
       'md:col-start-2 lg:absolute lg:left-[calc(398.9*var(--u))] lg:top-[calc(79.1*var(--u))]',
     title: SCRIPT,
+    // Vinho sobre a faixa rosa: o branco do mockup dá 3,4:1, e texto corrido pede 4,5:1
     description:
-      'mt-4 text-white md:col-start-2 lg:absolute lg:left-[calc(524.4*var(--u))] lg:top-[calc(139.9*var(--u))] lg:mt-0 lg:max-w-[26em]',
+      'mt-4 md:col-start-2 lg:absolute lg:left-[calc(524.4*var(--u))] lg:top-[calc(139.9*var(--u))] lg:mt-0 lg:max-w-[26em]',
     gallery: {
       x: 110,
       y: 144.44,
@@ -66,11 +67,11 @@ export const SHOWCASE: ShowcaseArt[] = [
     header:
       'md:col-start-1 lg:absolute lg:left-[calc(680.3*var(--u))] lg:top-[calc(365.5*var(--u))]',
     title: SCRIPT,
-    // Duas linhas brancas dentro da faixa; o resto aparece na cópia amarela, deslocada como no mockup
+    // Duas linhas dentro da faixa; o resto aparece na cópia, deslocada como no mockup
     description:
-      'mt-4 md:col-start-1 lg:absolute lg:right-[calc(552.5*var(--u))] lg:top-[calc(421.7*var(--u))] lg:mt-0 lg:h-[3.08em] lg:max-w-[13.3em] lg:overflow-hidden lg:text-white',
+      'mt-4 md:col-start-1 lg:absolute lg:right-[calc(552.5*var(--u))] lg:top-[calc(421.7*var(--u))] lg:mt-0 lg:h-[3.08em] lg:max-w-[13.3em] lg:overflow-hidden',
     afterBand:
-      'text-brand-yellow lg:right-[calc(559.8*var(--u))] lg:top-[calc(438.7*var(--u))] lg:max-w-[13.3em] lg:[clip-path:inset(3.08em_0_0_0)]',
+      'lg:right-[calc(559.8*var(--u))] lg:top-[calc(438.7*var(--u))] lg:max-w-[13.3em] lg:[clip-path:inset(3.08em_0_0_0)]',
     gallery: {
       x: 946,
       y: 425.44,
@@ -96,7 +97,7 @@ export const SHOWCASE: ShowcaseArt[] = [
     // Na frente das fotos, que sobem no hover
     header: 'relative z-10 lg:absolute lg:left-[calc(295.5*var(--u))] lg:top-[calc(801*var(--u))]',
     title: `${SCRIPT} text-brand-pink`,
-    subtitle: `${SCRIPT} ml-[2.8em] mt-[0.1em] text-brand-orange`,
+    subtitle: `${SCRIPT} ml-[2.8em] mt-[0.1em] text-brand-orange-dark`,
     gallery: {
       x: 75,
       y: 881.44,

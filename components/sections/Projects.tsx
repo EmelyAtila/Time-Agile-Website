@@ -12,11 +12,12 @@ export function Projects() {
       <div className="relative mx-auto max-w-[92.5rem] lg:min-h-[calc(var(--stage-width)*0.3882)] lg:w-[var(--stage-width)] lg:max-w-none">
         <div
           data-reveal-group="lg"
-          className="px-6 pt-6 md:px-12 md:pt-10 lg:ml-[calc((var(--stage-width)_-_var(--page-width))/3)] lg:pl-[calc(var(--text-stage)*0.0986)] lg:pr-0 lg:pt-[calc(var(--stage-width)*0.0649)] lg:[--text-stage:calc(var(--stage-width)_+_(var(--page-width)_-_var(--stage-width))/4)]">
+          className="px-6 pt-6 md:px-12 md:pt-10 lg:ml-[calc((var(--stage-width)_-_var(--page-width))/3)] lg:pl-[calc(var(--text-stage)*0.0986)] lg:pr-0 lg:pt-[calc(var(--stage-width)*0.0649)] lg:[--text-stage:calc(var(--stage-width)_+_(var(--page-width)_-_var(--stage-width))/4)]"
+        >
           <SectionHeading
             id="projects-title"
             data-reveal="heading"
-            className="max-w-[15.5em] text-[1.75rem] font-black leading-[1.35] text-brand-orange md:text-[2rem] lg:text-[length:calc(var(--text-stage)*0.02703)]"
+            className="max-w-[15.5em] text-[1.75rem] font-black leading-[1.35] text-brand-orange-dark md:text-[2rem] lg:text-[length:calc(var(--text-stage)*0.02703)]"
           >
             {projectsIntro.title}
           </SectionHeading>

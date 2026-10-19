@@ -46,7 +46,8 @@ export function Contact() {
         {/* O card amarelo vem antes no DOM, mas é colado depois que o formulário sobe (data-reveal-at) */}
         <div
           data-reveal-group="lg"
-          className="relative mx-auto mt-12 max-w-[38rem] lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none">
+          className="relative mx-auto mt-12 max-w-[38rem] lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none"
+        >
           {/* Abaixo do lg vem antes do formulário e avança sobre o canto dele, como no desktop */}
           <aside
             aria-labelledby="contact-info-title"
@@ -60,7 +61,8 @@ export function Contact() {
             >
               {contactContent.infoTitle}
             </h3>
-            <ul className="flex flex-col gap-3 rounded-[1.25rem] bg-brand-yellow px-5 py-4 text-white lg:gap-[calc(20.5*var(--u))] lg:rounded-[calc(19*var(--u))] lg:pb-[calc(15.5*var(--u))] lg:pl-[calc(32.5*var(--u))] lg:pr-0 lg:pt-[calc(14*var(--u))]">
+            {/* Vinho: o branco do mockup dá 1,8:1 sobre o amarelo */}
+            <ul className="flex flex-col gap-3 rounded-[1.25rem] bg-brand-yellow px-5 py-4 text-brand-wine lg:gap-[calc(20.5*var(--u))] lg:rounded-[calc(19*var(--u))] lg:pb-[calc(15.5*var(--u))] lg:pl-[calc(32.5*var(--u))] lg:pr-0 lg:pt-[calc(14*var(--u))]">
               <li>
                 <a href={`mailto:${site.contact.email}`} className={INFO_LINK}>
                   <span className={ICON_SLOT}>

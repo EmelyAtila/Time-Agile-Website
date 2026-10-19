@@ -11,12 +11,13 @@ export function About() {
           data-reveal-group="lg"
           className="px-[clamp(1.5rem,5.54vw,5.125rem)] pt-14 lg:py-[clamp(2.75rem,4.43vw,4.125rem)]"
         >
-          {/* font-normal: a Handelson só tem peso 400 e o bold herdado seria sintético.
+          {/* Texto em vinho: o branco do mockup dá 1,8:1 sobre o amarelo.
+              font-normal: a Handelson só tem peso 400 e o bold herdado seria sintético.
               inline-block: o carimbo da entrada precisa de transform */}
           <SectionHeading
             id="about-title"
             data-reveal="heading"
-            className="max-w-[19em] text-[clamp(1.75rem,4.2vw,2.125rem)] leading-[1.3] tracking-[0.015em] text-white lg:text-[clamp(1.75rem,2.59vw,2.4rem)]"
+            className="max-w-[19em] text-[clamp(1.75rem,4.2vw,2.125rem)] leading-[1.3] tracking-[0.015em] lg:text-[clamp(1.75rem,2.59vw,2.4rem)]"
           >
             {about.title}{' '}
             <em
@@ -33,7 +34,7 @@ export function About() {
               <p
                 key={paragraph}
                 data-reveal="text"
-                className="mt-[1.65em] text-white first:mt-0 first:text-brand-wine lg:whitespace-pre-line"
+                className="mt-[1.65em] first:mt-0 lg:whitespace-pre-line"
               >
                 {paragraph}
               </p>

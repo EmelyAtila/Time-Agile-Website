@@ -14,9 +14,9 @@ const { fields } = contactContent
 const FIELD = 'flex flex-col gap-1.5 lg:gap-[calc(4.5*var(--u))]'
 const LABEL =
   'ml-2.5 font-serif text-[1rem] leading-[1.2] lg:ml-[calc(11.6*var(--u))] lg:text-[length:max(0.875rem,calc(20*var(--u)))]'
-// O texto digitado é vinho: branco sobre o campo claro ficaria ilegível
+// Texto e placeholder em vinho: branco sobre o campo claro ficaria ilegível (o placeholder a 75% dá 5,2:1)
 const INPUT =
-  'w-full rounded-[0.875rem] bg-white/30 px-[1.125rem] font-serif text-[0.9375rem] font-semibold text-brand-wine outline-none transition-shadow placeholder:text-white/70 focus-visible:ring-2 focus-visible:ring-brand-wine aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-brand-wine/70 lg:rounded-[calc(14*var(--u))] lg:px-[calc(22*var(--u))] lg:text-[length:max(0.8125rem,calc(16*var(--u)))]'
+  'w-full rounded-[0.875rem] bg-white/30 px-[1.125rem] font-serif text-[0.9375rem] font-semibold text-brand-wine outline-none transition-shadow placeholder:text-brand-wine/75 focus-visible:ring-2 focus-visible:ring-brand-wine aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-brand-wine/70 lg:rounded-[calc(14*var(--u))] lg:px-[calc(22*var(--u))] lg:text-[length:max(0.8125rem,calc(16*var(--u)))]'
 const ERROR =
   'ml-2.5 font-serif text-[0.875rem] font-semibold text-brand-wine lg:ml-[calc(11.6*var(--u))]'
 
@@ -58,7 +58,7 @@ export function ContactForm() {
       aria-labelledby="contact-form-title"
       data-reveal="lift"
       data-reveal-at="0"
-      className="relative rounded-[1.25rem] bg-brand-orange px-5 pb-7 pt-8 text-white md:px-8 lg:rounded-[calc(19*var(--u))] lg:pb-[calc(30.6*var(--u))] lg:pl-[calc(48*var(--u))] lg:pr-[calc(60.5*var(--u))] lg:pt-[calc(32.3*var(--u))]"
+      className="relative rounded-[1.25rem] bg-brand-orange px-5 pb-7 pt-8 text-brand-wine md:px-8 lg:rounded-[calc(19*var(--u))] lg:pb-[calc(30.6*var(--u))] lg:pl-[calc(48*var(--u))] lg:pr-[calc(60.5*var(--u))] lg:pt-[calc(32.3*var(--u))]"
     >
       <h3
         id="contact-form-title"
