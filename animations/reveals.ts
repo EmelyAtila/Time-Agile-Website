@@ -15,11 +15,12 @@ type Preset = (el: HTMLElement, env: RevealEnv) => gsap.core.Animation
 const side = (index: number) => (index % 2 ? 1 : -1)
 
 // Em palavras, não em linhas: a divisão não depende da largura e um resize não a quebra.
-// Destaques com animação própria ([data-reveal] por dentro) ficam inteiros
+// Destaques com animação própria ([data-reveal] por dentro) ficam inteiros.
+// aria 'none': o 'auto' punha aria-label no <p>, onde é proibido, e escondia as palavras do leitor de tela
 function splitWords(el: HTMLElement, env: RevealEnv, vars: Partial<SplitText.Vars> = {}) {
   const split = SplitText.create(el, {
     type: 'words',
-    aria: 'auto',
+    aria: 'none',
     ignore: el.querySelectorAll('[data-reveal]'),
     ...vars,
   })
