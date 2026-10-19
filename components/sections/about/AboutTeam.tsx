@@ -44,7 +44,12 @@ export function AboutTeam({ className }: { className?: string }) {
     >
       <svg aria-hidden viewBox={STAGE_VIEWBOX} className="absolute inset-0 size-full">
         {BLOBS.map((blob) => (
-          <path key={blob.color} data-reveal="blob" d={blob.d} fill={`var(--color-${blob.color})`} />
+          <path
+            key={blob.color}
+            data-reveal="blob"
+            d={blob.d}
+            fill={`var(--color-${blob.color})`}
+          />
         ))}
       </svg>
 
@@ -52,13 +57,14 @@ export function AboutTeam({ className }: { className?: string }) {
         {TEAM.map((person, index) => (
           <li key={person.name}>
             <figure>
-              {/* SVG: o next/image entrega o arquivo como está, sem srcset */}
+              {/* ~45% do palco, que vai até 750px (lg: metade da página; abaixo: a largura toda) */}
               <Image
                 data-reveal="sticker"
                 src={person.photo.src}
                 alt={person.photo.alt}
                 width={person.photo.width}
                 height={person.photo.height}
+                sizes="(min-width: 1480px) 340px, (min-width: 1024px) 23vw, (min-width: 782px) 340px, 45vw"
                 className={cn('absolute h-auto', STICKERS[index].photo)}
               />
               <figcaption className={cn('absolute w-max text-right', STICKERS[index].caption)}>
