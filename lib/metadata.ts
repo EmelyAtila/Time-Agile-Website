@@ -1,35 +1,48 @@
 import type { Metadata, Viewport } from 'next'
 import { site } from '@/content/site'
 
-const title = `${site.name} | ${site.tagline}`
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
 
+// A imagem de compartilhamento vem de app/opengraph-image.tsx, e o Twitter/X herda título, descrição e
+// imagem do Open Graph. Os dados para a busca local estão em lib/structured-data.ts
 export const siteMetadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: title,
+    default: site.seoTitle,
     template: `%s | ${site.name}`,
   },
   description: site.description,
   keywords: [...site.keywords],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    url: site.url,
+    url: '/',
     siteName: site.name,
-    title,
+    title: site.seoTitle,
     description: site.description,
-    // TODO: adicionar public/og-image.jpg (1200x630)
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: site.name }],
   },
   twitter: {
     card: 'summary_large_image',
-    title,
-    description: site.description,
-    images: ['/og-image.jpg'],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  ...(googleVerification && { verification: { google: googleVerification } }),
+  // O Google usa os dados estruturados; outros buscadores ainda leem estas metas de região
+  other: {
+    'geo.region': `${site.address.country}-${site.address.region}`,
+    'geo.placename': site.address.locality,
   },
 }
 
