@@ -9,10 +9,12 @@ import { TagMarquee } from '@/components/sections/TagMarquee'
 import { Projects } from '@/components/sections/Projects'
 import { Testimonials } from '@/components/sections/Testimonials'
 import { Contact } from '@/components/sections/Contact'
+import { structuredDataJson } from '@/lib/structured-data'
 
 export default function Home() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: structuredDataJson }} />
       <Header />
       <main id="main-content">
         <Hero />
