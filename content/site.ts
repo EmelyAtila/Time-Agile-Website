@@ -3,19 +3,27 @@ const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '5561992656020
 export const site = {
   name: 'Time Agile',
   tagline: 'Marketing e Gestão',
+  // Em produção precisa ser o domínio real (https): canonical, Open Graph, sitemap e dados estruturados usam
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+  // O que aparece no Google: o título corta perto de 60 caracteres e a descrição perto de 155
+  seoTitle: 'Agência de Marketing e Gestão em Brasília – DF | Time Agile',
   description:
-    'Ajudamos empresas a crescerem com estratégia, posicionamento e consistência empresarial. Marketing, branding e gestão com agilidade.',
+    'Agência de marketing e gestão em Brasília – DF: redes sociais, branding, identidade visual, fotos e vídeos, tráfego pago e consultoria para empresas.',
   keywords: [
+    'agência de marketing em Brasília',
+    'agência de marketing digital DF',
+    'marketing digital Brasília',
+    'gestão de redes sociais Brasília',
+    'social media Brasília',
+    'branding Brasília',
+    'identidade visual Brasília',
+    'produção de conteúdo Brasília',
+    'tráfego pago Brasília',
+    'consultoria de gestão Brasília',
     'Time Agile',
-    'marketing',
-    'gestão',
-    'branding',
-    'identidade visual',
-    'gestão de redes sociais',
-    'tráfego pago',
-    'consultoria ágil',
   ],
+  // TODO: rua e CEP, se houver escritório que atenda no local (melhora a busca no mapa)
+  address: { locality: 'Brasília', region: 'DF', regionName: 'Distrito Federal', country: 'BR' },
   footerDescription:
     'Criamos identidades visuais e soluções de design pensadas para comunicar a essência de cada marca com clareza, personalidade e consistência.',
   contact: {
@@ -23,7 +31,7 @@ export const site = {
     phoneDisplay: '(61) 9-9265-6020',
     whatsappNumber,
     whatsappUrl: `https://wa.me/${whatsappNumber}`,
-    location: 'Brasil',
+    location: 'Brasília – DF',
   },
   social: {
     // TODO: substituir pelos perfis reais

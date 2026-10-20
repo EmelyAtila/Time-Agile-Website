@@ -9,6 +9,7 @@ export const servicesIntro = {
 // Os \n são as quebras do mockup: o texto do card faz parte da arte e não reflui
 export const SERVICES: Service[] = [
   {
+    name: 'Gestão de redes sociais',
     number: '01',
     title: 'Construímos\nconexões que\nfortalecem sua\nmarca',
     description:
@@ -17,6 +18,7 @@ export const SERVICES: Service[] = [
     image: { src: '/images/services/camera.webp', alt: '', width: 186, height: 206 },
   },
   {
+    name: 'Branding e produção de conteúdo',
     number: '02',
     title: 'Branding & Conteúdo',
     description:
@@ -25,6 +27,7 @@ export const SERVICES: Service[] = [
     image: { src: '/images/services/produto.webp', alt: '', width: 231, height: 202 },
   },
   {
+    name: 'Consultoria de gestão',
     number: '03',
     title: 'Planejando hoje o\ncrescimento de\namanhã.',
     description: 'Consultoria para\norganizar processos e\nimpulsionar resultados.',
@@ -32,6 +35,7 @@ export const SERVICES: Service[] = [
     image: { src: '/images/services/celular.webp', alt: '', width: 210, height: 200 },
   },
   {
+    name: 'Tráfego pago',
     number: '04',
     title: 'Impulsionando\nresultados com\nestratégias inteligentes.',
     description: 'Campanhas de tráfego\npago focadas em alcance,\nconversão e crescimento.',

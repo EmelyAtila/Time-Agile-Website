@@ -19,6 +19,8 @@ export interface Person {
 export type BrandColor = 'pink' | 'orange' | 'yellow' | 'pink-light'
 
 export interface Service {
+  // Nome do serviço em texto corrido, para os dados estruturados da busca
+  name: string
   number: string
   title: string
   description: string
