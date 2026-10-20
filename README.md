@@ -28,7 +28,7 @@ Copie `.env.example` para `.env.local` e preencha as variáveis.
 ## Estrutura
 
 ```
-app/                 layout, page (compõe as seções), robots, sitemap
+app/                 layout, page (compõe as seções), robots, sitemap, opengraph-image (imagem de compartilhamento)
   actions/           server actions (contact.ts)
 components/
   layout/            Header, Footer, Logo, WhatsAppButton
@@ -46,7 +46,7 @@ components/
 content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
 animations/          gsap.config.ts, reveals + useScrollReveals (entradas no scroll), heroBoot (script inline que começa a entrada do Hero antes do React), useHeroIntro (liga os loops do Hero), heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), faceMotions (beijo, risada, piscadinha e balanço dos rostos, também no hover), useSmileyLoop (balanço dos smileys), useContactFaces (beijo do Beijinho e risada do Sorrizinho), useServiceCardsHover (hover dos cards de serviço), useTagMarquee (faixa de tags em loop), useScrollDraw (fita que se desenha com a rolagem), useArrowDraw (seta que se desenha ao entrar na tela e balança no hover)
 hooks/               useSmoothScroll, useLateScriptFont (Handelson depois do load)
-lib/                 metadata, validations (zod), escape-html, utils (cn), idle (requestIdleCallback com alternativa)
+lib/                 metadata, structured-data (JSON-LD da busca local), validations (zod), escape-html, utils (cn), idle (requestIdleCallback com alternativa)
 styles/              tokens.css (fonte da verdade do design), base.css, hero-intro.css (entrada do Hero)
 types/               tipos compartilhados
 public/images/       about/, services/, projects/ e a logo branca do rodapé (logo-footer)
@@ -70,14 +70,33 @@ docs/                identidade visual e mockup (fora do build Docker)
 
 A Handelson One é comercial e não está no Google Fonts: o arquivo fica em `public/fonts/handelson-one-maisfontes.086c/` (WOFF2 com o subset latin do Google Fonts, gerado do .otf original; um caractere fora do latin cai na fonte reserva) e é carregado com `next/font/local` em `app/layout.tsx`, como a Satoshi. Como só aparece abaixo da dobra, não tem preload e só entra depois do load da página (`hooks/useLateScriptFont.ts`). Até lá vale o fallback que o next/font ajusta às medidas dela, e sem JS ela entra direto.
 
+## SEO e busca local
+
+O site é otimizado para quem procura uma agência de marketing em Brasília – DF.
+
+- **Título, descrição e palavras-chave:** `content/site.ts` (`seoTitle`, `description`, `keywords`). O título corta perto de 60 caracteres no Google e a descrição perto de 155.
+- **Metadados:** `lib/metadata.ts`. Gera canonical, Open Graph, Twitter/X, as diretivas do Googlebot (prévia grande de imagem), as metas `geo.*` e a verificação do Search Console.
+- **Dados estruturados (JSON-LD):** `lib/structured-data.ts`, renderizado em `app/page.tsx`. Descreve a empresa como `ProfessionalService` do schema.org: endereço em Brasília – DF, área atendida, contato, serviços (o `name` de cada item de `content/services.ts`) e equipe.
+  - Os perfis de `site.social` entram em `sameAs` quando deixarem de ser placeholder.
+  - Não há avaliações nos dados: avaliação que não seja real viola as regras do Google.
+- **Imagem de compartilhamento:** `app/opengraph-image.tsx`, gerada no build (1200×630).
+- **Robots e sitemap:** `app/robots.ts` e `app/sitemap.ts`.
+
+Para publicar:
+
+1. Defina `NEXT_PUBLIC_SITE_URL` com o domínio real (https). Sem ele, canonical, sitemap e dados estruturados apontam para localhost.
+2. Cadastre o domínio no Google Search Console, coloque o código em `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` e envie o `/sitemap.xml`.
+3. Crie o Perfil da Empresa no Google (categoria "Agência de marketing", Brasília – DF), com o mesmo nome, telefone e site. É ele que coloca a empresa no mapa da busca local.
+4. Confira os dados no [Teste de pesquisa aprimorada](https://search.google.com/test/rich-results) do Google.
+
 ## Pendências de conteúdo
 
 Procure por `TODO` no código:
 
 - Logo oficial em SVG.
-- Links reais de Instagram e LinkedIn.
+- Links reais de Instagram e LinkedIn (também entram nos dados estruturados).
+- Rua e CEP em `content/site.ts`, se houver escritório que atenda no local.
 - Depoimentos reais.
-- `og-image.jpg`.
 - Páginas `/privacidade` e `/termos`.
 
 ## Docker
