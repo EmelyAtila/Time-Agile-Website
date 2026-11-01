@@ -1,14 +1,5 @@
-'use client'
-
 import { TESTIMONIALS, testimonialsIntro } from '@/content/testimonials'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  SectionHeading,
-} from '@/components/ui'
+import { Marquee, SectionHeading } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import type { BrandColor } from '@/types'
 
@@ -19,20 +10,45 @@ const cardColors: Record<BrandColor, string> = {
   'pink-light': 'bg-brand-pink-light',
 }
 
-// O loop do Embla precisa de bem mais cards que os visíveis (até 4): repete a lista até ter o dobro
-const MIN_SLIDES = 8
-const COPIES = Math.ceil(MIN_SLIDES / TESTIMONIALS.length)
-const SLIDES = Array.from({ length: COPIES }, (_, copy) =>
-  TESTIMONIALS.map((item, index) => ({ item, copy, key: `${copy}-${index}` }))
-).flat()
+// Cada cópia da faixa precisa ser mais larga que a tela, senão abre um buraco no loop
+const MIN_CARDS = 8
+const REPEAT = Math.ceil(MIN_CARDS / TESTIMONIALS.length)
+const CARDS = Array.from({ length: REPEAT }, () => TESTIMONIALS).flat()
 
-// A faixa (--strip) vai quase até as bordas, deixando 4rem para cada seta; --n cards inteiros dividem a largura
+// O título fica na faixa --strip; os cards correm de borda a borda da tela
 export function Testimonials() {
+  const renderList = (hidden: boolean) => (
+    // pr igual ao gap: as duas cópias ficam com a mesma largura e o loop não dá salto
+    <ul
+      aria-hidden={hidden || undefined}
+      className="flex shrink-0 gap-[var(--gap)] pr-[var(--gap)]"
+    >
+      {CARDS.map((item, index) => (
+        <li key={index} className="w-[var(--card)] shrink-0">
+          <figure
+            data-reveal="card-up"
+            className={cn(
+              'flex h-full flex-col items-center justify-center rounded-[1.125rem] px-5 py-6 text-center',
+              cardColors[item.color]
+            )}
+          >
+            <figcaption className="font-sans text-[1.0625rem] font-bold leading-tight text-brand-wine">
+              {item.author}
+            </figcaption>
+            <blockquote className="mt-3 font-serif text-[0.875rem] font-semibold leading-[1.5] text-black">
+              <p>“{item.quote}”</p>
+            </blockquote>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  )
+
   return (
     <section
       id="depoimentos"
       aria-labelledby="testimonials-title"
-      className="pb-16 pt-6 [--gap:1rem] [--n:1] [--strip:calc(100%_-_8rem)] md:[--gap:1.5rem] md:[--n:2] md:[--strip:min(100%_-_8rem,44rem)] lg:pb-[calc(var(--stage-width)*0.04)] lg:pt-[calc(var(--stage-width)*0.0128)] lg:[--gap:calc(var(--stage-width)*0.03)] lg:[--n:3] lg:[--strip:min(100%_-_8rem,var(--stage-width)*1.135)] xl:[--n:4]"
+      className="pb-16 pt-6 [--card:17rem] [--gap:1rem] [--strip:calc(100%_-_3rem)] md:[--card:20rem] md:[--gap:1.5rem] md:[--strip:min(100%_-_6rem,44rem)] lg:pb-[calc(var(--stage-width)*0.04)] lg:pt-[calc(var(--stage-width)*0.0128)] lg:[--card:calc(var(--stage-width)*0.26)] lg:[--gap:calc(var(--stage-width)*0.03)] lg:[--strip:min(100%_-_8rem,var(--stage-width)*1.135)]"
     >
       {/* overflow-x-clip: as linhas do título entram pela direita sem passar da borda da tela.
           Laranja escuro e rosa: o amarelo e o rosa-claro do mockup dão 1,6:1 e 1,8:1 sobre o creme */}
@@ -50,40 +66,21 @@ export function Testimonials() {
         </SectionHeading>
       </div>
 
-      <Carousel
-        data-reveal-group
-        opts={{ loop: true, align: 'start' }}
+      {/* overflow-x-clip, não hidden: os cards sobem girando sem serem cortados em cima e embaixo.
+          A entrada toca no tempo dela (data-reveal-mode): presa à rolagem, brigaria com a faixa andando.
+          Sem animação, a faixa rola na mão */}
+      <Marquee
+        role="region"
         aria-label="Depoimentos de clientes"
-        className="mx-auto mt-8 w-[var(--strip)] lg:mt-[calc(var(--stage-width)*0.0298)]"
+        data-reveal-group
+        data-reveal-mode="play"
+        className="mt-8 overflow-x-clip motion-reduce:overflow-x-auto lg:mt-[calc(var(--stage-width)*0.0298)]"
       >
-        <CarouselContent className="-ml-[var(--gap)]">
-          {SLIDES.map(({ item, copy, key }) => (
-            <CarouselItem
-              key={key}
-              aria-hidden={copy > 0 || undefined}
-              className="basis-[calc(100%/var(--n))] pl-[var(--gap)]"
-            >
-              {/* A entrada anima o <figure>: o Embla move os slides em volta dele */}
-              <figure
-                data-reveal="card-up"
-                className={cn(
-                  'flex h-full flex-col items-center justify-center rounded-[1.125rem] px-5 py-6 text-center',
-                  cardColors[item.color]
-                )}
-              >
-                <figcaption className="font-sans text-[1.0625rem] font-bold leading-tight text-brand-wine">
-                  {item.author}
-                </figcaption>
-                <blockquote className="mt-3 font-serif text-[0.875rem] font-semibold leading-[1.5] text-black">
-                  <p>“{item.quote}”</p>
-                </blockquote>
-              </figure>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious data-reveal="fade" />
-        <CarouselNext data-reveal="fade" />
-      </Carousel>
+        <div data-marquee-track className="flex w-max">
+          {renderList(false)}
+          {renderList(true)}
+        </div>
+      </Marquee>
     </section>
   )
 }

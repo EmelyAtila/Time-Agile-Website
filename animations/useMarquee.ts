@@ -14,7 +14,7 @@ const BOOST_DECAY = 0.94
 const SPEED_EASE = 0.06
 
 // `[data-marquee-track]` precisa de duas cópias da lista com a mesma largura, senão o loop salta
-export function useTagMarquee() {
+export function useMarquee() {
   const ref = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {

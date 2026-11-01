@@ -1,6 +1,6 @@
 import { TAGS } from '@/content/services'
+import { Marquee } from '@/components/ui'
 import { cn } from '@/lib/utils'
-import { TagLoop } from './tags/TagLoop'
 import { TagRibbon } from './tags/TagRibbon'
 
 // Classes completas (não interpolar) para o Tailwind detectá-las
@@ -29,12 +29,12 @@ export function TagMarquee() {
     <div className="relative overflow-x-clip">
       <TagRibbon className="-z-10" />
 
-      <TagLoop className="overflow-hidden py-12">
+      <Marquee className="overflow-hidden py-12">
         <div data-marquee-track data-reveal="bubbles" className="flex w-max">
           {renderList(false)}
           {renderList(true)}
         </div>
-      </TagLoop>
+      </Marquee>
     </div>
   )
 }
