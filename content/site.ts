@@ -34,8 +34,8 @@ export const site = {
     location: 'Brasília – DF',
   },
   social: {
-    // TODO: substituir pelos perfis reais
-    instagram: 'https://instagram.com/',
+    instagram: 'https://www.instagram.com/timeagile_/',
+    // TODO: substituir pelo perfil real
     linkedin: 'https://linkedin.com/',
   },
 } as const
