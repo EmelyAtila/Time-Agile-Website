@@ -24,11 +24,17 @@ export function Testimonials() {
       className="flex shrink-0 gap-[var(--gap)] pr-[var(--gap)]"
     >
       {CARDS.map((item, index) => (
-        <li key={index} className="w-[var(--card)] shrink-0">
+        // As repetições só enchem a faixa: o leitor de tela lê cada depoimento uma vez
+        <li
+          key={index}
+          aria-hidden={index >= TESTIMONIALS.length || undefined}
+          className="w-[var(--card)] shrink-0"
+        >
           <figure
             data-reveal="card-up"
             className={cn(
-              'flex h-full flex-col items-center justify-center rounded-[1.125rem] px-5 py-6 text-center',
+              // Topo, não centro: com depoimentos de tamanhos diferentes, nome e texto ficam na mesma linha em todos os cards
+              'flex h-full flex-col items-center justify-start rounded-[1.125rem] px-5 py-6 text-center',
               cardColors[item.color]
             )}
           >
