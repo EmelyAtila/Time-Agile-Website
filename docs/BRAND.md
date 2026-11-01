@@ -40,7 +40,9 @@ As cores principais não têm contraste para texto branco, e nem todas servem co
 
 | Texto | Sobre | Contraste | Uso |
 | --- | --- | --- | --- |
-| Branco | amarelo / laranja / rosa | 1,8 / 2,6 / 3,4:1 | não usar em texto. Nos títulos do Hero, no botão rosa e nos cards de serviço ficou como no mockup. Dentro dos campos do formulário é escolha: 2,0:1 sobre o campo, e o placeholder 1,6:1 |
+| Branco | amarelo / laranja / rosa | 1,8 / 2,6 / 3,4:1 | não usar em texto. Só nos títulos do Hero (SVG decorativo; o título lido é o `<h1>` escondido), como no mockup. Os títulos dos cards de serviço e o texto dos campos do formulário são vinho |
+| Branco | `pink-dark` (`#DB2A62`) | 4,65:1 | fundo do botão rosa: um tom abaixo do rosa da marca, só onde há texto branco |
+| Vinho a 70% | campo do formulário (branco 30% sobre o laranja) | 4,6:1 | placeholder (o texto digitado, vinho cheio, dá 8,7:1) |
 | Vinho | amarelo / laranja / rosa / rosa-claro | 9,5 / 6,6 / 5,1 / 8,5:1 | texto sobre as cores fortes |
 | `orange-dark` | creme | 3,5:1 | só título grande (o laranja da marca dá 2,3:1) |
 | Rosa | creme | 3,0:1 | só título grande |

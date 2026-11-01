@@ -90,7 +90,7 @@ export function ServiceCard({ service, art, className, style }: ServiceCardProps
 
           {/* whitespace-pre: as quebras de linha são as do mockup (\n no conteúdo) */}
           <h3
-            className="absolute whitespace-pre font-sans font-bold text-white"
+            className="absolute whitespace-pre font-sans font-bold text-brand-wine"
             style={text(art.title, CARD_TITLE)}
           >
             {service.title}

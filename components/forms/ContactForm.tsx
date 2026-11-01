@@ -14,9 +14,9 @@ const { fields } = contactContent
 const FIELD = 'flex flex-col gap-1.5 lg:gap-[calc(4.5*var(--u))]'
 const LABEL =
   'ml-2.5 font-serif text-[1rem] leading-[1.2] lg:ml-[calc(11.6*var(--u))] lg:text-[length:max(0.875rem,calc(20*var(--u)))]'
-// Branco dentro dos campos por escolha, mesmo com pouco contraste sobre o laranja (docs/BRAND.md)
+// Vinho dentro dos campos: o branco dava 2,0:1 sobre o laranja (docs/BRAND.md)
 const INPUT =
-  'w-full rounded-[0.875rem] bg-white/30 px-[1.125rem] font-serif text-[0.9375rem] font-semibold text-white outline-none transition-shadow placeholder:text-white/70 focus-visible:ring-2 focus-visible:ring-brand-wine aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-[color-mix(in_srgb,var(--color-wine)_70%,transparent)] lg:rounded-[calc(14*var(--u))] lg:px-[calc(22*var(--u))] lg:text-[length:max(0.8125rem,calc(16*var(--u)))]'
+  'w-full rounded-[0.875rem] bg-white/30 px-[1.125rem] font-serif text-[0.9375rem] font-semibold text-brand-wine outline-none transition-shadow placeholder:text-[color-mix(in_srgb,var(--color-wine)_70%,transparent)] focus-visible:ring-2 focus-visible:ring-brand-wine aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-[color-mix(in_srgb,var(--color-wine)_70%,transparent)] lg:rounded-[calc(14*var(--u))] lg:px-[calc(22*var(--u))] lg:text-[length:max(0.8125rem,calc(16*var(--u)))]'
 const ERROR =
   'ml-2.5 font-serif text-[0.875rem] font-semibold text-brand-wine lg:ml-[calc(11.6*var(--u))]'
 

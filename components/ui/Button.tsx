@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode, Ref } from 'react'
 
 const variants = {
-  primary: 'bg-brand-pink text-white hover:bg-brand-orange hover:shadow-cta',
+  primary: 'bg-brand-pink-dark text-white hover:bg-brand-orange hover:shadow-cta',
   secondary: 'bg-brand-orange text-white hover:bg-brand-pink hover:shadow-cta',
   outline: 'border-current bg-transparent text-current hover:bg-white/10',
 } as const

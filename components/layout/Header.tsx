@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowRight, Menu, X } from 'lucide-react'
 import { NAV_LINKS, PRIMARY_CTA } from '@/content/nav'
 import { Button } from '@/components/ui'
@@ -9,12 +9,27 @@ import { useNavScrollSpy } from '@/animations/useNavScrollSpy'
 
 const NAV_HREFS = NAV_LINKS.map((link) => link.href)
 
+const FOCUS =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-wine'
+
 // Os `data-intro` são animados pela entrada do Hero (styles/hero-intro.css)
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
   const headerRef = useHeaderDock()
   const { navRef, indicatorRef, activeIndex } = useNavScrollSpy(NAV_HREFS)
   const activeHref = NAV_HREFS[activeIndex]
+
+  useEffect(() => {
+    if (!isOpen) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      setIsOpen(false)
+      menuButtonRef.current?.focus()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [isOpen])
 
   return (
     // O `top` negativo deixa a folga do padding-top rolar para fora antes de grudar;
@@ -37,7 +52,7 @@ export function Header() {
                   href={link.href}
                   aria-label={link.label}
                   aria-current={link.href === activeHref ? 'location' : undefined}
-                  className="block py-2 transition-colors duration-300 hover:text-brand-pink"
+                  className={`block rounded-sm py-2 transition-colors duration-300 hover:text-brand-pink ${FOCUS}`}
                 >
                   {/* O nome do link vem do aria-label */}
                   <span aria-hidden>
@@ -68,7 +83,7 @@ export function Header() {
             href={PRIMARY_CTA.href}
             size="sm"
             aria-label={PRIMARY_CTA.label}
-            className="group relative isolate border-white/85 px-[1em] py-[0.4em] text-[0.95em] hover:bg-brand-pink"
+            className="group relative isolate border-white/85 px-[1em] py-[0.4em] text-[0.95em] hover:bg-brand-pink-dark"
           >
             {/* Sem o GSAP as ondas não aparecem e o laranja é só um fade */}
             <span
@@ -100,6 +115,7 @@ export function Header() {
 
         <div data-intro="menu-button" className="md:hidden">
           <button
+            ref={menuButtonRef}
             type="button"
             className="grid size-11 place-items-center rounded-full bg-brand-cream shadow-card"
             aria-expanded={isOpen}
@@ -124,7 +140,7 @@ export function Header() {
                 <a
                   href={link.href}
                   aria-current={link.href === activeHref ? 'location' : undefined}
-                  className="block rounded-md px-4 py-3 text-lg aria-[current=location]:font-semibold aria-[current=location]:text-brand-pink"
+                  className={`block rounded-md px-4 py-3 text-lg aria-[current=location]:font-semibold aria-[current=location]:text-brand-pink ${FOCUS}`}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}

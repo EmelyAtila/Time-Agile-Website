@@ -26,11 +26,14 @@ export function useSmoothScroll() {
       if (!anchor) return
       const href = anchor.getAttribute('href')
       if (!href || href === '#') return
-      const target = document.querySelector(href)
+      const target = document.querySelector<HTMLElement>(href)
       if (!target) return
       e.preventDefault()
       // Sem `offset`: o Lenis já desconta o scroll-margin-top da seção (styles/base.css)
-      lenis.scrollTo(target as HTMLElement)
+      lenis.scrollTo(target)
+      // O preventDefault também tira o foco do caminho: sem isso, o próximo Tab volta para o link clicado
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1')
+      target.focus({ preventScroll: true })
     }
 
     document.addEventListener('click', handleAnchorClick)

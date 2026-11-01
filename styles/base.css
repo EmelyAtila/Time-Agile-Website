@@ -33,6 +33,11 @@ section[id] {
   scroll-margin-top: var(--header-height);
 }
 
+/* Destinos de âncora (hooks/useSmoothScroll.ts) recebem o foco só para o Tab seguir dali, sem contorno */
+[tabindex='-1']:focus {
+  outline: none;
+}
+
 .skip-to-content {
   position: absolute;
   top: -100%;
