@@ -39,4 +39,6 @@ export const site = {
     // TODO: substituir pelo perfil real
     linkedin: 'https://linkedin.com/',
   },
+  // TODO: razão social e CNPJ. Vazios, a Política de Privacidade e os Termos de Uso citam só a marca
+  legal: { name: '', cnpj: '' },
 } as const

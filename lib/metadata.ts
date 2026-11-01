@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { site } from '@/content/site'
+import { alt as ogImageAlt, size as ogImageSize } from '@/app/opengraph-image'
 
 const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
 
@@ -44,6 +45,32 @@ export const siteMetadata: Metadata = {
     'geo.region': `${site.address.country}-${site.address.region}`,
     'geo.placename': site.address.locality,
   },
+}
+
+// Sem canonical e og:url próprios, a página herdaria os da raiz ('/') e o Google a trataria como cópia da home.
+// O Next troca o openGraph inteiro em vez de mesclar, por isso os campos da raiz são repetidos; a imagem também,
+// porque a de app/opengraph-image.tsx deixa de ser herdada
+export function pageMetadata({
+  path,
+  title,
+  description,
+}: {
+  path: string
+  title: string
+  description: string
+}): Metadata {
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      ...siteMetadata.openGraph,
+      url: path,
+      title: `${title} | ${site.name}`,
+      description,
+      images: [{ url: '/opengraph-image', ...ogImageSize, alt: ogImageAlt }],
+    },
+  }
 }
 
 export const siteViewport: Viewport = {

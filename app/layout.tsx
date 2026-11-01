@@ -4,8 +4,6 @@ import { Noto_Serif } from 'next/font/google'
 import localFont from 'next/font/local'
 import './globals.css'
 import { siteMetadata, siteViewport } from '@/lib/metadata'
-import { SCROLL_RESTORE_APPLY, SCROLL_RESTORE_BOOT } from '@/animations/scrollRestoreBoot'
-import { Preloader } from '@/components/layout/Preloader'
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider'
 
 const notoSerif = Noto_Serif({
@@ -55,14 +53,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="bg-brand-cream font-serif text-brand-wine antialiased"
         suppressHydrationWarning
       >
-        {/* Antes do pre-loader: ele não toca quando o recarregar volta para o meio da página */}
-        <script dangerouslySetInnerHTML={{ __html: SCROLL_RESTORE_BOOT }} />
-        <Preloader />
         <a href="#main-content" className="skip-to-content">
           Ir para o conteúdo principal
         </a>
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
-        <script dangerouslySetInnerHTML={{ __html: SCROLL_RESTORE_APPLY }} />
       </body>
     </html>
   )

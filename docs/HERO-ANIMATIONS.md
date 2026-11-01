@@ -65,11 +65,11 @@ Para marcar algo novo para a entrada: `data-intro="nome"` no elemento e uma regr
 
 ## Pre-loader
 
-Na primeira visita da sessão, uma tela vinho (a cor do rodapé) cobre a página e a logo se monta no centro antes da entrada do Hero. Recarregar na mesma aba pula direto para a entrada (`sessionStorage`); uma aba nova mostra de novo.
+Na primeira visita da sessão, uma tela vinho (a cor do rodapé) cobre a página e a logo se monta no centro antes da entrada do Hero. Recarregar na mesma aba pula direto para a entrada (`sessionStorage`); uma aba nova mostra de novo. Só a home tem pre-loader (está em `app/page.tsx`, não no layout): quem chega direto na Política de Privacidade ou nos Termos vai ler, e a home ainda mostra a abertura depois.
 
 | Arquivo | Papel |
 | --- | --- |
-| `animations/preloaderBoot.ts` | Script inline, primeiro no `<body>`: decide se toca, marca o `<html>` em etapas e grava a sessão. Tempos no `CONFIG`. |
+| `animations/preloaderBoot.ts` | Script inline, no começo do `<body>` da home: decide se toca, marca o `<html>` em etapas e grava a sessão. Tempos no `CONFIG`. |
 | `components/layout/Preloader.tsx` | O script, a cortina (vinho e três faixas de cor por baixo) e a logo de `public/images/preloader-logo.svg` inline, dividida em `data-pl`. |
 | `styles/preloader.css` | As animações, presas aos atributos do `<html>`. |
 

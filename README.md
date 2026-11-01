@@ -29,6 +29,8 @@ Copie `.env.example` para `.env.local` e preencha as variáveis.
 ```
 app/                 layout, page (compõe as seções), robots, sitemap, opengraph-image (imagem de compartilhamento)
   actions/           server actions (contact.ts)
+  privacidade/       Política de Privacidade
+  termos/            Termos de Uso
 components/
   layout/            Header, Footer, Logo, WhatsAppButton, Preloader (tela vinho da primeira visita da sessão)
   sections/          Hero, About, Services, TagMarquee, Projects, Testimonials, Contact
@@ -39,10 +41,11 @@ components/
     projects/        ProjectsPortrait (Iranides sobre os blobs), ProjectsArrow (seta na borda da faixa rosa, que se desenha ao entrar na tela e balança no hover), ProjectShowcase + showcaseLayout (faixa rosa com os projetos e as fotos), ProjectsRibbon (fita rosa que se desenha com a rolagem)
     contact/         ContactSmileys (os quatro smileys na borda esquerda), ContactFacesLoop (wrapper client do beijo e da risada)
   forms/             ContactForm
+  legal/             LegalPage (layout da Política de Privacidade e dos Termos de Uso)
   ui/                Button, SectionHeading, Marquee (wrapper client das faixas em loop: tags e depoimentos)  (barrel em index.ts)
   decor/             Smiley, Beijinho, Sorrizinho, InstagramIcon, LinkedInIcon, WhatsAppIcon, PaperPlaneIcon, SmartphoneIcon — elementos puramente visuais
   providers/         SmoothScrollProvider (Lenis + GSAP), ScrollReveals (liga as entradas no scroll)
-content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
+content/             TODO o texto e os dados do site (edite aqui, não nos componentes); legal.ts tem a Política de Privacidade e os Termos de Uso
 animations/          gsap.config.ts, reveals + useScrollReveals (entradas no scroll), preloaderBoot (script inline do pre-loader), heroBoot (script inline que começa a entrada do Hero antes do React), useHeroIntro (liga os loops do Hero), heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), faceMotions (beijo, risada, piscadinha e balanço dos rostos, também no hover), useSmileyLoop (balanço dos smileys), useContactFaces (beijo do Beijinho e risada do Sorrizinho), useServiceCardsHover (hover dos cards de serviço), useMarquee (faixas em loop: tags e depoimentos), useScrollDraw (fita que se desenha com a rolagem), useArrowDraw (seta que se desenha ao entrar na tela e balança no hover)
 hooks/               useSmoothScroll, useLateScriptFont (Handelson depois do load)
 lib/                 metadata, structured-data (JSON-LD da busca local), validations (zod), escape-html, utils (cn), idle (requestIdleCallback com alternativa)
@@ -95,7 +98,8 @@ Procure por `TODO` no código:
 - Logo oficial em SVG.
 - Link real do LinkedIn (também entra nos dados estruturados).
 - Rua e CEP em `content/site.ts`, se houver escritório que atenda no local.
-- Páginas `/privacidade` e `/termos`.
+- Razão social e CNPJ em `content/site.ts` (`legal`): entram sozinhos na Política de Privacidade e nos Termos de Uso.
+- Revisão jurídica dos textos de `content/legal.ts`. Eles descrevem o que o site faz hoje (formulário via Resend para o Gmail, sem cookies nem análise de visitas); se isso mudar, atualize os textos e o `updatedAt`.
 
 ## Docker
 

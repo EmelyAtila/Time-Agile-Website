@@ -40,3 +40,22 @@ export interface Testimonial {
   quote: string
   color: BrandColor
 }
+
+// Texto com links no formato [texto](endereço); o resto sai como texto puro
+export type LegalBlock = string | { list: string[] }
+
+export interface LegalSection {
+  id: string
+  heading: string
+  body: LegalBlock[]
+}
+
+export interface LegalDocument {
+  path: `/${string}`
+  title: string
+  description: string
+  // AAAA-MM-DD
+  updatedAt: string
+  intro: string
+  sections: LegalSection[]
+}

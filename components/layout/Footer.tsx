@@ -16,7 +16,8 @@ const CONTACT_ICON = 'size-6 shrink-0 text-white/70 lg:size-[calc(24*var(--u))]'
 // No desktop as medidas são px de docs/Desktop - 1.svg (--u), contados do topo do rodapé (y 5938 do mockup);
 // na horizontal as colunas ficam na mesma fração da largura que no mockup (cqw = 1% da largura do rodapé).
 // Sem position/z-index aqui: o Sorrizinho do Contato (z-10) continua por cima da borda de cima
-export function Footer() {
+// linkPrefix '/' fora da home: os links do menu são âncoras das seções dela
+export function Footer({ linkPrefix = '' }: { linkPrefix?: '' | '/' }) {
   const year = new Date().getFullYear()
 
   return (
@@ -84,7 +85,7 @@ export function Footer() {
           <ul className="mt-4 flex flex-col gap-3 lg:mt-[calc(18*var(--u))] lg:gap-[calc(12*var(--u))]">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
-                <a href={link.href} className={`${LINK} ${ITEM_TEXT}`}>
+                <a href={`${linkPrefix}${link.href}`} className={`${LINK} ${ITEM_TEXT}`}>
                   {link.label}
                 </a>
               </li>
@@ -140,7 +141,6 @@ export function Footer() {
             © {year} {site.name}. Todos os direitos reservados.
           </p>
           <ul className="flex gap-8 lg:gap-[calc(59*var(--u))]">
-            {/* TODO: criar as páginas /privacidade e /termos */}
             <li>
               <a href="/privacidade" className={LINK}>
                 Política de Privacidade
