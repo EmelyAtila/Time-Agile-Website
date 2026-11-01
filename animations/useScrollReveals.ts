@@ -150,7 +150,9 @@ export function useScrollReveals() {
             items,
             trigger,
             distance: Math.max(0, start - window.scrollY),
-            play: key.getAttribute('data-reveal-mode') === 'play',
+            // Já entrando na tela ao montar (recarregou no meio da página): presa à rolagem, ficaria parada
+            // no meio até a próxima rolagem
+            play: key.getAttribute('data-reveal-mode') === 'play' || window.scrollY >= start,
           })
         })
         markBuilt(ready)
@@ -180,6 +182,10 @@ export function useScrollReveals() {
         let scroll: ScrollTrigger | undefined
         if (play) {
           tl.eventCallback('onComplete', finish)
+          if (window.scrollY >= scrollRange(trigger).start) {
+            tl.play()
+            return
+          }
           scroll = ScrollTrigger.create({
             trigger,
             start: () => scrollRange(trigger).start,

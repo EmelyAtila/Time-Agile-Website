@@ -42,13 +42,13 @@
   html[data-preloader]:not([data-preloader-done]) [data-pl-root] {
     display: block;
     /* Failsafe: se o script parar no meio, o pre-loader não prende a página */
-    animation: pl-failsafe 0s linear 6s forwards;
+    animation: pl-failsafe 0s linear 4s forwards;
   }
 
   /* overflow-y só: o overflow-x: clip do body (styles/base.css) continua */
   html[data-preloader]:not([data-preloader-done]) body {
     overflow-y: hidden;
-    animation: pl-unlock 0s linear 6s forwards;
+    animation: pl-unlock 0s linear 4s forwards;
   }
 
   /* Carregando: só as barras, ampliadas no centro da tela */
@@ -71,20 +71,20 @@
 
   /* Pronto: as barras voltam para o "i" e a logo brota delas */
   html[data-preloader-ready] [data-pl='bars'] {
-    animation: pl-bars-home 0.6s var(--ease-back-17) backwards;
+    animation: pl-bars-home 0.45s var(--ease-back-17) backwards;
   }
   html[data-preloader-ready] [data-pl='letter'] {
-    animation: pl-slide-out 0.6s var(--ease-back-17) backwards;
+    animation: pl-slide-out 0.45s var(--ease-back-17) backwards;
     animation-delay: var(--delay);
   }
   html[data-preloader-ready] [data-pl='dot'] {
-    animation: pl-drop 0.7s var(--ease-bounce) 0.3s backwards;
+    animation: pl-drop 0.5s var(--ease-bounce) 0.15s backwards;
   }
   html[data-preloader-ready] [data-pl='time'] {
-    animation: pl-write 0.75s cubic-bezier(0.45, 0, 0.55, 1) 0.5s backwards;
+    animation: pl-write 0.5s cubic-bezier(0.45, 0, 0.55, 1) 0.3s backwards;
   }
   html[data-preloader-ready] [data-pl='tagline'] {
-    animation: pl-tagline 0.45s var(--ease-power2) 1s backwards;
+    animation: pl-tagline 0.3s var(--ease-power2) 0.55s backwards;
   }
 
   /* Saída: a logo toma impulso e a cortina leva tudo para cima, curvando a borda de baixo */

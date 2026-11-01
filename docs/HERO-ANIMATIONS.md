@@ -76,14 +76,15 @@ Na primeira visita da sessão, uma tela vinho (a cor do rodapé) cobre a página
 | Atributo no `<html>` | Quando | O que acontece |
 | --- | --- | --- |
 | `data-preloader` | na hora | só as barras do "i", ampliadas no centro, pulsam como equalizador |
-| `data-preloader-ready` | no `load`, com no mínimo `minMs` (0,7s) e no máximo `maxMs` (1,8s) | as barras voltam para o "i"; "a" e "g" saem de trás delas para a esquerda, "l", "e" e "." para a direita; o pingo cai e quica; "Time" é escrito à mão; a tagline aparece por último (~1,3s) |
-| `data-preloader-exit` | `holdMs` (1,5s) depois | a logo toma impulso e a cortina sobe, curvando a borda de baixo e puxando as faixas rosa, amarela e laranja |
+| `data-preloader-ready` | no `DOMContentLoaded` (não espera o `load`), com no mínimo `minMs` (0,25s) e no máximo `maxMs` (0,8s) | as barras voltam para o "i"; "a" e "g" saem de trás delas para a esquerda, "l", "e" e "." para a direita; o pingo cai e quica; "Time" é escrito à mão; a tagline aparece por último (~0,85s) |
+| `data-preloader-exit` | `holdMs` (1,05s) depois | a logo toma impulso e a cortina sobe, curvando a borda de baixo e puxando as faixas rosa, amarela e laranja |
 | `data-preloader-reveal` | `revealMs` (0,55s) depois da saída | dispara `preloader:reveal`, e a entrada do Hero começa |
 | `data-preloader-done` | `doneMs` (1,1s) depois da saída | o pre-loader some (`display: none`), a rolagem volta e o Lenis religa |
 
 - **A entrada do Hero espera:** `bootHero` vê `data-preloader` sem `data-preloader-reveal` e só chama `start()` no evento. Sem pre-loader, começa na hora, como antes.
 - **Rolagem:** travada no `body` (`overflow-y: hidden`) e no Lenis (`useSmoothScroll`) até `data-preloader-done`.
-- **Failsafes:** se o script parar no meio, o CSS some com o pre-loader e solta a rolagem em 6s. No pior caso (`maxMs`), a entrada do Hero começa em ~3,85s, antes do failsafe de 4s de `styles/base.css`.
+- **Failsafes:** se o script parar no meio, o CSS some com o pre-loader e solta a rolagem em 4s. No pior caso (`maxMs`), a entrada do Hero começa em ~2,4s (no melhor, ~1,85s), antes do failsafe de 4s de `styles/base.css`. Cada segundo aqui atrasa o Hero e o LCP, que o Lighthouse sempre mede numa visita nova.
+- **Recarregar fora do Hero:** `animations/scrollRestoreBoot.ts` marca `data-restore` antes do pre-loader. Com ele, o pre-loader não toca, e `bootHero` marca `data-intro-play` e `data-intro-done` juntos: o Hero e o header aparecem prontos, sem a entrada tocando lá em cima enquanto a tela está no meio da página. Dentro do Hero (`data-restore="hero"`), a entrada toca normalmente.
 - **Sem JS ou com "reduzir movimento":** o script sai sem marcar nada e o pre-loader nunca aparece.
 - **Hidratação:** o script só mexe em atributos do `<html>`, que já tem `suppressHydrationWarning`.
 - Os `px` das animações no SVG são unidades do `viewBox` (223×83). Se trocar a logo, refaça o `--dx` de cada letra (distância até as barras, x ≈ 142,8) o deslocamento das barras para o centro (`-31px -16px`) e a origem fixa do grupo delas (`142.75px 57.24px`, o centro das barras).

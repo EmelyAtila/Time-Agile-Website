@@ -2,6 +2,7 @@
 // (HERO_BOOT) e rodam durante o parse do HTML, antes do React. Mapa dos tempos: docs/HERO-ANIMATIONS.md
 
 import { PRELOADER_ATTR, PRELOADER_REVEAL_ATTR, PRELOADER_REVEAL_EVENT } from './preloaderBoot'
+import { RESTORE_ATTR } from './scrollRestoreBoot'
 
 export const INTRO_BOOT_ATTR = 'data-intro-boot'
 export const INTRO_PLAY_ATTR = 'data-intro-play'
@@ -62,6 +63,7 @@ type BootConfig = {
   preloaderAttr: string
   revealAttr: string
   revealEvent: string
+  restoreAttr: string
 }
 
 // O resto da entrada é CSS (styles/hero-intro.css), que começa quando playAttr aparece no <html>
@@ -135,6 +137,14 @@ export function bootHero(stretch: (section: HTMLElement) => void, config: BootCo
     stretch(section)
     if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return
 
+    // Recarregou fora do Hero (animations/scrollRestoreBoot.ts): Hero e header aparecem prontos. play e done
+    // juntos não casam com nenhuma regra de styles/hero-intro.css, então nada anima
+    if (html.getAttribute(config.restoreAttr) === '') {
+      html.setAttribute(config.playAttr, '')
+      html.setAttribute(config.doneAttr, '')
+      return
+    }
+
     // Com o pre-loader na tela, a entrada espera a cortina dele começar a subir
     if (html.hasAttribute(config.preloaderAttr) && !html.hasAttribute(config.revealAttr)) {
       document.addEventListener(config.revealEvent, start, { once: true })
@@ -158,6 +168,7 @@ const CONFIG: BootConfig = {
   preloaderAttr: PRELOADER_ATTR,
   revealAttr: PRELOADER_REVEAL_ATTR,
   revealEvent: PRELOADER_REVEAL_EVENT,
+  restoreAttr: RESTORE_ATTR,
 }
 
 export const HERO_BOOT = `(${bootHero})(${stretchHeroArt},${JSON.stringify(CONFIG)})`

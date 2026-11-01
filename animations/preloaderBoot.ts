@@ -1,6 +1,8 @@
 // Sem imports nem nada de fora na função: ela vai como texto para o <script> inline do Preloader e roda
 // no começo do <body>, antes do React. O resto é CSS (styles/preloader.css). Tempos: docs/HERO-ANIMATIONS.md
 
+import { RESTORE_ATTR } from './scrollRestoreBoot'
+
 export const PRELOADER_ATTR = 'data-preloader'
 export const PRELOADER_REVEAL_ATTR = 'data-preloader-reveal'
 export const PRELOADER_DONE_ATTR = 'data-preloader-done'
@@ -8,6 +10,7 @@ export const PRELOADER_REVEAL_EVENT = 'preloader:reveal'
 
 type PreloaderConfig = {
   attr: string
+  restoreAttr: string
   readyAttr: string
   exitAttr: string
   revealAttr: string
@@ -24,6 +27,8 @@ type PreloaderConfig = {
 export function bootPreloader(config: PreloaderConfig) {
   const html = document.documentElement
   if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return
+  // Recarregou no meio da página (animations/scrollRestoreBoot.ts): volta direto para lá
+  if (html.hasAttribute(config.restoreAttr)) return
   try {
     if (sessionStorage.getItem(config.storageKey)) return
   } catch {}
@@ -52,26 +57,28 @@ export function bootPreloader(config: PreloaderConfig) {
     }, config.holdMs)
   }
 
-  // O loop das barras dura pelo menos minMs, mesmo com a página em cache, e no máximo maxMs
-  const onLoad = () => setTimeout(ready, Math.max(0, config.minMs - (performance.now() - start)))
-  if (document.readyState === 'complete') onLoad()
-  else addEventListener('load', onLoad, { once: true })
+  // O loop das barras dura pelo menos minMs e no máximo maxMs. Espera o HTML, não o load: imagens e fontes
+  // continuam chegando por trás, e cada segundo aqui atrasa o Hero (e o LCP)
+  const onParsed = () =>
+    setTimeout(ready, Math.max(0, config.minMs - (performance.now() - start)))
+  if (document.readyState !== 'loading') onParsed()
+  else addEventListener('DOMContentLoaded', onParsed, { once: true })
   setTimeout(ready, config.maxMs)
 }
 
 const CONFIG: PreloaderConfig = {
   attr: PRELOADER_ATTR,
+  restoreAttr: RESTORE_ATTR,
   readyAttr: 'data-preloader-ready',
   exitAttr: 'data-preloader-exit',
   revealAttr: PRELOADER_REVEAL_ATTR,
   doneAttr: PRELOADER_DONE_ATTR,
   revealEvent: PRELOADER_REVEAL_EVENT,
   storageKey: 'time-agile:preloader',
-  minMs: 700,
-  // Com a saída, o Hero começa antes do failsafe de 4s de styles/base.css
-  maxMs: 1800,
-  // Montagem da logo (~1,3s) mais uma pausa para ela ser vista inteira
-  holdMs: 1500,
+  minMs: 250,
+  maxMs: 800,
+  // Montagem da logo (~0,85s) mais uma pausa curta para ela ser vista inteira
+  holdMs: 1050,
   // A borda da cortina vinho passa do meio da tela (pl-lift em styles/preloader.css)
   revealMs: 550,
   // Fim do pl-lift: as faixas de cor já saíram

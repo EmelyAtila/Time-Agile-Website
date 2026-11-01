@@ -5,6 +5,9 @@ As entradas são **presas à rolagem**. Cada bloco começa a entrar quando o top
 - Rolando devagar, a entrada vai devagar. Parando, ela para junto.
 - Ela persegue a rolagem com 0,5s de atraso, para não andar aos trancos.
 - Só avança, nunca volta. Depois de terminar, fica pronta para sempre.
+- O que já estava entrando quando os grupos foram montados (recarregar no meio da página) toca inteiro no seu tempo, como `data-reveal-mode="play"`, em vez de ficar parado pela metade. O que já tinha passado aparece pronto.
+
+**Recarregar no meio da página:** a posição é restaurada pelo site, não pelo navegador (`animations/scrollRestoreBoot.ts`). No `pagehide` ela é guardada em `sessionStorage` como seção + deslocamento dentro dela; ao recarregar, um script no fim do `<body>` rola para lá antes do React. Assim as entradas, o pre-loader e o intro do Hero já sabem onde a página está quando decidem o que fazer. A navegação nova (link, aba nova) e a URL com `#âncora` não são restauradas.
 
 As entradas animam só `transform`, `opacity` e `clip-path`. O conteúdo já vem pronto do servidor, então o SEO e o leitor de tela não mudam. Com `prefers-reduced-motion` ou sem JavaScript, tudo aparece pronto.
 
