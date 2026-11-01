@@ -20,6 +20,7 @@ export function Smiley({ color, className }: SmileyProps) {
     <svg
       aria-hidden
       data-reveal="pop"
+      data-reveal-mode="play"
       viewBox="-32 21 138 131"
       fill={`var(--color-${color})`}
       className={cn('pointer-events-none overflow-visible', className)}

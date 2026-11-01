@@ -23,6 +23,7 @@ As entradas animam só `transform`, `opacity` e `clip-path`. O conteúdo já vem
 | `data-reveal-group="lg"` | idem | grupo só a partir do lg; abaixo dele, cada elemento dispara sozinho (blocos altos no celular) |
 | `data-reveal-at="<posição>"` | no elemento | posição do GSAP na timeline do grupo (`"0"`, `"0.55"`, `"<"`, `">-0.35"`); sem ele, entra `LEAD` segundos depois do anterior |
 | `data-reveal-from="center"` | com `wipe` | abre do meio em vez da esquerda |
+| `data-reveal-mode="play"` | no grupo (ou no elemento sozinho) | em vez de seguir a rolagem, a entrada toca inteira no seu tempo assim que o bloco começa a entrar; para o que não pode ficar pela metade se a rolagem parar (smileys, faixa rosa, título do Contato) ou que já se mexe sozinho (depoimentos) |
 
 Regras:
 - Sem grupo, o elemento dispara sozinho.
@@ -71,6 +72,6 @@ O SplitText divide em palavras, não em linhas, então um resize não quebra a d
 | Serviços | título e descrição; cartas dadas a partir do meio do leque; cada rosto reage ao assentar |
 | Tags | pílulas estouram em sequência enquanto a faixa corre |
 | Projetos | título e texto; blobs; Iranides colada; faixa rosa abrindo; títulos escritos à mão; polaroides caindo |
-| Depoimentos | as duas linhas do título entram pela direita; cards sobem; setas aparecem |
-| Contato | título e texto; formulário sobe e os campos em sequência; card amarelo colado sobre o canto; smileys, Beijinho e Sorrizinho com pop |
+| Depoimentos | as duas linhas do título entram pela direita; cards sobem enquanto a faixa corre em loop |
+| Contato | título e texto; formulário sobe e os campos em sequência; card amarelo colado sobre o canto (só do tablet para cima); smileys, Beijinho e Sorrizinho com pop |
 | Rodapé | logo, texto, redes e colunas sobem; a linha da barra abre do meio |

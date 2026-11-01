@@ -31,7 +31,7 @@ const CLEAR =
   'transform,transformOrigin,opacity,visibility,clipPath,filter,pointerEvents,transition'
 
 type Group = Pick<RevealEnv, 'splits' | 'extras'> & { items: HTMLElement[]; done: boolean }
-type Pending = { items: HTMLElement[]; trigger: Element; distance: number }
+type Pending = { items: HTMLElement[]; trigger: Element; distance: number; play: boolean }
 
 // Posição na página sem transforms e só lendo: escrever antes de medir forçaria um layout por grupo.
 // Nos SVGs, as entradas animam um <g data-pop> de dentro, então o <svg> pode ser medido como está
@@ -146,13 +146,18 @@ export function useScrollReveals() {
             ready.push(...items)
             return
           }
-          list.push({ items, trigger, distance: Math.max(0, start - window.scrollY) })
+          list.push({
+            items,
+            trigger,
+            distance: Math.max(0, start - window.scrollY),
+            play: key.getAttribute('data-reveal-mode') === 'play',
+          })
         })
         markBuilt(ready)
         return list.sort((a, b) => a.distance - b.distance)
       }
 
-      const buildGroup = ({ items, trigger }: Pending) => {
+      const buildGroup = ({ items, trigger, play }: Pending) => {
         const group: Group = { items, splits: [], extras: [], done: false }
         groups.push(group)
         const tl = buildTimeline(items, { desktop, splits: group.splits, extras: group.extras })
@@ -161,7 +166,7 @@ export function useScrollReveals() {
           if (group.done) return
           group.done = true
           markPlayed(items)
-          scroll.kill()
+          scroll?.kill()
           // O alvo de um .call() é a própria função
           const targets = tl
             .getChildren(true, true, false)
@@ -169,6 +174,18 @@ export function useScrollReveals() {
             .filter((target): target is Element => target instanceof Element)
           gsap.set(targets, { clearProps: CLEAR })
           group.splits.forEach((split) => split.revert())
+        }
+
+        // data-reveal-mode="play": toca inteira no seu tempo assim que o bloco começa a entrar
+        let scroll: ScrollTrigger | undefined
+        if (play) {
+          tl.eventCallback('onComplete', finish)
+          scroll = ScrollTrigger.create({
+            trigger,
+            start: () => scrollRange(trigger).start,
+            onEnter: () => tl.play(),
+          })
+          return
         }
 
         // A entrada persegue a rolagem com atraso, para não andar aos trancos. false: dispara os .call()
@@ -189,7 +206,7 @@ export function useScrollReveals() {
           follow(progress)
         }
 
-        const scroll = ScrollTrigger.create({
+        scroll = ScrollTrigger.create({
           trigger,
           start: () => scrollRange(trigger).start,
           end: () => scrollRange(trigger).end,

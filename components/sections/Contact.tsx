@@ -23,9 +23,11 @@ export function Contact() {
       <ContactSmileys className="hidden lg:block" />
 
       <div className="mx-auto max-w-[92.5rem] px-6 md:px-12 lg:w-[calc(1480*var(--u))] lg:max-w-none lg:px-0">
-        {/* max-w em `em` para o texto quebrar como no mockup */}
+        {/* max-w em `em` para o texto quebrar como no mockup. Toca inteiro: perto do fim da página o trecho
+            de rolagem é curto e, preso a ele, o título ficava parado no meio, com as palavras cortadas */}
         <header
           data-reveal-group
+          data-reveal-mode="play"
           className="mx-auto max-w-[33.5em] text-center text-[1.0625rem] md:text-[1.125rem] lg:text-[length:calc(24*var(--u))]"
         >
           <SectionHeading
@@ -47,18 +49,19 @@ export function Contact() {
         {/* O card amarelo vem antes no DOM, mas é colado depois que o formulário sobe (data-reveal-at) */}
         <div
           data-reveal-group="lg"
-          className="relative mx-auto mt-8 flex max-w-[38rem] flex-col md:mt-12 md:block lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none"
+          className="relative mx-auto mt-8 max-w-[38rem] md:mt-12 lg:ml-[calc(408.2*var(--u))] lg:mt-[calc(112.8*var(--u))] lg:w-[calc(608*var(--u))] lg:max-w-none"
         >
-          {/* No celular fica abaixo do formulário. No tablet vem antes e avança sobre o canto dele, como no desktop */}
+          {/* Fora do celular: lá o e-mail e o telefone ficam só no rodapé. No tablet vem antes e avança sobre
+              o canto do formulário, como no desktop */}
           <aside
             aria-labelledby="contact-info-title"
             data-reveal="sticker"
             data-reveal-at="0.55"
-            className="relative z-10 order-last mx-auto mt-8 w-fit md:-mb-6 md:mr-0 md:mt-0 lg:absolute lg:left-[calc(528*var(--u))] lg:top-[calc(-24*var(--u))] lg:mb-0 lg:ml-0 lg:w-[calc(329*var(--u))]"
+            className="relative z-10 ml-auto w-fit max-md:hidden md:-mb-6 lg:absolute lg:left-[calc(528*var(--u))] lg:top-[calc(-24*var(--u))] lg:mb-0 lg:ml-0 lg:w-[calc(329*var(--u))]"
           >
             <h3
               id="contact-info-title"
-              className="mb-2 text-center font-sans text-[1.5rem] font-black leading-[1.2] text-brand-red md:ml-1 md:text-left lg:absolute lg:bottom-full lg:mb-[calc(7.7*var(--u))] lg:ml-[calc(4.7*var(--u))] lg:text-[length:calc(32*var(--u))]"
+              className="mb-2 ml-1 font-sans text-[1.5rem] font-black leading-[1.2] text-brand-red lg:absolute lg:bottom-full lg:mb-[calc(7.7*var(--u))] lg:ml-[calc(4.7*var(--u))] lg:text-[length:calc(32*var(--u))]"
             >
               {contactContent.infoTitle}
             </h3>

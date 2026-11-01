@@ -27,11 +27,14 @@ export function ProjectShowcase() {
 
           return (
             <article key={project.title} data-reveal-group className={art.article}>
-              {/* Abaixo do lg a faixa termina no meio da primeira foto, como no mockup */}
+              {/* Abaixo do lg a faixa termina no meio da primeira foto, como no mockup. Grupo próprio:
+                  abre de uma vez, sem esperar a rolagem do resto do projeto */}
               {art.band && (
                 <div
                   aria-hidden
                   data-reveal="wipe"
+                  data-reveal-group
+                  data-reveal-mode="play"
                   className="absolute bottom-[calc(var(--frame)*0.5)] left-1/2 top-0 -z-10 w-screen -translate-x-1/2 bg-brand-pink lg:bottom-auto lg:h-[calc(503.45*var(--u))]"
                 />
               )}
