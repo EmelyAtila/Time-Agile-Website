@@ -8,7 +8,6 @@ Identidade visual em [`docs/Identidade visual - Time Agile.pdf`](docs/Identidade
 - **Next.js 15** (App Router) + **React 19** + **TypeScript**
 - **Tailwind CSS 3**, com tokens da marca em CSS vars
 - **GSAP** (`@gsap/react`) + **Lenis** para animações e rolagem suave
-- **Embla Carousel** para os depoimentos
 - **react-hook-form** + **zod** + **Resend** para o formulário de contato (Server Action)
 - **lucide-react** para os ícones
 
@@ -31,23 +30,23 @@ Copie `.env.example` para `.env.local` e preencha as variáveis.
 app/                 layout, page (compõe as seções), robots, sitemap, opengraph-image (imagem de compartilhamento)
   actions/           server actions (contact.ts)
 components/
-  layout/            Header, Footer, Logo, WhatsAppButton
+  layout/            Header, Footer, Logo, WhatsAppButton, Preloader (tela vinho da primeira visita da sessão)
   sections/          Hero, About, Services, TagMarquee, Projects, Testimonials, Contact
     hero/            HeroIntro (wrapper client), HeroRibbons, heroPaths (curvas das fitas), useFluidArt
     about/           AboutTeam (adesivos da equipe sobre os blobs)
     services/        ServiceCard, serviceCards (posições, inclinações e movimento de hover de cada card), CardFace (rostos de fundo dos cards, animados no hover), ServiceFan (wrapper client)
-    tags/            TagLoop (wrapper client do loop da faixa de tags), TagRibbon (fita laranja por trás das tags)
+    tags/            TagRibbon (fita laranja por trás das tags)
     projects/        ProjectsPortrait (Iranides sobre os blobs), ProjectsArrow (seta na borda da faixa rosa, que se desenha ao entrar na tela e balança no hover), ProjectShowcase + showcaseLayout (faixa rosa com os projetos e as fotos), ProjectsRibbon (fita rosa que se desenha com a rolagem)
     contact/         ContactSmileys (os quatro smileys na borda esquerda), ContactFacesLoop (wrapper client do beijo e da risada)
   forms/             ContactForm
-  ui/                Button, SectionHeading, Carousel  (barrel em index.ts)
+  ui/                Button, SectionHeading, Marquee (wrapper client das faixas em loop: tags e depoimentos)  (barrel em index.ts)
   decor/             Smiley, Beijinho, Sorrizinho, InstagramIcon, LinkedInIcon, WhatsAppIcon, PaperPlaneIcon, SmartphoneIcon — elementos puramente visuais
   providers/         SmoothScrollProvider (Lenis + GSAP), ScrollReveals (liga as entradas no scroll)
 content/             TODO o texto e os dados do site (edite aqui, não nos componentes)
-animations/          gsap.config.ts, reveals + useScrollReveals (entradas no scroll), heroBoot (script inline que começa a entrada do Hero antes do React), useHeroIntro (liga os loops do Hero), heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), faceMotions (beijo, risada, piscadinha e balanço dos rostos, também no hover), useSmileyLoop (balanço dos smileys), useContactFaces (beijo do Beijinho e risada do Sorrizinho), useServiceCardsHover (hover dos cards de serviço), useTagMarquee (faixa de tags em loop), useScrollDraw (fita que se desenha com a rolagem), useArrowDraw (seta que se desenha ao entrar na tela e balança no hover)
+animations/          gsap.config.ts, reveals + useScrollReveals (entradas no scroll), preloaderBoot (script inline do pre-loader), heroBoot (script inline que começa a entrada do Hero antes do React), useHeroIntro (liga os loops do Hero), heroLoops, headerCta (botão do header), useNavScrollSpy (barra do menu), useHeaderDock (fundo do header), faceMotions (beijo, risada, piscadinha e balanço dos rostos, também no hover), useSmileyLoop (balanço dos smileys), useContactFaces (beijo do Beijinho e risada do Sorrizinho), useServiceCardsHover (hover dos cards de serviço), useMarquee (faixas em loop: tags e depoimentos), useScrollDraw (fita que se desenha com a rolagem), useArrowDraw (seta que se desenha ao entrar na tela e balança no hover)
 hooks/               useSmoothScroll, useLateScriptFont (Handelson depois do load)
 lib/                 metadata, structured-data (JSON-LD da busca local), validations (zod), escape-html, utils (cn), idle (requestIdleCallback com alternativa)
-styles/              tokens.css (fonte da verdade do design), base.css, hero-intro.css (entrada do Hero)
+styles/              tokens.css (fonte da verdade do design), base.css, hero-intro.css (entrada do Hero), preloader.css
 types/               tipos compartilhados
 public/images/       about/, services/, projects/ e a logo branca do rodapé (logo-footer)
 public/fonts/        fontes locais (Satoshi e Handelson One)
@@ -64,7 +63,7 @@ docs/                identidade visual e mockup (fora do build Docker)
 - Classes condicionais precisam ser **strings completas** (ex.: mapa `cardColors` em `Services.tsx`). Não use interpolação do tipo `` `bg-brand-${cor}` ``, porque o Tailwind não detecta essas classes.
 - As cores da marca são CSS vars, e o Tailwind 3 não gera o modificador de opacidade para elas: `text-brand-wine/75` sai sem CSS nenhum, sem aviso. Para transparência, use `color-mix`, como no fundo do header e no anel de erro do formulário.
 - As entradas no scroll usam `data-reveal="<preset>"` nos elementos e `data-reveal-group` no bloco que dispara. Não precisa de hook no componente: `ScrollReveals` (montado em `app/page.tsx`) cuida de tudo. Presets e regras estão em `docs/SCROLL-ANIMATIONS.md`.
-- A entrada do Hero usa `data-intro`, o CSS de `styles/hero-intro.css` e o script inline de `animations/heroBoot.ts`, que começa sem esperar o JS da página. Tempos, funcionamento e ideias adiadas estão em `docs/HERO-ANIMATIONS.md`.
+- A entrada do Hero usa `data-intro`, o CSS de `styles/hero-intro.css` e o script inline de `animations/heroBoot.ts`, que começa sem esperar o JS da página. Na primeira visita da sessão, ela espera o pre-loader (`animations/preloaderBoot.ts` + `styles/preloader.css`). Tempos, funcionamento e ideias adiadas estão em `docs/HERO-ANIMATIONS.md`.
 
 ### Fonte Handelson One
 

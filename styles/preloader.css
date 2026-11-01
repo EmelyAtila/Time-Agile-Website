@@ -1,0 +1,180 @@
+/* Pre-loader da primeira visita da sessão, sem esperar o JS da página: o script inline
+   (animations/preloaderBoot.ts) marca o <html> em etapas e o CSS faz o resto.
+   - data-preloader: barras do "i" no centro, em loop de equalizador, enquanto a página carrega
+   - data-preloader-ready: a logo se monta a partir das barras
+   - data-preloader-exit: a cortina sobe com as faixas de cor atrás e entrega a cena ao Hero
+   - data-preloader-done: some de vez
+   Eases: os de styles/hero-intro.css. Em SVG, px são unidades do viewBox (0 0 223 83). Tempos:
+   docs/HERO-ANIMATIONS.md */
+
+[data-pl-root] {
+  display: none;
+}
+
+/* Força do equalizador: 1 pulsando, 0 parado. Registrada para a transição levar as barras até a
+   altura cheia no ponto em que estiverem, sem salto ao trocar de animação */
+@property --amp {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+[data-pl='letter'],
+[data-pl='tagline'] {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+/* Origem fixa no centro das barras: com fill-box, ela andaria junto com as barras pulsando e o grupo
+   tremeria */
+[data-pl='bars'] {
+  transform-box: view-box;
+  transform-origin: 142.75px 57.24px;
+}
+
+[data-pl='bars'] > path {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: --amp 0.4s var(--ease-power2);
+}
+
+@media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
+  html[data-preloader]:not([data-preloader-done]) [data-pl-root] {
+    display: block;
+    /* Failsafe: se o script parar no meio, o pre-loader não prende a página */
+    animation: pl-failsafe 0s linear 6s forwards;
+  }
+
+  /* overflow-y só: o overflow-x: clip do body (styles/base.css) continua */
+  html[data-preloader]:not([data-preloader-done]) body {
+    overflow-y: hidden;
+    animation: pl-unlock 0s linear 6s forwards;
+  }
+
+  /* Carregando: só as barras, ampliadas no centro da tela */
+  html[data-preloader]:not([data-preloader-ready])
+    :is([data-pl='time'], [data-pl='tagline'], [data-pl='letter'], [data-pl='dot']) {
+    opacity: 0;
+  }
+  html[data-preloader]:not([data-preloader-ready]) [data-pl='bars'] {
+    translate: -31px -16px;
+    scale: 1.5;
+  }
+  html[data-preloader]:not([data-preloader-ready]) [data-pl='bars'] > path {
+    --amp: 1;
+  }
+  /* Continua rodando depois do ready: quem para o pulso é o --amp indo a 0 */
+  html[data-preloader]:not([data-preloader-done]) [data-pl='bars'] > path {
+    animation: pl-equalizer 0.9s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.18s);
+  }
+
+  /* Pronto: as barras voltam para o "i" e a logo brota delas */
+  html[data-preloader-ready] [data-pl='bars'] {
+    animation: pl-bars-home 0.6s var(--ease-back-17) backwards;
+  }
+  html[data-preloader-ready] [data-pl='letter'] {
+    animation: pl-slide-out 0.6s var(--ease-back-17) backwards;
+    animation-delay: var(--delay);
+  }
+  html[data-preloader-ready] [data-pl='dot'] {
+    animation: pl-drop 0.7s var(--ease-bounce) 0.3s backwards;
+  }
+  html[data-preloader-ready] [data-pl='time'] {
+    animation: pl-write 0.75s cubic-bezier(0.45, 0, 0.55, 1) 0.5s backwards;
+  }
+  html[data-preloader-ready] [data-pl='tagline'] {
+    animation: pl-tagline 0.45s var(--ease-power2) 1s backwards;
+  }
+
+  /* Saída: a logo toma impulso e a cortina leva tudo para cima, curvando a borda de baixo */
+  html[data-preloader-exit] [data-pl='logo'] {
+    animation: pl-logo-kick 0.4s var(--ease-power2) forwards;
+  }
+  html[data-preloader-exit] [data-pl-curtain] {
+    animation: pl-lift 0.9s cubic-bezier(0.76, 0, 0.24, 1) 0.15s forwards;
+  }
+  html[data-preloader-exit] [data-pl-layer] {
+    animation: pl-curve 0.5s var(--ease-power2) 0.1s forwards;
+  }
+}
+
+@keyframes pl-failsafe {
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes pl-unlock {
+  to {
+    overflow-y: visible;
+  }
+}
+
+@keyframes pl-equalizer {
+  50% {
+    scale: 1 calc(1 - 0.65 * var(--amp));
+  }
+}
+
+@keyframes pl-bars-home {
+  from {
+    translate: -31px -16px;
+    scale: 1.5;
+  }
+}
+
+/* --dx: distância até as barras, de onde a letra sai */
+@keyframes pl-slide-out {
+  from {
+    translate: var(--dx) 0;
+    scale: 0.4;
+    opacity: 0;
+  }
+}
+
+@keyframes pl-drop {
+  from {
+    translate: 0 -36px;
+    opacity: 0;
+  }
+}
+
+/* Folga negativa para a cursiva não ser cortada nas pontas */
+@keyframes pl-write {
+  from {
+    clip-path: inset(-30% 100% -30% -5%);
+  }
+  to {
+    clip-path: inset(-30% -5% -30% -5%);
+  }
+}
+
+@keyframes pl-tagline {
+  from {
+    scale: 1.3 1;
+    opacity: 0;
+  }
+}
+
+@keyframes pl-logo-kick {
+  45% {
+    scale: 0.92;
+  }
+  to {
+    scale: 1.04;
+  }
+}
+
+@keyframes pl-lift {
+  to {
+    translate: 0 calc(-100% - 20vh);
+  }
+}
+
+@keyframes pl-curve {
+  to {
+    border-bottom-left-radius: 50% 12vh;
+    border-bottom-right-radius: 50% 12vh;
+  }
+}

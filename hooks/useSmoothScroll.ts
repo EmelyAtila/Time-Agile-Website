@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
 import { gsap, ScrollTrigger } from '@/animations/gsap.config'
+import { PRELOADER_ATTR, PRELOADER_DONE_ATTR } from '@/animations/preloaderBoot'
 
 export function useSmoothScroll() {
   useEffect(() => {
@@ -34,7 +35,22 @@ export function useSmoothScroll() {
 
     document.addEventListener('click', handleAnchorClick)
 
+    // Parado enquanto o pre-loader cobre a página (animations/preloaderBoot.ts)
+    const html = document.documentElement
+    const preloading = () =>
+      html.hasAttribute(PRELOADER_ATTR) && !html.hasAttribute(PRELOADER_DONE_ATTR)
+    const preloader = new MutationObserver(() => {
+      if (preloading()) return
+      lenis.start()
+      preloader.disconnect()
+    })
+    if (preloading()) {
+      lenis.stop()
+      preloader.observe(html, { attributeFilter: [PRELOADER_DONE_ATTR] })
+    }
+
     return () => {
+      preloader.disconnect()
       document.removeEventListener('click', handleAnchorClick)
       gsap.ticker.remove(tickerFn)
       lenis.destroy()

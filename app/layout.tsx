@@ -4,6 +4,7 @@ import { Noto_Serif } from 'next/font/google'
 import localFont from 'next/font/local'
 import './globals.css'
 import { siteMetadata, siteViewport } from '@/lib/metadata'
+import { Preloader } from '@/components/layout/Preloader'
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider'
 
 const notoSerif = Noto_Serif({
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="bg-brand-cream font-serif text-brand-wine antialiased"
         suppressHydrationWarning
       >
+        <Preloader />
         <a href="#main-content" className="skip-to-content">
           Ir para o conteúdo principal
         </a>

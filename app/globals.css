@@ -1,6 +1,7 @@
 @import '../styles/tokens.css';
 @import '../styles/base.css';
 @import '../styles/hero-intro.css';
+@import '../styles/preloader.css';
 
 @tailwind base;
 @tailwind components;
