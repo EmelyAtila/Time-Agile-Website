@@ -4,6 +4,7 @@ import path from 'path'
 const nextConfig: NextConfig = {
   output: 'standalone',
   outputFileTracingRoot: path.join(__dirname),
+  poweredByHeader: false,
   images: {
     // O Next serve o primeiro formato que o navegador aceita: AVIF antes, por ser menor
     formats: ['image/avif', 'image/webp'],

@@ -93,13 +93,18 @@ Para publicar:
 Procure por `TODO` no código:
 
 - Logo oficial em SVG.
-- Links reais de Instagram e LinkedIn (também entram nos dados estruturados).
+- Link real do LinkedIn (também entra nos dados estruturados).
 - Rua e CEP em `content/site.ts`, se houver escritório que atenda no local.
-- Depoimentos reais.
 - Páginas `/privacidade` e `/termos`.
 
 ## Docker
 
 ```bash
 docker compose up --build
+```
+
+As variáveis `NEXT_PUBLIC_*` do `.env` entram como argumentos do build (`docker-compose.yml`): elas são gravadas no código na hora do build, e sem `NEXT_PUBLIC_SITE_URL` o site sai apontando para localhost. Sem o compose:
+
+```bash
+docker build --build-arg NEXT_PUBLIC_SITE_URL=https://seu-dominio.com.br -t time-agile-site .
 ```
