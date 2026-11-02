@@ -15,8 +15,9 @@ export function useLateScriptFont() {
     let idle = 0
 
     const swap = () => {
-      html.setAttribute(READY_ATTR, '')
+      // Lida antes de escrever o atributo: depois, a leitura forçaria um recálculo de estilo
       const family = getComputedStyle(html).getPropertyValue('--font-handelson')
+      html.setAttribute(READY_ATTR, '')
       // A troca pode mudar a altura dos blocos: as entradas e as fitas recalculam onde começam
       document.fonts.load(`1em ${family}`).then(
         () => ScrollTrigger.refresh(),

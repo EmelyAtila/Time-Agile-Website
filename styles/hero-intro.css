@@ -382,6 +382,20 @@
   }
 }
 
+/* "Reduzir movimento": tudo aparece junto, só com opacidade. !important para vencer o 0.01ms global de
+   styles/base.css. Duração casada com calmIntroMs (animations/heroBoot.ts) */
+@media (prefers-reduced-motion: reduce) and (scripting: enabled) {
+  html[data-intro-play]:not([data-intro-done]) [data-intro] {
+    animation: intro-fade 0.5s var(--ease-power2) backwards !important;
+  }
+}
+
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+  }
+}
+
 @keyframes intro-ribbon {
   from {
     stroke-dasharray: 1 2;

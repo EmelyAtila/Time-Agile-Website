@@ -3,10 +3,13 @@
 import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
 import { cancelIdle, whenIdle } from '@/lib/idle'
+import { isRendered } from '@/lib/rendered'
 import { gsap, ScrollTrigger } from './gsap.config'
-import { LEAD, REVEALS, type RevealEnv, type RevealName } from './reveals'
+import { LEAD, prime, REVEALS, type RevealEnv, type RevealName } from './reveals'
+import { RESTORE_SHOWN_ATTR } from './scrollRestoreBoot'
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)'
+const CALM = '(prefers-reduced-motion: reduce)'
 const DESKTOP = '(min-width: 1024px)'
 
 // Frações da altura da tela: começa com o topo a 80%, termina com o bloco inteiro na tela (ou, se ele
@@ -25,6 +28,9 @@ const IDLE_TIMEOUT_MS = 300
 // Desligam o CSS anti-flash de styles/base.css: o primeiro por elemento, o segundo quando todos foram montados
 const BUILT_ATTR = 'data-reveal-built'
 const READY_ATTR = 'data-reveal-ready'
+
+// Presets que animam o que está dentro do elemento (palavras, pílulas), não ele
+const SPLITS_INSIDE = ['heading', 'text', 'bubbles']
 
 // O que as entradas deixam inline; no fim volta tudo ao CSS, para os hovers
 const CLEAR =
@@ -65,11 +71,13 @@ function scrollRange(trigger: Element) {
 
 // Cada [data-reveal] entra com o [data-reveal-group] mais próximo. Sem grupo, ou num grupo "lg" abaixo
 // do lg (blocos altos no celular), ele entra sozinho. Quem está dentro de outro [data-reveal]
-// (destaque no título, campos no formulário) entra sempre com ele
+// (destaque no título, campos no formulário) entra sempre com ele. O que está escondido nesta largura
+// fica de fora e, se aparecer depois, vem pronto com o data-reveal-ready
 function collectGroups(desktop: boolean) {
   const groups = new Map<Element, HTMLElement[]>()
   const keyOf = new Map<Element, Element>()
   document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+    if (!isRendered(el)) return
     const outer = el.parentElement?.closest('[data-reveal]')
     const group = el.closest<HTMLElement>('[data-reveal-group]')
     const key =
@@ -81,13 +89,25 @@ function collectGroups(desktop: boolean) {
   return groups
 }
 
-function buildTimeline(items: HTMLElement[], env: Omit<RevealEnv, 'index'>) {
+// calm: "reduzir movimento", todo elemento entra só com fade
+function buildTimeline(items: HTMLElement[], env: Omit<RevealEnv, 'index'>, calm: boolean) {
   const tl = gsap.timeline({ paused: true })
   const counts = new Map<RevealName, number>()
   let lead: number | null = null
 
+  // Antes das escritas (ver prime). Fora: quem anima o que tem dentro (faz o mesmo lá) e quem está dentro de
+  // outra entrada, porque o SplitText dela guarda o HTML e o style voltaria no revert
+  if (!calm) {
+    prime(
+      items
+        .filter((el) => !SPLITS_INSIDE.includes(el.dataset.reveal ?? ''))
+        .filter((el) => !el.parentElement?.closest('[data-reveal]'))
+        .map((el) => el.querySelector<HTMLElement | SVGElement>(':scope > [data-pop]') ?? el)
+    )
+  }
+
   items.forEach((el) => {
-    const name = el.dataset.reveal as RevealName
+    const name: RevealName = calm ? 'fade' : (el.dataset.reveal as RevealName)
     if (!(name in REVEALS)) return
     const index = counts.get(name) ?? 0
     counts.set(name, index + 1)
@@ -117,12 +137,16 @@ export function useScrollReveals() {
   useGSAP(() => {
     const html = document.documentElement
 
-    gsap.matchMedia().add({ motion: MOTION_OK, desktop: DESKTOP }, (context) => {
-      const { motion, desktop } = context.conditions as { motion: boolean; desktop: boolean }
-      if (!motion) {
-        html.setAttribute(READY_ATTR, '')
-        return
-      }
+    // Recarregou no meio da página: o que estava na tela já apareceu pronto (animations/scrollRestoreBoot.ts)
+    const shown = html.getAttribute(RESTORE_SHOWN_ATTR)
+    if (shown) {
+      markPlayed([...document.querySelectorAll(shown)])
+      html.removeAttribute(RESTORE_SHOWN_ATTR)
+    }
+
+    // O GSAP só chama a função se alguma condição casar: com motion e calm, uma sempre casa
+    gsap.matchMedia().add({ motion: MOTION_OK, calm: CALM, desktop: DESKTOP }, (context) => {
+      const { calm, desktop } = context.conditions as { calm: boolean; desktop: boolean }
 
       const groups: Group[] = []
       let pending: Pending[] | null = null
@@ -151,18 +175,25 @@ export function useScrollReveals() {
             trigger,
             distance: Math.max(0, start - window.scrollY),
             // Já entrando na tela ao montar (recarregou no meio da página): presa à rolagem, ficaria parada
-            // no meio até a próxima rolagem
-            play: key.getAttribute('data-reveal-mode') === 'play' || window.scrollY >= start,
+            // no meio até a próxima rolagem. O fade do calm também toca inteiro
+            play:
+              calm || key.getAttribute('data-reveal-mode') === 'play' || window.scrollY >= start,
           })
         })
         markBuilt(ready)
+        // Montadas, as que apareceram prontas já não dependem do estilo que o scrollRestoreBoot pôs no <head>
+        document.querySelector(`style[${RESTORE_SHOWN_ATTR}]`)?.remove()
         return list.sort((a, b) => a.distance - b.distance)
       }
 
       const buildGroup = ({ items, trigger, play }: Pending) => {
         const group: Group = { items, splits: [], extras: [], done: false }
         groups.push(group)
-        const tl = buildTimeline(items, { desktop, splits: group.splits, extras: group.extras })
+        const tl = buildTimeline(
+          items,
+          { desktop, splits: group.splits, extras: group.extras },
+          calm
+        )
 
         const finish = () => {
           if (group.done) return

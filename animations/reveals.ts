@@ -14,6 +14,16 @@ type Preset = (el: HTMLElement, env: RevealEnv) => gsap.core.Animation
 
 const side = (index: number) => (index % 2 ? 1 : -1)
 
+// O GSAP lê e escreve o transform alvo a alvo; feito antes, em lote, evita um layout forçado por palavra
+export function prime<T extends HTMLElement | SVGElement>(targets: Iterable<T>) {
+  const list = [...targets]
+  list.forEach((el) =>
+    Object.assign(el.style, { translate: 'none', rotate: 'none', scale: 'none' })
+  )
+  list.forEach((el) => gsap.getProperty(el, 'x'))
+  return list
+}
+
 // Em palavras, não em linhas: a divisão não depende da largura e um resize não a quebra.
 // Destaques com animação própria ([data-reveal] por dentro) ficam inteiros.
 // aria 'none': o 'auto' punha aria-label no <p>, onde é proibido, e escondia as palavras do leitor de tela
@@ -25,7 +35,7 @@ function splitWords(el: HTMLElement, env: RevealEnv, vars: Partial<SplitText.Var
     ...vars,
   })
   env.splits.push(split)
-  return split.words
+  return prime(split.words as HTMLElement[])
 }
 
 // A primeira animação de cada preset é from/fromTo: o estado inicial é aplicado na hora e esconde o elemento
@@ -175,7 +185,7 @@ export const REVEALS = {
 
   // Pílulas que estouram como bolhas. Sem a transição de CSS do hover, que atrasaria cada quadro
   bubbles: (el) => {
-    const tags = el.querySelectorAll('li')
+    const tags = prime(el.querySelectorAll('li'))
     gsap.set(tags, { transition: 'none' })
     return gsap.from(tags, {
       scale: 0,

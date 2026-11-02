@@ -57,6 +57,7 @@ type BootConfig = {
   playAttr: string
   doneAttr: string
   introMs: number
+  calmIntroMs: number
   fontTimeoutMs: number
   titleDelay: number
   titleDuration: number
@@ -74,9 +75,9 @@ export function bootHero(stretch: (section: HTMLElement) => void, config: BootCo
   // Avisa o React que a entrada já começou
   html.setAttribute(config.bootAttr, '')
 
-  const play = () => {
+  const play = (ms = config.introMs) => {
     html.setAttribute(config.playAttr, '')
-    setTimeout(() => html.setAttribute(config.doneAttr, ''), config.introMs)
+    setTimeout(() => html.setAttribute(config.doneAttr, ''), ms)
   }
 
   const fail = () => {
@@ -135,7 +136,6 @@ export function bootHero(stretch: (section: HTMLElement) => void, config: BootCo
 
   try {
     stretch(section)
-    if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return
 
     // Recarregou fora do Hero (animations/scrollRestoreBoot.ts): Hero e header aparecem prontos. play e done
     // juntos não casam com nenhuma regra de styles/hero-intro.css, então nada anima
@@ -144,6 +144,10 @@ export function bootHero(stretch: (section: HTMLElement) => void, config: BootCo
       html.setAttribute(config.doneAttr, '')
       return
     }
+
+    // "Reduzir movimento": só um fade (styles/hero-intro.css), sem pre-loader nem título deslizando
+    if (!matchMedia('(prefers-reduced-motion: no-preference)').matches)
+      return play(config.calmIntroMs)
 
     // Com o pre-loader na tela, a entrada espera a cortina dele começar a subir
     if (html.hasAttribute(config.preloaderAttr) && !html.hasAttribute(config.revealAttr)) {
@@ -162,6 +166,8 @@ const CONFIG: BootConfig = {
   doneAttr: INTRO_DONE_ATTR,
   // Fim da última entrada (redes: 1,45s + 0,9s)
   introMs: 2350,
+  // Fim do intro-fade
+  calmIntroMs: 600,
   fontTimeoutMs: 400,
   titleDelay: 0.2,
   titleDuration: 1.6,

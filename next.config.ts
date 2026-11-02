@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   outputFileTracingRoot: path.join(__dirname),
   poweredByHeader: false,
+  experimental: {
+    // CSS no HTML (~14 KB com gzip): sem a requisição que bloqueia a primeira pintura
+    inlineCss: true,
+  },
   images: {
     // O Next serve o primeiro formato que o navegador aceita: AVIF antes, por ser menor
     formats: ['image/avif', 'image/webp'],

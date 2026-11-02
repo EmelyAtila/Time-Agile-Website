@@ -5,17 +5,21 @@ As entradas são **presas à rolagem**. Cada bloco começa a entrar quando o top
 - Rolando devagar, a entrada vai devagar. Parando, ela para junto.
 - Ela persegue a rolagem com 0,5s de atraso, para não andar aos trancos.
 - Só avança, nunca volta. Depois de terminar, fica pronta para sempre.
-- O que já estava entrando quando os grupos foram montados (recarregar no meio da página) toca inteiro no seu tempo, como `data-reveal-mode="play"`, em vez de ficar parado pela metade. O que já tinha passado aparece pronto.
+- O que já estava entrando quando os grupos foram montados toca inteiro no seu tempo, como `data-reveal-mode="play"`, em vez de ficar parado pela metade. O que já tinha passado aparece pronto.
 
 **Recarregar no meio da página:** a posição é restaurada pelo site, não pelo navegador (`animations/scrollRestoreBoot.ts`). No `pagehide` ela é guardada em `sessionStorage` como seção + deslocamento dentro dela; ao recarregar, um script no fim do `<body>` rola para lá antes do React. Assim as entradas, o pre-loader e o intro do Hero já sabem onde a página está quando decidem o que fazer. A navegação nova (link, aba nova) e a URL com `#âncora` não são restauradas.
 
-As entradas animam só `transform`, `opacity` e `clip-path`. O conteúdo já vem pronto do servidor, então o SEO e o leitor de tela não mudam. Com `prefers-reduced-motion` ou sem JavaScript, tudo aparece pronto.
+O que está na tela depois de rolar aparece pronto na hora, sem entrada. Sem isso, o CSS anti-flash deixaria a tela vazia até o JS hidratar e montar os grupos (no celular, mais de 1s, e é isso que o LCP mede). O script marca os blocos de primeiro nível do `<main>` (e o rodapé) que cruzam a tela, põe no `<head>` um `<style>` que os mostra e guarda o mesmo seletor em `<html data-restore-shown>`. `useScrollReveals` trata essas entradas como já tocadas e tira o `<style>` quando elas são marcadas como montadas. Os blocos abaixo da tela continuam com as entradas.
+
+As entradas animam só `transform`, `opacity` e `clip-path`. O conteúdo já vem pronto do servidor, então o SEO e o leitor de tela não mudam. Sem JavaScript, tudo aparece pronto. Com `prefers-reduced-motion: reduce`, todo elemento usa o preset `fade` e toca inteiro quando o bloco começa a entrar, como `data-reveal-mode="play"`, sem deslocamento nem giro.
 
 - `animations/reveals.ts`: os presets (o que cada entrada faz) e `LEAD` (intervalo até o próximo elemento, no tempo da timeline).
 - `animations/useScrollReveals.ts`: acha os grupos, liga a timeline de cada um à rolagem (`START_AT`, `TALL_END_AT`, `MIN_RANGE`, `LAG`) e, no fim, devolve tudo ao CSS.
 - `components/providers/ScrollReveals.tsx`: liga o hook. Está montado em `app/page.tsx`.
 - `styles/base.css`: esconde cada `[data-reveal]` até o grupo dele ser montado (`data-reveal-built`). O failsafe é uma animação só, no `<html>`, que mostra tudo em 4s se o JS falhar.
 - Os grupos são montados aos poucos, em fatias de até 8ms nos intervalos livres do navegador (`requestIdleCallback`), do mais perto da tela para o mais longe. Assim a montagem não vira uma tarefa longa nem engasga a entrada do Hero. As medidas só leem o layout (`offsetTop`), sem escrever nada antes, e as marcas `data-reveal-built` vão em lote no fim de cada fatia, para não invalidar o estilo entre um grupo e outro.
+- Antes de criar as animações de um grupo, o transform de todos os alvos (palavras do SplitText, pílulas, elementos) é lido de uma vez (`prime` em `animations/reveals.ts`). O GSAP lê alvo a alvo e escreve `translate`/`rotate`/`scale: none` no meio da leitura; intercalado com as outras animações, isso forçava um layout por palavra.
+- O que está escondido na largura atual (`display: none`, como `hidden lg:block`) fica de fora: sem caixa, o GSAP mediria o desenho por um clone. Se aparecer depois sem cruzar o lg (girar o celular), vem pronto com o `data-reveal-ready`.
 
 ## Como marcar um elemento
 
@@ -66,6 +70,7 @@ O SplitText divide em palavras, não em linhas, então um resize não quebra a d
 - Usa `aria: 'none'`: as palavras divididas continuam sendo texto para o leitor de tela. O `'auto'` punha `aria-label` nos `<p>`, onde ele é proibido (o Lighthouse reprova) e ignorado, e escondia as palavras com `aria-hidden`. Enquanto o parágrafo estava dividido, o leitor de tela não lia nada.
 - A Handelson entra só depois do load (`hooks/useLateScriptFont.ts`). Quando ela chega, um `ScrollTrigger.refresh()` recalcula onde cada entrada começa, porque a troca de fonte pode mudar a altura dos blocos.
 - As fitas que se desenham com a rolagem (`animations/useScrollDraw.ts`) medem o trecho visível de cada path com uma amostra grossa e refinam só nas bordas. Elas só medem de novo quando o layout muda, então os refreshes sem resize saem de graça.
+- Fitas, seta (`useArrowDraw`) e o balanço dos smileys (`useSmileyLoop`) ficam abaixo da dobra e são montados num intervalo livre depois da hidratação, não na tarefa dela. Os smileys escondidos na largura atual (`hidden lg:block`) não são montados; cruzar o md ou o lg confere de novo.
 
 ## Coreografia
 

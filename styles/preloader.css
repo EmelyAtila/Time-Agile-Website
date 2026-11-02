@@ -4,38 +4,13 @@
    - data-preloader-ready: a logo se monta a partir das barras
    - data-preloader-exit: a cortina sobe com as faixas de cor atrás e entrega a cena ao Hero
    - data-preloader-done: some de vez
-   Eases: os de styles/hero-intro.css. Em SVG, px são unidades do viewBox (0 0 223 83). Tempos:
-   docs/HERO-ANIMATIONS.md */
+   Só translate, scale e opacity, nas camadas HTML de Preloader.tsx: assim tudo roda no compositor e não
+   trava enquanto o JS da página carrega. Nada de animar dentro do SVG, clip-path, border-radius ou
+   propriedade customizada. Os % são da caixa da logo (223×83 unidades do viewBox). Eases: os de
+   styles/hero-intro.css. Tempos: docs/HERO-ANIMATIONS.md */
 
 [data-pl-root] {
   display: none;
-}
-
-/* Força do equalizador: 1 pulsando, 0 parado. Registrada para a transição levar as barras até a
-   altura cheia no ponto em que estiverem, sem salto ao trocar de animação */
-@property --amp {
-  syntax: '<number>';
-  inherits: false;
-  initial-value: 0;
-}
-
-[data-pl='letter'],
-[data-pl='tagline'] {
-  transform-box: fill-box;
-  transform-origin: 50% 50%;
-}
-
-/* Origem fixa no centro das barras: com fill-box, ela andaria junto com as barras pulsando e o grupo
-   tremeria */
-[data-pl='bars'] {
-  transform-box: view-box;
-  transform-origin: 142.75px 57.24px;
-}
-
-[data-pl='bars'] > path {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  transition: --amp 0.4s var(--ease-power2);
 }
 
 @media (prefers-reduced-motion: no-preference) and (scripting: enabled) {
@@ -43,6 +18,16 @@
     display: block;
     /* Failsafe: se o script parar no meio, o pre-loader não prende a página */
     animation: pl-failsafe 0s linear 4s forwards;
+  }
+
+  /* A faixa reservada para a barra de rolagem (scrollbar-gutter em styles/base.css) fica fora de qualquer
+     elemento fixo e mostra o fundo do <html>: vinho com a cortina, creme a partir de quando ela passa do
+     meio da tela (revealMs em animations/preloaderBoot.ts) */
+  html[data-preloader]:not([data-preloader-exit]) {
+    background-color: var(--color-wine);
+  }
+  html[data-preloader-exit] {
+    transition: background-color 0s linear 0.55s;
   }
 
   /* overflow-y só: o overflow-x: clip do body (styles/base.css) continua */
@@ -56,15 +41,13 @@
     :is([data-pl='time'], [data-pl='tagline'], [data-pl='letter'], [data-pl='dot']) {
     opacity: 0;
   }
+  /* -31 e -16 unidades */
   html[data-preloader]:not([data-preloader-ready]) [data-pl='bars'] {
-    translate: -31px -16px;
+    translate: -13.9% -19.28%;
     scale: 1.5;
   }
-  html[data-preloader]:not([data-preloader-ready]) [data-pl='bars'] > path {
-    --amp: 1;
-  }
-  /* Continua rodando depois do ready: quem para o pulso é o --amp indo a 0 */
-  html[data-preloader]:not([data-preloader-done]) [data-pl='bars'] > path {
+  /* Continua depois do ready: quem para o pulso é o script, deixando a batida em curso terminar */
+  html[data-preloader]:not([data-preloader-done]) [data-pl-bar] {
     animation: pl-equalizer 0.9s ease-in-out infinite;
     animation-delay: calc(var(--i) * -0.18s);
   }
@@ -80,22 +63,23 @@
   html[data-preloader-ready] [data-pl='dot'] {
     animation: pl-drop 0.5s var(--ease-bounce) 0.15s backwards;
   }
+  /* "Time" escrito à mão: a janela entra da esquerda e a tinta, dentro dela, anda ao contrário e fica parada */
   html[data-preloader-ready] [data-pl='time'] {
-    animation: pl-write 0.5s cubic-bezier(0.45, 0, 0.55, 1) 0.3s backwards;
+    animation: pl-write-window 0.5s cubic-bezier(0.45, 0, 0.55, 1) 0.3s backwards;
+  }
+  html[data-preloader-ready] [data-pl-ink] {
+    animation: pl-write-ink 0.5s cubic-bezier(0.45, 0, 0.55, 1) 0.3s backwards;
   }
   html[data-preloader-ready] [data-pl='tagline'] {
     animation: pl-tagline 0.3s var(--ease-power2) 0.55s backwards;
   }
 
-  /* Saída: a logo toma impulso e a cortina leva tudo para cima, curvando a borda de baixo */
+  /* Saída: a logo toma impulso e a cortina leva tudo para cima */
   html[data-preloader-exit] [data-pl='logo'] {
     animation: pl-logo-kick 0.4s var(--ease-power2) forwards;
   }
   html[data-preloader-exit] [data-pl-curtain] {
     animation: pl-lift 0.9s cubic-bezier(0.76, 0, 0.24, 1) 0.15s forwards;
-  }
-  html[data-preloader-exit] [data-pl-layer] {
-    animation: pl-curve 0.5s var(--ease-power2) 0.1s forwards;
   }
 }
 
@@ -113,13 +97,13 @@
 
 @keyframes pl-equalizer {
   50% {
-    scale: 1 calc(1 - 0.65 * var(--amp));
+    scale: 1 0.35;
   }
 }
 
 @keyframes pl-bars-home {
   from {
-    translate: -31px -16px;
+    translate: -13.9% -19.28%;
     scale: 1.5;
   }
 }
@@ -133,20 +117,23 @@
   }
 }
 
+/* -36 unidades */
 @keyframes pl-drop {
   from {
-    translate: 0 -36px;
+    translate: 0 -43.37%;
     opacity: 0;
   }
 }
 
-/* Folga negativa para a cursiva não ser cortada nas pontas */
-@keyframes pl-write {
+@keyframes pl-write-window {
   from {
-    clip-path: inset(-30% 100% -30% -5%);
+    translate: -100% 0;
   }
-  to {
-    clip-path: inset(-30% -5% -30% -5%);
+}
+
+@keyframes pl-write-ink {
+  from {
+    translate: 100% 0;
   }
 }
 
@@ -166,15 +153,9 @@
   }
 }
 
+/* Até a borda da camada laranja (+30vh) sair da tela */
 @keyframes pl-lift {
   to {
-    translate: 0 calc(-100% - 20vh);
-  }
-}
-
-@keyframes pl-curve {
-  to {
-    border-bottom-left-radius: 50% 12vh;
-    border-bottom-right-radius: 50% 12vh;
+    translate: 0 calc(-100% - 32vh);
   }
 }

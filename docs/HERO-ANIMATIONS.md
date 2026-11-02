@@ -52,11 +52,12 @@ Para mexer:
 - **Só o título espera a fonte** (Satoshi), senão mudaria de largura no meio do caminho. Ele começa em `titleDelay` depois do início ou quando a fonte chega, o que vier por último, com teto de 400ms. Com a fonte em cache, a coreografia é a da tabela.
 - **Fitas:** cada `<path>` tem `pathLength={1}` e o `@keyframes` leva `stroke-dashoffset` de 1.001 a 0.
 - **Título:** texto real em `<textPath>`. Antes de a entrada começar, o script tira o título do path (`startOffset="-100%"`). Quando a fonte chega, ele mede o título e escreve o `startOffset` a cada quadro (`requestAnimationFrame`), de um valor negativo (texto todo antes do path, portanto invisível) até a posição final, com o `back.out(1.1)`. O relógio é o do rAF, o mesmo das animações de CSS: mesmo que um quadro trave, título e fitas continuam juntos. O `<h1>` acessível é o `sr-only` em `Hero.tsx`; o SVG é `aria-hidden`.
-- **Estado inicial:** o HTML do servidor já sai no estado final. O CSS esconde `[data-intro]` só com JS ligado e sem "reduzir movimento", até `data-intro-play`.
+- **Estado inicial:** o HTML do servidor já sai no estado final. O CSS esconde `[data-intro]` só com JS ligado, até `data-intro-play`.
 - **`animation-fill-mode: backwards`:** segura o começo durante o atraso e, no fim, não deixa nada aplicado. Assim o GSAP dos loops e os hovers assumem sem briga.
 - **`translate`/`rotate`/`scale` individuais, não `transform`.** Atenção: quando o GSAP anima um elemento, ele absorve essas propriedades no transform dele. Por isso a entrada da barra do menu anima um `<span>` de dentro, e não a barra que o scroll spy move.
 - **Hidratação:** o script muda atributos antes de o React hidratar (`d`, `viewBox`, `startOffset` do `<textPath>`, `data-*` no `<html>`), por isso o SVG do Hero e o `<html>` têm `suppressHydrationWarning`. O script não cria nem remove nós: isso quebraria a hidratação.
-- **Sem JS ou com `prefers-reduced-motion`:** nada é escondido e nada anima; o Hero aparece pronto.
+- **Sem JS:** nada é escondido e nada anima; o Hero aparece pronto.
+- **Com `prefers-reduced-motion: reduce`:** sem pre-loader, fitas, título deslizando nem loops. O script marca `data-intro-play` na hora e cada `[data-intro]` entra só com um fade de 0,5s (`intro-fade`); `data-intro-done` vem em `calmIntroMs`. No Windows, isso acontece com "Efeitos de animação" desligado.
 - **Navegação pelo cliente** (vindo de outra página do site) não roda o script inline: o hook vê que falta `data-intro-boot` e mostra o Hero pronto.
 - **Responsivo:** duas artes no HTML, o CSS mostra uma (`lg`, 1024px). O script e o `gsap.matchMedia()` usam o mesmo corte. Cruzar o `lg` depois da entrada não repete nada (`data-intro-done` desliga o CSS).
 - **Proporção da tela (desktop):** o mockup é 1480×871, mas uma janela de navegador costuma ser bem mais larga (perto de 2:1). Em vez de ampliar o desenho e cortar em cima e embaixo, `stretchHeroArt` estica só a coordenada x das curvas até a proporção da seção. A primeira vez é no script inline, antes de aparecer qualquer coisa; depois, `useFluidArt` refaz a cada resize. Assim os laços da fita amarela (topo) e da rosa-claro (base) aparecem inteiros em qualquer largura. Espessura das fitas e tamanho do título crescem por igual (√ do fator), então nada deforma. O intervalo aceito é o `stretch` de `HERO_ART_DESKTOP` (0.78 a 1.55, de 4:3 até ~2.6:1), e a altura mínima do Hero em `Hero.tsx` segura a seção dentro desse intervalo. Sem JS vale o recorte antigo (`preserveAspectRatio`).
@@ -70,25 +71,31 @@ Na primeira visita da sessão, uma tela vinho (a cor do rodapé) cobre a página
 | Arquivo | Papel |
 | --- | --- |
 | `animations/preloaderBoot.ts` | Script inline, no começo do `<body>` da home: decide se toca, marca o `<html>` em etapas e grava a sessão. Tempos no `CONFIG`. |
-| `components/layout/Preloader.tsx` | O script, a cortina (vinho e três faixas de cor por baixo) e a logo de `public/images/preloader-logo.svg` inline, dividida em `data-pl`. |
+| `components/layout/Preloader.tsx` | O script, a cortina (vinho e três faixas de cor por baixo) e a logo de `public/images/preloader-logo.svg`, dividida em camadas `data-pl`. |
 | `styles/preloader.css` | As animações, presas aos atributos do `<html>`. |
+
+**Tudo no compositor.** O pre-loader roda justamente enquanto o JS da página baixa e hidrata, com a thread principal ocupada. Então ele só anima `translate`, `scale` e `opacity` em elementos HTML, que o navegador anima na GPU sem depender dela. Cada parte da logo é uma camada `<div>` do tamanho da logo com o seu pedaço do SVG dentro (as barras do "i" são `<div>`s com um `<rect>`). Não anime dentro do SVG, nem `clip-path`, `border-radius` ou propriedade customizada: tudo isso volta para a thread principal e trava.
 
 | Atributo no `<html>` | Quando | O que acontece |
 | --- | --- | --- |
 | `data-preloader` | na hora | só as barras do "i", ampliadas no centro, pulsam como equalizador |
 | `data-preloader-ready` | no `DOMContentLoaded` (não espera o `load`), com no mínimo `minMs` (0,25s) e no máximo `maxMs` (0,8s) | as barras voltam para o "i"; "a" e "g" saem de trás delas para a esquerda, "l", "e" e "." para a direita; o pingo cai e quica; "Time" é escrito à mão; a tagline aparece por último (~0,85s) |
-| `data-preloader-exit` | `holdMs` (1,05s) depois | a logo toma impulso e a cortina sobe, curvando a borda de baixo e puxando as faixas rosa, amarela e laranja |
+| `data-preloader-exit` | `holdMs` (1,05s) depois | a logo toma impulso e a cortina sobe, com a borda de baixo curva, puxando as faixas rosa, amarela e laranja |
 | `data-preloader-reveal` | `revealMs` (0,55s) depois da saída | dispara `preloader:reveal`, e a entrada do Hero começa |
 | `data-preloader-done` | `doneMs` (1,1s) depois da saída | o pre-loader some (`display: none`), a rolagem volta e o Lenis religa |
 
 - **A entrada do Hero espera:** `bootHero` vê `data-preloader` sem `data-preloader-reveal` e só chama `start()` no evento. Sem pre-loader, começa na hora, como antes.
 - **Rolagem:** travada no `body` (`overflow-y: hidden`) e no Lenis (`useSmoothScroll`) até `data-preloader-done`.
 - **Failsafes:** se o script parar no meio, o CSS some com o pre-loader e solta a rolagem em 4s. No pior caso (`maxMs`), a entrada do Hero começa em ~2,4s (no melhor, ~1,85s), antes do failsafe de 4s de `styles/base.css`. Cada segundo aqui atrasa o Hero e o LCP, que o Lighthouse sempre mede numa visita nova.
-- **Recarregar fora do Hero:** `animations/scrollRestoreBoot.ts` marca `data-restore` antes do pre-loader. Com ele, o pre-loader não toca, e `bootHero` marca `data-intro-play` e `data-intro-done` juntos: o Hero e o header aparecem prontos, sem a entrada tocando lá em cima enquanto a tela está no meio da página. Dentro do Hero (`data-restore="hero"`), a entrada toca normalmente.
+- **Recarregar fora do Hero:** `animations/scrollRestoreBoot.ts` marca `data-restore` antes do pre-loader. Com ele, o pre-loader não toca, e `bootHero` marca `data-intro-play` e `data-intro-done` juntos: o Hero e o header aparecem prontos, sem a entrada tocando lá em cima enquanto a tela está no meio da página. Dentro do Hero (`data-restore="hero"`), a entrada toca normalmente. Uma seção conta como alcançada quando o topo dela chega à linha do header (o `scroll-margin-top`), que é onde os links do menu a deixam.
+- **Lighthouse do DevTools:** ele recarrega a aba, e o Chrome trata isso como *reload*. Com a página rolada, ele mede o "recarregar no meio da página" (sem pre-loader); para medir a primeira visita, rode com a página no topo, numa janela anônima.
 - **Sem JS ou com "reduzir movimento":** o script sai sem marcar nada e o pre-loader nunca aparece.
 - **Hidratação:** o script só mexe em atributos do `<html>`, que já tem `suppressHydrationWarning`.
-- Os `px` das animações no SVG são unidades do `viewBox` (223×83). Se trocar a logo, refaça o `--dx` de cada letra (distância até as barras, x ≈ 142,8) o deslocamento das barras para o centro (`-31px -16px`) e a origem fixa do grupo delas (`142.75px 57.24px`, o centro das barras).
-- **Barras:** o equalizador continua rodando depois do `ready`, e quem o para é `--amp` (registrada com `@property`) indo de 1 a 0 numa transição. Assim cada barra cresce até a altura cheia de onde estiver, sem salto. Num navegador sem `@property`, ela pula direto para a altura cheia.
+- **Medidas:** as camadas cobrem a logo inteira, então os `%` das animações são do `viewBox` (223×83). As caixas de cada parte (de onde saem as origens das escalas) foram medidas com `getBBox()` na arte e estão em `Preloader.tsx`, assim como o `dx` de cada letra (distância até as barras, x ≈ 142,8). Em `styles/preloader.css` ficam o deslocamento das barras para o centro (`-13.9% -19.28%`, ou seja, -31 e -16 unidades) e a queda do pingo (`-43.37%`, -36 unidades). Se trocar a logo, refaça esses números.
+- **"Time" escrito à mão:** uma janela `overflow: hidden` do tamanho do "Time" (mais 5% dos lados e 30% em cima e embaixo, para a cursiva não ser cortada) entra da esquerda enquanto o conteúdo dela anda o mesmo tanto para a direita. Com as duas se cancelando, a tinta fica parada e aparece da esquerda para a direita, só com `translate`.
+- **Barras:** o equalizador continua rodando depois do `ready`. Quem o para é o script: com a Web Animations, cada barra termina a batida em curso no dobro da velocidade e para na altura cheia, sem salto, ainda no compositor. Sem a Web Animations, elas pulsam até o fim.
+- **Cortina:** as curvas da borda de baixo são fixas (`border-radius` animado repinta a tela inteira a cada quadro). Cada camada passa da tela o bastante para a curva ficar escondida até a cortina subir: vinho +12vh, rosa +18vh, amarelo +24vh e laranja +30vh, com as faixas de 6vh entre elas.
+- **Faixa da barra de rolagem:** o `scrollbar-gutter: stable` (`styles/base.css`) reserva a faixa da barra de rolagem, e nenhum elemento fixo pinta ali; só o fundo do `<html>`. Enquanto a cortina cobre a tela, esse fundo fica vinho, e volta ao creme quando a borda da cortina passa do meio (`revealMs`, com `transition-delay`).
 
 ## Loops
 

@@ -16,6 +16,8 @@ type PreloaderConfig = {
   revealAttr: string
   doneAttr: string
   revealEvent: string
+  barSelector: string
+  settleRate: number
   storageKey: string
   minMs: number
   maxMs: number
@@ -42,6 +44,19 @@ export function bootPreloader(config: PreloaderConfig) {
     isReady = true
     html.setAttribute(config.readyAttr, '')
 
+    // As barras terminam a batida em curso, mais rápido, em vez de saltar para a altura cheia; mexer só no
+    // tempo da animação a mantém no compositor
+    try {
+      document.querySelectorAll(config.barSelector).forEach((bar) =>
+        bar.getAnimations().forEach((animation) => {
+          const iteration = animation.effect?.getComputedTiming().currentIteration
+          if (iteration == null) return
+          animation.effect?.updateTiming({ iterations: iteration + 1 })
+          animation.updatePlaybackRate(config.settleRate)
+        })
+      )
+    } catch {}
+
     setTimeout(() => {
       html.setAttribute(config.exitAttr, '')
       setTimeout(() => {
@@ -59,8 +74,7 @@ export function bootPreloader(config: PreloaderConfig) {
 
   // O loop das barras dura pelo menos minMs e no máximo maxMs. Espera o HTML, não o load: imagens e fontes
   // continuam chegando por trás, e cada segundo aqui atrasa o Hero (e o LCP)
-  const onParsed = () =>
-    setTimeout(ready, Math.max(0, config.minMs - (performance.now() - start)))
+  const onParsed = () => setTimeout(ready, Math.max(0, config.minMs - (performance.now() - start)))
   if (document.readyState !== 'loading') onParsed()
   else addEventListener('DOMContentLoaded', onParsed, { once: true })
   setTimeout(ready, config.maxMs)
@@ -74,6 +88,9 @@ const CONFIG: PreloaderConfig = {
   revealAttr: PRELOADER_REVEAL_ATTR,
   doneAttr: PRELOADER_DONE_ATTR,
   revealEvent: PRELOADER_REVEAL_EVENT,
+  barSelector: '[data-pl-bar]',
+  // A batida dura 0,9s: no dobro da velocidade, termina junto com a volta das barras (0,45s)
+  settleRate: 2,
   storageKey: 'time-agile:preloader',
   minMs: 250,
   maxMs: 800,

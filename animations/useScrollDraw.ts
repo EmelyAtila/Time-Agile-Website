@@ -2,9 +2,11 @@
 
 import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
+import { cancelIdle, whenIdle } from '@/lib/idle'
 import { gsap, ScrollTrigger } from './gsap.config'
 
 const MOTION_OK = '(prefers-reduced-motion: no-preference)'
+const IDLE_TIMEOUT_MS = 1000
 
 const DRAWN_AT = 'center 30%'
 const ERASE_FROM = 'center 20%'
@@ -70,69 +72,75 @@ function measureVisible(path: SVGPathElement, top: number): Visible {
 export function useScrollDraw() {
   const ref = useRef<SVGSVGElement>(null)
 
-  useGSAP(() => {
+  useGSAP((_, contextSafe) => {
     const svg = ref.current
-    if (!svg) return
+    if (!svg || !contextSafe) return
     const paths = Array.from(svg.querySelectorAll('path'))
 
-    gsap.matchMedia().add(MOTION_OK, () => {
-      let drawn = 0
-      let erased = 0
-      let visible = paths.map(() => WHOLE)
-      // De 0 a 1 desenha, de 1 a 2 apaga: as fases não se sobrepõem, então um número só basta
-      const shown = { progress: 0 }
+    // Medir as fitas é caro e elas ficam abaixo da dobra: monta fora da tarefa da hidratação
+    const setup = contextSafe(() => {
+      gsap.matchMedia().add(MOTION_OK, () => {
+        let drawn = 0
+        let erased = 0
+        let visible = paths.map(() => WHOLE)
+        // De 0 a 1 desenha, de 1 a 2 apaga: as fases não se sobrepõem, então um número só basta
+        const shown = { progress: 0 }
 
-      // Direto no style: o GSAP arredondaria o deslocamento para px inteiros
-      const render = () => {
-        const { progress } = shown
-        paths.forEach((path, index) => {
-          const { from, to } = visible[index]
-          const at = (part: number) => from + (to - from) * part
-          const offset = progress > 1 ? -OUT * at(progress - 1) : OUT * (1 - at(progress))
-          path.style.strokeDashoffset = `${offset}`
+        // Direto no style: o GSAP arredondaria o deslocamento para px inteiros
+        const render = () => {
+          const { progress } = shown
+          paths.forEach((path, index) => {
+            const { from, to } = visible[index]
+            const at = (part: number) => from + (to - from) * part
+            const offset = progress > 1 ? -OUT * at(progress - 1) : OUT * (1 - at(progress))
+            path.style.strokeDashoffset = `${offset}`
+          })
+        }
+
+        // A fita persegue a rolagem com atraso: mesmo rolando rápido, dá para vê-la se desenhar
+        const follow = gsap.quickTo(shown, 'progress', {
+          duration: LAG,
+          ease: 'power1.out',
+          onUpdate: render,
         })
-      }
 
-      // A fita persegue a rolagem com atraso: mesmo rolando rápido, dá para vê-la se desenhar
-      const follow = gsap.quickTo(shown, 'progress', {
-        duration: LAG,
-        ease: 'power1.out',
-        onUpdate: render,
+        // Começa a desenhar quando a fita, não o svg, entra na tela. Só mede de novo quando o layout muda:
+        // os refreshes sem resize (load, troca de fonte) reaproveitam a medida
+        let measuredFor = ''
+        const drawFrom = () => {
+          const { top, left, width, height } = svg.getBoundingClientRect()
+          const layout = `${document.documentElement.clientWidth}:${left}:${width}:${height}`
+          if (layout !== measuredFor) {
+            measuredFor = layout
+            visible = paths.map((path) => measureVisible(path, top))
+          }
+          const entry = Math.round(Math.min(...visible.map((part) => part.entry)))
+          return `top${entry < 0 ? '-' : '+'}=${Math.abs(entry)} bottom`
+        }
+
+        const phase = (
+          start: string | (() => string),
+          end: string,
+          set: (progress: number) => void
+        ) => {
+          const update = ({ progress }: ScrollTrigger) => {
+            set(progress)
+            follow(drawn + erased)
+          }
+          ScrollTrigger.create({ trigger: svg, start, end, onUpdate: update, onRefresh: update })
+        }
+
+        gsap.set(paths, { strokeDasharray: DASH })
+        phase(drawFrom, DRAWN_AT, (progress) => (drawn = progress))
+        phase(ERASE_FROM, ERASED_AT, (progress) => (erased = progress))
+        render()
+
+        return () => paths.forEach((path) => path.style.removeProperty('stroke-dashoffset'))
       })
-
-      // Começa a desenhar quando a fita, não o svg, entra na tela. Só mede de novo quando o layout muda: os
-      // refreshes sem resize (load, troca de fonte) reaproveitam a medida
-      let measuredFor = ''
-      const drawFrom = () => {
-        const { top, left, width, height } = svg.getBoundingClientRect()
-        const layout = `${document.documentElement.clientWidth}:${left}:${width}:${height}`
-        if (layout !== measuredFor) {
-          measuredFor = layout
-          visible = paths.map((path) => measureVisible(path, top))
-        }
-        const entry = Math.round(Math.min(...visible.map((part) => part.entry)))
-        return `top${entry < 0 ? '-' : '+'}=${Math.abs(entry)} bottom`
-      }
-
-      const phase = (
-        start: string | (() => string),
-        end: string,
-        set: (progress: number) => void
-      ) => {
-        const update = ({ progress }: ScrollTrigger) => {
-          set(progress)
-          follow(drawn + erased)
-        }
-        ScrollTrigger.create({ trigger: svg, start, end, onUpdate: update, onRefresh: update })
-      }
-
-      gsap.set(paths, { strokeDasharray: DASH })
-      phase(drawFrom, DRAWN_AT, (progress) => (drawn = progress))
-      phase(ERASE_FROM, ERASED_AT, (progress) => (erased = progress))
-      render()
-
-      return () => paths.forEach((path) => path.style.removeProperty('stroke-dashoffset'))
     })
+
+    const handle = whenIdle(setup, IDLE_TIMEOUT_MS)
+    return () => cancelIdle(handle)
   })
 
   return ref

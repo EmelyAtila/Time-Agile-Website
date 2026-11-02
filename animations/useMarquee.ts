@@ -42,11 +42,18 @@ export function useMarquee() {
       let hovered = false
       let visible = false
       let lastScroll = window.scrollY
+      let pendingScroll = 0
+
+      // Pelo evento: ler scrollY no tick forçaria um layout a cada quadro, mesmo com a página parada
+      const onScroll = () => {
+        pendingScroll += window.scrollY - lastScroll
+        lastScroll = window.scrollY
+      }
 
       const tick = (_time: number, deltaTime: number) => {
-        // A rolagem é lida mesmo com a faixa fora da tela, para não virar um tranco ao voltar
-        const scrolled = window.scrollY - lastScroll
-        lastScroll = window.scrollY
+        // A rolagem é consumida mesmo com a faixa fora da tela, para não virar um tranco ao voltar
+        const scrolled = pendingScroll
+        pendingScroll = 0
         if (!visible || !width) return
 
         const ratio = gsap.ticker.deltaRatio()
@@ -80,10 +87,12 @@ export function useMarquee() {
       onScreen.observe(viewport)
       track.addEventListener('pointerenter', onPointerEnter)
       track.addEventListener('pointerleave', onPointerLeave)
+      window.addEventListener('scroll', onScroll, { passive: true })
       gsap.ticker.add(tick)
 
       return () => {
         gsap.ticker.remove(tick)
+        window.removeEventListener('scroll', onScroll)
         resize.disconnect()
         onScreen.disconnect()
         track.removeEventListener('pointerenter', onPointerEnter)

@@ -3,9 +3,12 @@
 // do Hero já terem decidido o que fazer com base no topo da página: aqui ela acontece antes de todos eles
 
 export const RESTORE_ATTR = 'data-restore'
+// Seletor das entradas de scroll que já apareceram prontas; useScrollReveals.ts não as anima
+export const RESTORE_SHOWN_ATTR = 'data-restore-shown'
 
 type RestoreConfig = {
   attr: string
+  shownAttr: string
   storageKey: string
   heroId: string
 }
@@ -23,11 +26,11 @@ export function bootScrollRestore(config: RestoreConfig) {
   // Relativo à seção, não em px da página: fontes e imagens que chegam depois mudam a altura do que vem antes
   addEventListener('pagehide', () => {
     try {
-      // A última seção cujo topo já passou do topo da tela
+      // A última seção cujo topo já chegou à linha do header, onde os links do menu a deixam (scroll-margin-top)
       let saved: Saved | undefined
       for (const section of document.querySelectorAll<HTMLElement>('main section[id]')) {
         const top = section.getBoundingClientRect().top
-        if (top > 0) break
+        if (top > (parseFloat(getComputedStyle(section).scrollMarginTop) || 0)) break
         saved = { path: location.pathname, id: section.id, offset: -top }
       }
       if (saved && scrollY > 0) sessionStorage.setItem(config.storageKey, JSON.stringify(saved))
@@ -56,8 +59,33 @@ export function applyScrollRestore(config: RestoreConfig) {
     const section = document.getElementById(saved.id)
     if (!section) return
     const restore = () =>
-      scrollTo({ top: section.getBoundingClientRect().top + scrollY + saved.offset, behavior: 'instant' })
+      scrollTo({
+        top: section.getBoundingClientRect().top + scrollY + saved.offset,
+        behavior: 'instant',
+      })
     restore()
+
+    // Os blocos na tela aparecem prontos na hora: o CSS anti-flash (styles/base.css) os deixaria vazios até o
+    // JS montar as entradas. O mesmo seletor vai no <html>, para elas não tocarem depois
+    const blocks = [...document.querySelectorAll<HTMLElement>('main > *, main ~ footer')]
+    const shown = blocks
+      .filter((block) => {
+        const { top, bottom } = block.getBoundingClientRect()
+        return top < innerHeight && bottom > 0
+      })
+      .map((block) =>
+        block.tagName === 'FOOTER'
+          ? 'main ~ footer [data-reveal]'
+          : `main > :nth-child(${[...(block.parentElement?.children ?? [])].indexOf(block) + 1}) [data-reveal]`
+      )
+      .join(',')
+    if (shown) {
+      html.setAttribute(config.shownAttr, shown)
+      const style = document.createElement('style')
+      style.setAttribute(config.shownAttr, '')
+      style.textContent = `${shown}{visibility:visible!important}`
+      document.head.append(style)
+    }
 
     // A troca das fontes (display: swap) ainda mexe nas alturas: acerta de novo se a pessoa não rolou antes
     let moved = false
@@ -75,6 +103,7 @@ export function applyScrollRestore(config: RestoreConfig) {
 
 const CONFIG: RestoreConfig = {
   attr: RESTORE_ATTR,
+  shownAttr: RESTORE_SHOWN_ATTR,
   storageKey: 'time-agile:scroll',
   heroId: 'inicio',
 }
