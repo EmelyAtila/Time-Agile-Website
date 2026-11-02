@@ -13,4 +13,9 @@ services:
       - '3002:3002'
     env_file:
       - .env
+    volumes:
+      - next-cache:/app/.next/cache
     restart: unless-stopped
+
+volumes:
+  next-cache:

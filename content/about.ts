@@ -1,4 +1,7 @@
+import { imageAsset } from '@/lib/image-asset'
 import type { Person } from '@/types'
+import stickerIranides from '@/public/images/about/sticker-iranides.webp'
+import stickerMariana from '@/public/images/about/sticker-mariana.webp'
 
 export const about = {
   title: 'Estratégia, criatividade e gestão para marcas que querem',
@@ -14,21 +17,11 @@ export const TEAM: Person[] = [
   {
     name: 'Mariana Gomes',
     role: 'Gestora da Marca',
-    photo: {
-      src: '/images/about/sticker-mariana.webp',
-      alt: 'Mariana Gomes segurando um celular',
-      width: 1020,
-      height: 1287,
-    },
+    photo: imageAsset(stickerMariana, 'Mariana Gomes segurando um celular'),
   },
   {
     name: 'Iranides Souza',
     role: 'Sócia e gestora empresarial',
-    photo: {
-      src: '/images/about/sticker-iranides.webp',
-      alt: 'Iranides Souza sorrindo com um celular nas mãos',
-      width: 987,
-      height: 1302,
-    },
+    photo: imageAsset(stickerIranides, 'Iranides Souza sorrindo com um celular nas mãos'),
   },
 ]

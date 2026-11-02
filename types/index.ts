@@ -8,6 +8,7 @@ export interface ImageAsset {
   alt: string
   width: number
   height: number
+  blurDataURL?: string
 }
 
 export interface Person {

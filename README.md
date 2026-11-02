@@ -112,3 +112,5 @@ As variáveis `NEXT_PUBLIC_*` do `.env` entram como argumentos do build (`docker
 ```bash
 docker build --build-arg NEXT_PUBLIC_SITE_URL=https://seu-dominio.com.br -t time-agile-site .
 ```
+
+As fotos são convertidas para WebP pelo servidor no primeiro pedido de cada tamanho e guardadas em `/app/.next/cache`. O compose monta ali o volume `next-cache`, para um deploy novo não converter tudo de novo; sem o compose, use `-v next-cache:/app/.next/cache` no `docker run`.

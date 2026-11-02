@@ -25,13 +25,6 @@ export function useMarquee() {
 
     const mm = gsap.matchMedia()
 
-    // Sem animação a faixa pode virar rolagem na mão (Testimonials): precisa ser alcançável pelo teclado
-    mm.add('(prefers-reduced-motion: reduce)', () => {
-      if (viewport.scrollWidth <= viewport.clientWidth || viewport.hasAttribute('tabindex')) return
-      viewport.tabIndex = 0
-      return () => viewport.removeAttribute('tabindex')
-    })
-
     mm.add(MOTION_OK, () => {
       const setX = gsap.quickSetter(track, 'x', 'px')
       let width = copy.getBoundingClientRect().width

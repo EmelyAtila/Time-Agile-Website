@@ -161,10 +161,13 @@ function ProjectGallery({ gallery, images }: ProjectGalleryProps) {
                   height: pct(photo.height, frame.height),
                 }}
               >
+                {/* Prévia borrada na moldura até a foto chegar */}
                 <Image
                   src={image.src}
                   alt={image.alt}
                   fill
+                  placeholder={image.blurDataURL ? 'blur' : 'empty'}
+                  blurDataURL={image.blurDataURL}
                   sizes={`(min-width: 1480px) ${photo.width}px, (min-width: 1024px) ${+(photo.width / 14.8).toFixed(2)}vw, ${below}px`}
                   className="object-cover"
                 />

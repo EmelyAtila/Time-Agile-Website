@@ -18,17 +18,24 @@ const CARDS = Array.from({ length: REPEAT }, () => TESTIMONIALS).flat()
 // O título fica na faixa --strip; os cards correm de borda a borda da tela
 export function Testimonials() {
   const renderList = (hidden: boolean) => (
-    // pr igual ao gap: as duas cópias ficam com a mesma largura e o loop não dá salto
+    // pr igual ao gap: as duas cópias ficam com a mesma largura e o loop não dá salto.
+    // Sem animação: só os depoimentos, uma vez, quebrando linha em vez de virar uma rolagem na mão
     <ul
       aria-hidden={hidden || undefined}
-      className="flex shrink-0 gap-[var(--gap)] pr-[var(--gap)]"
+      className={cn(
+        'flex shrink-0 gap-[var(--gap)] pr-[var(--gap)] motion-reduce:w-full motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:px-6',
+        hidden && 'motion-reduce:hidden'
+      )}
     >
       {CARDS.map((item, index) => (
         // As repetições só enchem a faixa: o leitor de tela lê cada depoimento uma vez
         <li
           key={index}
           aria-hidden={index >= TESTIMONIALS.length || undefined}
-          className="w-[var(--card)] shrink-0"
+          className={cn(
+            'w-[var(--card)] shrink-0',
+            index >= TESTIMONIALS.length && 'motion-reduce:hidden'
+          )}
         >
           <figure
             data-reveal="card-up"
@@ -74,15 +81,15 @@ export function Testimonials() {
 
       {/* overflow-x-clip, não hidden: os cards sobem girando sem serem cortados em cima e embaixo.
           A entrada toca no tempo dela (data-reveal-mode): presa à rolagem, brigaria com a faixa andando.
-          Sem animação, a faixa rola na mão */}
+          Sem animação, os cards ficam parados em linhas */}
       <Marquee
         role="region"
         aria-label="Depoimentos de clientes"
         data-reveal-group
         data-reveal-mode="play"
-        className="mt-8 overflow-x-clip motion-reduce:overflow-x-auto lg:mt-[calc(var(--stage-width)*0.0298)]"
+        className="mt-8 overflow-x-clip lg:mt-[calc(var(--stage-width)*0.0298)]"
       >
-        <div data-marquee-track className="flex w-max">
+        <div data-marquee-track className="flex w-max motion-reduce:w-auto">
           {renderList(false)}
           {renderList(true)}
         </div>

@@ -10,8 +10,10 @@ const nextConfig: NextConfig = {
     inlineCss: true,
   },
   images: {
-    // O Next serve o primeiro formato que o navegador aceita: AVIF antes, por ser menor
-    formats: ['image/avif', 'image/webp'],
+    // Só WebP: o servidor converte cada tamanho no primeiro pedido, e o AVIF levava de 3 a 6 vezes mais
+    formats: ['image/webp'],
+    // Imagens de /public (adesivos dos serviços) mudam de nome se mudarem: 31 dias de cache no navegador
+    minimumCacheTTL: 2678400,
     deviceSizes: [375, 420, 640, 768, 1024, 1280, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
