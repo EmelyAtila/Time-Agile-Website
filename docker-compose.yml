@@ -10,7 +10,7 @@ services:
         NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: ${NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION:-}
     image: time-agile-site
     ports:
-      - '3000:3000'
+      - '3002:3002'
     env_file:
       - .env
     restart: unless-stopped

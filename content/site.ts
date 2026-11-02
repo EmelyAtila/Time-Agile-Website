@@ -5,7 +5,7 @@ export const site = {
   name: 'Time Agile',
   tagline: 'Marketing e Gestão',
   // Em produção precisa ser o domínio real (https): canonical, Open Graph, sitemap e dados estruturados usam
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+  url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3002',
   // O que aparece no Google: o título corta perto de 60 caracteres e a descrição perto de 155
   seoTitle: 'Agência de Marketing e Gestão em Brasília – DF | Time Agile',
   description:
